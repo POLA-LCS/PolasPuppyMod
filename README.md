@@ -1,4 +1,4 @@
-# Puppy Mod - Who's a good puppy? YOU are!
+# Puppy Mod - Who's a good puppy!?
 
 > A playful, consensual, 100% SFW pet-play mod for Terraria. Put on the ears, wag your tail, and wait for the click that tells you how good you are.
 
