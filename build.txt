@@ -1,0 +1,3 @@
+displayName = Puppy Mod
+author = POLA
+version = 1.2

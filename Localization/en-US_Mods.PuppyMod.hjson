@@ -1,0 +1,18 @@
+Items: {
+	ClickerItem: {
+		Tooltip: clack! click! use it when you see a good puppy
+		DisplayName: Clicker
+	}
+
+	GoldenClickerItem: {
+		DisplayName: Golden Clicker
+		Tooltip: louder click! longer praise distance
+	}
+}
+
+Buffs: {
+	GoodPuppyBuff: {
+		Description: Look how good you are!
+		DisplayName: Good Puppy!
+	}
+}
