@@ -1,83 +1,55 @@
-[h1]Puppy Mod - Who's a good puppy? YOU are![/h1]
+[h1]Puppy Mod — arf arf!! who's a good puppy?? YOU are!! ૮⸝⸝> ﻌ <⸝⸝ა[/h1]
+[i]a soft, silly, 100% SFW owner/puppy mod!! put on the ears, wag wag, *pant pant* and wait for the click that tells you you're SO good!![/i]
 
-[i]A playful, consensual, 100% SFW pet-play mod for Terraria. Put on the ears, wag the tail, and wait for that sweet [b]click[/b] that tells you how good you are.[/i]
-
-[b]Made by me, POLA | v1.2 | Terraria 1.4.4+ | Multiplayer-ready[/b]
-
-All barks, woofs and clicks are me - a real puppy. I recorded them myself, so when you get praised you are hearing me.
+[b]by POLA — v1.4.1 — Terraria 1.4.4+ — multiplayer-ready!! — woof!![/b]
+arfff!! every single bark, woof and click is MEE!! a real puppy recorded it all for you!! *awoo!!*
 
 [hr][/hr]
-[h1]What is Puppy Mod?[/h1]
-I made Puppy Mod to add a soft, teasing [b]owner/puppy[/b] dynamic to Terraria - wholesome, affectionate, a little kinky, but [b]never explicit[/b]. Think headpats, praise, zoomies around the boss arena, and happy barks when someone says [i]"good puppy!"[/i]
+[h1]arf!! what dis mod do?? ฅ•ω•ฅ[/h1]
+wanna be puppy?? hehe i got you, pup!! wholesome, cuddly, a lil teasy but never ever naughty!! just headpats, praise, zoomies and happy barks!! *tail wag wag!!*
 
-I built it for couples, friends, servers, and anyone who wants to be a little more puppy while digging, fighting, and exploring. [b]Furry and therian friendly.[/b] Consensual - you choose when to put the ears on and when to take them off. Just good puppy energy.
-
-[b]SFW and Steam-safe:[/b] Flirty and teasing, but completely wholesome.
+made for couples, friends, servers, anyone who wanna be more puppy while digging and fighting!! furry + therian friendly!! you pick when to wear ears, you pick when to take off!! all consensual, all cute!! [b]SFW + Steam safe!! bark!![/b]
 
 [hr][/hr]
-[h1]How to Play[/h1]
+[h1]how to be puppy?? arf!![/h1]
 [list]
-[*][b]1. Become Puppy[/b] - Equip [b]Dog Ears[/b] (vanity) + [b]Dog Tail[/b]. The instant both are on you [b]bark[/b] automatically. You get both free on character creation.
-[*][b]2. Choose Your Form[/b] - [b]Furry[/b] (vanity) is cozy and keeps all slots, [b]Therian[/b] (functional) is much faster and bouncier. Both give you a little extra mobility and a mining boost - now clearly shown as your armor set bonus.
-[*][b]3. Get Clicked[/b] - A non-puppy Owner [b]holds[/b] The Clicker to set range, then [b]clicks[/b] to signal. Every puppy in range at that moment gets the [b]Good Puppy[/b] buff.
-[*][b]4. Zoomies and Bark[/b] - Buff gives regen and zoomies, refreshed while you stay close. As a puppy you can [b]double tap UP to bark[/b] whenever you want attention.
-[*][b]5. Soft Rope Leash[/b] - If a puppy wears the [b]Chain Leash[/b], any Owner can right click them bare-handed to toggle a soft [b]rope[/b] - not a rough chain, rauf! - that keeps you close and happy while tethered, with only a light tug for your Owner. Click again or unequip to release.
+[*][b]become pupper!![/b] — put on [b]Dog Ears + Dog Tail[/b]!! *arf!!* you do little bark the second you put them on!! you get them free on new character!! take off and you're you again!! easy!!
+[*][b]furry or therian??[/b] — tail in vanity = cozy furry, you go a bit faster + dig faster!! tail in accessory = ZOOMIE therian, much faster, big jumps!! both tell you in the set bonus, hehe!!
+[*][b]get clicked!![/b] — Owner (not puppy!!) holds the [b]Clicker[/b], *clack!!* and every puppy nearby gets [b]Good Puppy!![/b] — regen + zoomies!! *woof!!* puppies can't click, only get clicked!! that's da point, pup!!
+[*][b]bark bark!![/b] — double tap [b]UP[/b] to bark whenever you want attention!! *awoo!!* higher and happier when you're praised!!
+[*][b]walkies!! soft rope!![/b] — puppy wears [b]Chain Leash[/b]?? any Owner can *boop* right click you — bare paws, any item!! *click!!* soft brown rope appears, not rough chain!! keeps you close and [b]happy happy[/b] the whole time!! light tug for Owner, mostly for you!! right click again to unclip!! *rauf raf!!*
 [/list]
 
 [hr][/hr]
-[h1]Features[/h1]
+[h1]features!! *pant pant*[/h1]
 [list]
-[*]Instant transformation with auto bark and pitch varied sounds - all sounds recorded by me
-[*]Two forms: [b]Furry[/b] and [b]Therian[/b] with clear set bonus for improved mobility + mining help
-[*]Clicker system - hold defines range, click signals, puppies in range at click moment are praised
-[*]Good Puppy buff - regen and zoomies, duration depends on clicker
-[*]Soft rope leash - toggle on/off with a right click, keeps you close and happy, server-synced and gentle
-[*]Bark on command - double tap UP as armor set bonus
-[*]Multiplayer designed - one click praises every puppy in range
-[*]Starter gear - Dog Ears + Dog Tail on new characters
+[*]instant puppy!! *arf!!* auto-bark with pitchy barks — all me!!
+[*]furry / therian — swap anytime, cute bonus + mining help!!
+[*]clicker — hold for range, click for praise!! one click = whole pack!!
+[*]soft rope leash — toggle on/off, keeps pup close + happy, gentle + server synced!!
+[*]starter ears + tail free!! double-tap UP bark!!
+[*]multiplayer ready!! all SFW, all consensual!! *wag wag!!*
 [/list]
 
 [hr][/hr]
-[h1]The Clicker & The Leash[/h1]
-Clicker is Pink rarity - hold to set praise range, click to send a crisp click. Puppies cannot use it - only an Owner can tell you you are good. The Chain Leash is the puppy's collar piece; once equipped, the rope is ready for any Owner to gently clip on. Both craft at a [b]Work Bench[/b] - check the [b]Guide[/b].
+[h1]faq!! woof??[/h1]
+[b]NSFW??[/b] nu uh!! 100% SFW!! Steam safe!! just soft teasing!!
+
+[b]solo??[/b] yesh!! be pupper and bark alone!! need other player for clicks/walkies!!
+
+[b]two puppies??[/b] both get praised!! both can be leashed separately!! *pack!!*
+
+[b]puppy click??[/b] no no!! puppies get clicked!! arf!!
+
+[b]leash??[/b] puppy wears leash, Owner right-clicks pup to toggle rope!! stay close, stay happy!! unequip or click again to free!!
 
 [hr][/hr]
-[h1]FAQ[/h1]
-[b]Is this NSFW?[/b] No. 100% SFW and Steam safe.
+[h1]credits!! thank you good puppies!! ૮꒰ ྀི >⸝⸝⸝< ྀི꒱ა[/h1]
+[b]by me, POLA — a real puppy, hi hi!![/b] *woof woof!!*
+[i]every bark/woof/click is me!! with pitch variance so it feels alive!! awoo!![/i]
+art: vanilla DogEars/DogTail + custom clicker + soft rope!! 
 
-[b]Can I play solo?[/b] Yes. Be a puppy and bark with double tap UP, or invite someone to click you or walk you.
-
-[b]Two puppies near one Owner?[/b] Both are praised at once, leashes are per-puppy.
-
-[b]Can puppies click?[/b] No. Puppies get clicked. Only non-puppies can use the clicker.
-
-[b]How do I bark?[/b] Automatically when you become a puppy or get praised, plus double tap UP when you are a puppy.
-
-[b]How does the leash work?[/b] Puppy equips Chain Leash, Owner right clicks to toggle the soft rope. While leashed you stay close and stay happy. Right click again to let go.
-[/list]
+thank you to every good puppy who tested and said they felt [i]seen[/i]!! you did SO good!! *headpat headpat!!*
 
 [hr][/hr]
-[h1]Installation[/h1]
-[list]
-[*]Install Terraria 1.4.4+ on Steam
-[*]Subscribe here on Workshop (or place .tmod in Mods folder)
-[*]Enable in Mods menu and Reload
-[*]New character gets ears and tail free, or check the Guide for The Clicker and Leash
-[*]Equip ears and tail, find an Owner, get clicked or go for a soft walk
-[/list]
-No dependencies. Single player and multiplayer.
-
-[hr][/hr]
-[h1]Credits and Thanks[/h1]
-[b]Author: me, POLA - a real puppy, hi![/b]
-[i]All barks, woofs and clicker sounds were recorded by me, a real puppy. Every one is me, with pitch variance so it feels alive and personal.[/i]
-Code: PuppyPlayer / OwnerPlayer / GoodPuppyBuff / Clicker + Rope Leash | Audio: 4 barks + 3 clicks | Art: Vanilla DogEars/DogTail + custom Clicker sprites + soft rope
-
-Special thanks to every good puppy who tested this and said they felt [i]seen[/i]. Good job.
-
-[hr][/hr]
-[h1]Coming Soon[/h1]
-More collars and tricks - sit, stay, shake - and a leaderboard for most clicks received. Got ideas? Tell me what would make you wag harder.
-
-[hr][/hr]
-[i]SFW Reminder: I made this about joy, affection, and playful dynamics. Kink informed but never explicit. Equip, consent, wag, zoom. Whether you are a puppy for five minutes or the whole playthrough - you are a good puppy either way. Now go get clicked - or walked on your pretty rope. You deserve it. Arf![/i]
+[i]equip, consent, wag, zoom!! be puppy for five mins or whole playthrough — you're good puppy either way!! now go get clicked — or walked on your pretty rope!! you deserve it!! arf arf!! ฅ>ω<ฅ[/i]
