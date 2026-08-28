@@ -12,7 +12,7 @@ public class GoldenClickerItem : BaseClickerItem
         TileRange = 15;
         UsageCooldown = 45; // slightly faster than regular
         BuffDuration = 240; // 4 seconds
-        Item.rare = ItemRarityID.Pink;
+        Item.rare = ItemRarityID.Yellow;
         Item.value = Item.sellPrice(gold: 1, silver: 4, copper: 1);
     }
 
