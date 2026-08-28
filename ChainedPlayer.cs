@@ -10,7 +10,7 @@ namespace PuppyMod;
 public class ChainedPlayer : ModPlayer
 {
     public const float MaxDistance = 15f * 16f;
-    private const string RopeTexturePath = "Terraria/Images/Rope";
+    private const string RopeTexturePath = "Terraria/Images/Chain";
 
     public bool hasChainLeash = false;
     public int? GrabberIndex { get; private set; }
@@ -95,7 +95,7 @@ public class ChainedPlayer : ModPlayer
             GrabberIndex = null;
             return;
         }
-        Player.AddBuff(BuffID.Sunflower, 60);
+        Player.AddBuff(BuffID.Happy, 60);
         RestrictMovement(OwnerOf);
     }
 
@@ -114,9 +114,8 @@ public class ChainedPlayer : ModPlayer
         Vector2 direction = end - start;
         float length = direction.Length();
         direction.Normalize();
-        Texture2D ropeTexture;
-        try { ropeTexture = ModContent.Request<Texture2D>(RopeTexturePath).Value; }
-        catch { ropeTexture = ModContent.Request<Texture2D>("Terraria/Images/Chain").Value; }
+        Texture2D ropeTexture = ModContent.Request<Texture2D>(RopeTexturePath).Value;
+        Color ropeColor = new Color(193, 154, 107);
         for (float i = 0; i < length; i += ropeTexture.Width)
         {
             Vector2 position = start + direction * i - Main.screenPosition;
@@ -124,7 +123,7 @@ public class ChainedPlayer : ModPlayer
                 ropeTexture,
                 position,
                 null,
-                Color.White,
+                ropeColor,
                 direction.ToRotation() + MathHelper.PiOver2,
                 new Vector2(ropeTexture.Width / 2f, ropeTexture.Height / 2f),
                 1f,
