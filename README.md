@@ -2,7 +2,7 @@
 
 > A playful, consensual, 100% SFW pet-play mod for Terraria. Put on the ears, wag your tail, and wait for the click that tells you how good you are.
 
-**Made by me, POLA - v1.4.0 - Terraria 1.4.4+ - No dependencies**
+**Made by me, POLA - v1.4.1 - Terraria 1.4.4+ - No dependencies**
 
 ---
 
