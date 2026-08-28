@@ -1,8 +1,8 @@
 # Puppy Mod - Who's a good puppy? YOU are!
 
-> A playful, consensual, 100% SFW pet-play mod for tModLoader. Put on the ears, wag your tail, and wait for the click that tells you how good you are.
+> A playful, consensual, 100% SFW pet-play mod for Terraria. Put on the ears, wag your tail, and wait for the click that tells you how good you are.
 
-**Made by me, POLA - v1.2 - tModLoader 1.4.4+ - No dependencies**
+**Made by me, POLA - v1.2 - Terraria 1.4.4+ - No dependencies**
 
 ---
 
@@ -20,7 +20,7 @@ No NSFW content. Just praise, zoomies, and barks. All barks, woofs and clicker s
 
 ### 1. Become Puppy
 
-Equip Dog Ears on your head (vanity, slot 10) and Dog Tail as an accessory. The moment both are on, you let out a little bark - you have transformed for the first time.
+Equip Dog Ears on your head (vanity) and Dog Tail as an accessory. The moment both are on, you let out a little bark - you have transformed for the first time.
 
 You get both items free when you make a new character. No grinding, just puppy.
 
@@ -30,10 +30,10 @@ Take either piece off and you are you again. Totally your choice.
 
 How you wear the tail decides what kind of puppy you are:
 
-**Furry - Tail as vanity (slots 13+)**  
+**Furry - Tail as vanity**  
 You keep all functional accessory slots. You feel a little faster and bouncier - casual and cozy for wandering and building.
 
-**Therian - Tail as a real accessory (slots 3-9)**  
+**Therian - Tail as a real accessory**  
 You give up a slot to commit. Much faster, higher jumps, built for zoomies and boss arenas.
 
 You can swap anytime. It changes instantly and shows an armor set bonus.
@@ -101,7 +101,7 @@ Soon. A good puppy might need a walk.
 
 ## Installation
 
-1. Install tModLoader 1.4.4+ on Steam
+1. Install Terraria 1.4.4+ on Steam
 2. Subscribe on Workshop or drop the .tmod into Documents/My Games/Terraria/tModLoader/Mods
 3. Enable Puppy Mod in the Mods menu and Reload
 4. Make a new character (or use an existing one - check the Guide for the Clicker at a Work Bench)

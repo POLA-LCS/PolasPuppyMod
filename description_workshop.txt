@@ -2,7 +2,7 @@
 
 [i]A playful, consensual, 100% SFW pet-play mod for Terraria. Put on the ears, wag the tail, and wait for that sweet [b]click[/b] that tells you how good you are.[/i]
 
-[b]Made by me, POLA | v1.2 | tModLoader 1.4.4+ | Multiplayer-ready[/b]
+[b]Made by me, POLA | v1.2 | Terraria 1.4.4+ | Multiplayer-ready[/b]
 
 All barks, woofs and clicks are me - a real puppy. I recorded them myself, so when you get praised you are hearing me.
 
@@ -17,7 +17,7 @@ I built it for couples, friends, servers, and anyone who wants to be a little mo
 [hr][/hr]
 [h1]How to Play[/h1]
 [list]
-[*][b]1. Become Puppy[/b] - Equip [b]Dog Ears[/b] (vanity, slot 10) + [b]Dog Tail[/b]. The instant both are on you [b]bark[/b] automatically. You get both free on character creation.
+[*][b]1. Become Puppy[/b] - Equip [b]Dog Ears[/b] (vanity) + [b]Dog Tail[/b]. The instant both are on you [b]bark[/b] automatically. You get both free on character creation.
 [*][b]2. Choose Your Form[/b] - [b]Furry[/b] (vanity) is cozy and keeps all slots. [b]Therian[/b] (functional) is much faster and bouncier. Swap anytime, shows as set bonus.
 [*][b]3. Get Clicked[/b] - A non-puppy Owner [b]holds[/b] The Clicker to set range, then [b]clicks[/b] to signal. Every puppy in range at that moment gets the [b]Good Puppy[/b] buff.
 [*][b]4. Zoomies and Bark[/b] - Buff gives regen and zoomies, refreshed while you stay close. As a puppy you can [b]double tap UP to bark[/b] whenever you want attention.
@@ -57,7 +57,7 @@ Pink rarity. Hold to set praise range, click to send a crisp click. Puppies cann
 [hr][/hr]
 [h1]Installation[/h1]
 [list]
-[*]Install tModLoader 1.4.4+ on Steam
+[*]Install Terraria 1.4.4+ on Steam
 [*]Subscribe here on Workshop (or place .tmod in Mods folder)
 [*]Enable in Mods menu and Reload
 [*]New character gets ears and tail free, or check the Guide for The Clicker
