@@ -4,18 +4,13 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Content.Buffs.GoodPuppy;
+using System.Collections.Generic;
+using System;
 
 namespace PuppyMod;
 
 public class PuppyPlayer : ModPlayer
 {
-    public enum PuppyState
-    {
-        Human = 0,   // no ears nor tail
-        Furry = 1,   // ears (vanity head) + tail (vanity accessory)
-        Therian = 2, // ears (vanity head) + tail (functional accessory)
-    }
-
     public static class BarksArray
     {
         private static SoundStyle LoadPuppySound(string name) =>
@@ -31,36 +26,97 @@ public class PuppyPlayer : ModPlayer
         public static SoundStyle Get(int index)
         {
             if (index < 0 || index >= barks.Length)
-                throw new System.ArgumentOutOfRangeException(nameof(index));
+                throw new ArgumentOutOfRangeException(nameof(index));
             return barks[index];
         }
 
-        // Get a random bark, skipping growl by default
         public static SoundStyle GetRandom(int offset = 1)
         {
             if (offset < 0 || offset >= barks.Length)
-                throw new System.ArgumentOutOfRangeException(nameof(offset));
+                throw new ArgumentOutOfRangeException(nameof(offset));
             return barks[Main.rand.Next(offset, barks.Length)];
         }
     }
 
-    public PuppyState HowPuppy { get; private set; } = PuppyState.Human;
+    public enum PuppyState
+    {
+        Human = 0,
+        Furry = 1,
+        Therian = 2,
+    }
 
-    public bool IsPuppy => HowPuppy != PuppyState.Human;
-    public bool IsGoodPuppyHappy => Player.HasBuff(ModContent.BuffType<GoodPuppyBuff>());
-
-    // Bark double-tap handling
     private int doubleTapUpTimer = 0;
     private bool prevControlUp = false;
     private int barkCooldown = 0;
 
-    public override System.Collections.Generic.IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
+    public PuppyState HowPuppy { get; private set; } = PuppyState.Human;
+    public bool IsPuppy => HowPuppy != PuppyState.Human;
+    public bool IsGoodPuppyHappy => Player.HasBuff(ModContent.BuffType<GoodPuppyBuff>());
+
+    private bool IsWearingPuppyEars => Player.armor[10].type == ItemID.DogEars;
+    private bool HasAccesory(short item, bool accessory = true, bool vanity = true)
     {
-        Item ears = new();
-        ears.SetDefaults(ItemID.DogEars);
-        Item tail = new();
-        tail.SetDefaults(ItemID.DogTail);
-        return [ears, tail];
+        int extra = Player.GetAmountOfExtraAccessorySlotsToShow();
+
+        if (accessory)
+        {
+            for (int i = 3; i < 10 + extra && i < Player.armor.Length; i++)
+            {
+                if (Player.armor[i].type == item)
+                    return true;
+            }
+            return false;
+        }
+        if (vanity)
+        {
+            for (int i = 13; i < Player.armor.Length; i++)
+            {
+                if (Player.armor[i].type == item)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private short[] HasAccesories(short[] items, bool accessory = true, bool vanity = true)
+    {
+        var hasItems = new List<short>(items.Length);
+
+        if (accessory)
+        {
+            foreach (var item in items)
+            {
+                if (HasAccesory(item, vanity: false))
+                {
+                    hasItems.Add(item);
+                }
+            }
+        }
+        if (vanity)
+        {
+            foreach (var item in items)
+            {
+                if (HasAccesory(item, accessory: false))
+                {
+                    hasItems.Add(item);
+                }
+            }
+        }
+        return items;
+    }
+
+    private PuppyState GetPuppyTailState()
+    {
+        if (HasAccesory(ItemID.DogTail, vanity: false))
+        {
+            return PuppyState.Therian;
+        }
+        if (HasAccesory(ItemID.DogTail, accessory: false))
+        {
+            return PuppyState.Furry;
+        }
+        return PuppyState.Human;
     }
 
     public void Bark(SoundStyle sound, bool pitched = false)
@@ -79,52 +135,36 @@ public class PuppyPlayer : ModPlayer
             Bark(bark);
     }
 
-    private bool IsWearingPuppyEars() => Player.armor[10].type == ItemID.DogEars;
-
-    private PuppyState GetPuppyTailState()
+    public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
     {
-        int extra = Player.GetAmountOfExtraAccessorySlotsToShow();
-
-        // Goes from accessory slot 1 to all the extra ones
-        for (int i = 3; i < 10 + extra && i < Player.armor.Length; i++)
-        {
-            if (Player.armor[i].type == ItemID.DogTail)
-                return PuppyState.Therian;
-        }
-
-        // The rest are vanity + the extra
-        for (int i = 13; i < Player.armor.Length; i++)
-        {
-            if (Player.armor[i].type == ItemID.DogTail)
-                return PuppyState.Furry;
-        }
-
-        return PuppyState.Human;
+        Item ears = new();
+        ears.SetDefaults(ItemID.DogEars);
+        Item tail = new();
+        tail.SetDefaults(ItemID.DogTail);
+        return [ears, tail];
     }
 
     public override void PostUpdateEquips()
     {
-        bool hasEars = IsWearingPuppyEars();
         PuppyState tailState = PuppyState.Human;
 
-        if (hasEars)
+        if (IsWearingPuppyEars)
             tailState = GetPuppyTailState();
 
         if (HowPuppy == PuppyState.Human && tailState != PuppyState.Human)
             PlayRandomBark();
 
-        HowPuppy = tailState;
 
-        // Armor set bonus - display and enable bark ability
-        if (IsPuppy)
-        {
-            Player.setBonus = "Double tap UP to bark! Arf!";
-        }
+
+        HowPuppy = tailState;
+        if (HowPuppy == PuppyState.Therian)
+            Player.setBonus = "Therian Puppy Set: Greatly improved mobility and +15% mining speed\nDouble tap UP to bark! Arf!";
+        else if (HowPuppy == PuppyState.Furry)
+            Player.setBonus = "Puppy Set: Improved mobility and +15% mining speed\nDouble tap UP to bark! Arf!";
     }
 
     public override void PreUpdate()
     {
-        // Bark! Bark!
         if (barkCooldown > 0)
             barkCooldown--;
 
@@ -208,10 +248,9 @@ public class PuppyPlayer : ModPlayer
                 continue;
 
             var owner = other.GetModPlayer<OwnerPlayer>();
-            // Use the buff duration snapshot from the clicker that was used
             int buffTime = owner.BuffDuration;
             if (buffTime <= 0)
-                buffTime = 60; // fallback 3 seconds
+                buffTime = 60;
             Player.AddBuff(ModContent.BuffType<GoodPuppyBuff>(), buffTime);
         }
     }
