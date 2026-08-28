@@ -95,7 +95,7 @@ public class ChainedPlayer : ModPlayer
             GrabberIndex = null;
             return;
         }
-        Player.AddBuff(BuffID.Happy, 60);
+        Player.AddBuff(BuffID.Sunflower, 60);
         RestrictMovement(OwnerOf);
     }
 
