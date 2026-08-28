@@ -12,13 +12,13 @@ I made Puppy Mod to add a soft, teasing owner/puppy dynamic to Terraria - wholes
 
 I built it for couples, friends, servers, and anyone who wants to be a little more puppy while digging, fighting, and exploring. Furry and therian friendly. Consensual - you choose when to put the ears on and when to take them off.
 
-No NSFW content. Just praise, zoomies, and barks. All barks, woofs and clicker sounds were recorded by me, so when you get praised you are hearing me.
+No NSFW content. Just praise, zoomies, and barks. All barks, woofs and clicker sounds were recorded by me, so when you get praised I'm getting it too ૮꒰ ྀི >⸝⸝⸝< ྀི꒱ა
 
 ---
 
 ## How to Play
 
-### 1. Become Puppy
+### 1. Become Puppy ૮ ฅ• ﻌ -ฅ ა arf ! 🦴
 
 Equip Dog Ears on your head (vanity) and Dog Tail as an accessory. The moment both are on, you let out a little bark - you have transformed for the first time.
 
@@ -38,7 +38,7 @@ You give up a slot to commit. Much faster, higher jumps, built for zoomies and b
 
 You can swap anytime. It changes instantly and shows an armor set bonus.
 
-### 3. Get Clicked
+### 3. Get Clicked ₊˚⊹ 𐂯
 
 A friend who is not a puppy - your Owner - holds The Clicker to set the praise range, then uses it to send a signal. Every puppy in range at that moment gets the Good Puppy buff.
 
@@ -48,7 +48,7 @@ A friend who is not a puppy - your Owner - holds The Clicker to set the praise r
 
 One click praises every puppy nearby. The buff refreshes while you stay in range and your Owner keeps clicking. Puppies cannot use the clicker themselves. That is the point. Puppies get clicked.
 
-### 4. Zoomies and Bark
+### 4. Zoomies and Bark 𐂯 .ᐟ⸝⸝
 
 While you have Good Puppy you heal faster, run faster, and jump higher. Every bark has pitch variation, and it goes higher when you are happy.
 
@@ -56,7 +56,7 @@ As a furry or therian you can double tap UP to bark on command. It is your armor
 
 ---
 
-## Features
+## Features zᶻ ૮˶- ﻌ -˶ა⌒)ᦱ
 
 - Instant transformation with auto bark
 - Two forms: Furry or Therian, swap anytime
