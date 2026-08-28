@@ -2,7 +2,7 @@
 
 > A playful, consensual, 100% SFW pet-play mod for Terraria. Put on the ears, wag your tail, and wait for the click that tells you how good you are.
 
-**Made by me, POLA - v1.2 - Terraria 1.4.4+ - No dependencies**
+**Made by me, POLA - v1.4.0 - Terraria 1.4.4+ - No dependencies**
 
 ---
 
@@ -31,12 +31,12 @@ Take either piece off and you are you again. Totally your choice.
 How you wear the tail decides what kind of puppy you are:
 
 **Furry - Tail as vanity**  
-You keep all functional accessory slots. You feel a little faster and bouncier - casual and cozy for wandering and building.
+You keep all functional accessory slots. You feel a little faster and bouncier and you dig a bit quicker — cozy for wandering and building.
 
 **Therian - Tail as a real accessory**  
-You give up a slot to commit. Much faster, higher jumps, built for zoomies and boss arenas.
+You give up a slot to commit. Much faster, higher jumps, still that little mining help — built for zoomies and boss arenas.
 
-You can swap anytime. It changes instantly and shows an armor set bonus.
+You can swap anytime. Your armor set now tells you exactly that, with improved mobility and a mining boost.
 
 ### 3. Get Clicked ₊˚⊹ 𐂯
 
@@ -54,20 +54,26 @@ While you have Good Puppy you heal faster, run faster, and jump higher. Every ba
 
 As a furry or therian you can double tap UP to bark on command. It is your armor set bonus.
 
+### 5. Go for a Walk - The Rope Leash 𐂯
+
+If a puppy wears the Chain Leash, any Owner can gently take their rope. Right click the puppy to clip the soft rope on, right click again to let go — no holding needed, it toggles. It works bare-handed or with whatever you're holding.
+
+While you're leashed you stay close to your Owner and you stay happy the whole time. The rope is soft by design, and the tug your Owner feels is very light — the limit is really for you, pup. It’s all consensual, breakable by taking the leash off, and made to feel caring, not rough. *rauf raf!*
+
 ---
 
 ## Features zᶻ ૮˶- ﻌ -˶ა⌒)ᦱ
 
 - Instant transformation with auto bark
-- Two forms: Furry or Therian, swap anytime
+- Two forms: Furry or Therian, swap anytime — with a clear set bonus that mentions your extra mobility and mining help
 - Clicker system: hold to define range, click to signal, puppies in range at that moment get praised
 - Good Puppy buff - regen and zoomies, duration depends on clicker
+- Soft rope leash for leashed puppies — toggle to clip on/off, keeps you close and keeps you happy while tethered, with only a light tug for your Owner
 - Bark on command - double tap UP when you are a puppy
 - Custom sounds - all barks, woofs and clicks recorded by me
-- Multiplayer ready - one click praises the whole pack in range
+- Multiplayer ready - one click praises the whole pack, leash is synced and server-friendly
 - Starter gear - Dog Ears and Dog Tail on new characters
 - Always SFW and consensual - opt in by dressing up, opt out by taking it off
-- A little teaser hidden in the files - keep an eye out for the leash
 
 ---
 
@@ -77,25 +83,25 @@ As a furry or therian you can double tap UP to bark on command. It is your armor
 No. 100% SFW and Steam safe. Wholesome with a playful, teasing edge.
 
 **Can I play solo?**
-Yes. Enjoy the bonuses and bark with double tap UP. You need another player nearby to receive a click.
+Yes. Enjoy the bonuses and bark with double tap UP. You need another player nearby to receive a click or to walk you.
 
 **What if two puppies are near an Owner?**
-Both are praised. One click affects every puppy in range at that moment.
+Both are praised. One click affects every puppy in range at that moment. Leashes are per-puppy too.
 
 **Can puppies click each other?**
 No. Puppies cannot use the clicker. Only non-puppies can.
 
 **Does Good Puppy stack?**
-It refreshes. Stay close and it keeps going.
+It refreshes. Stay close and it keeps going. Being leashed also keeps you in that happy state.
 
 **Why does my bark sound higher sometimes?**
-Because you are happy. With Good Puppy you bark brighter and higher.
+Because you are happy. With Good Puppy - or while leashed - you bark brighter and higher.
 
 **How do I bark on command?**
 Be a puppy and double tap UP.
 
-**What about that leash?**
-Soon. A good puppy might need a walk.
+**How does the leash work?**
+Puppy equips the Chain Leash, Owner right clicks the puppy to toggle the soft rope. While tethered you can't wander too far and you stay happy. Right click again or take the leash off to release.
 
 ---
 
@@ -115,14 +121,13 @@ No dependencies. Works in single player and multiplayer.
 
 - **Author:** me, POLA - a real puppy, hi!
 - **Sounds:** Every bark, woof and clicker sound recorded by me. Each has pitch variation so it feels alive and personal. All the barks are mine.
-- **Art:** Vanilla Dog Ears and Dog Tail plus custom Clicker sprites and a leash teaser
+- **Art:** Vanilla Dog Ears and Dog Tail plus custom Clicker sprites and a soft rope leash
 - **Thanks:** To every good puppy who tested this and said they felt seen. Good job.
 
 ---
 
 ## Future Ideas
 
-- Leash - gentle, consensual tether, breakable, SFW
 - More collars and accessories
 - Tricks and commands - sit, stay, shake
 - Leaderboard for most clicks received
