@@ -52,26 +52,17 @@ public abstract class BaseClickerItem : ModItem
 
     public override bool CanUseItem(Player player)
     {
+        var puppy = player.GetModPlayer<PuppyPlayer>();
+        if (puppy.IsPuppy)
+            return false;
+
         var owner = player.GetModPlayer<OwnerPlayer>();
         return owner.CanClick;
     }
 
     public override bool? UseItem(Player player)
     {
-        var puppyPlayer = player.GetModPlayer<PuppyPlayer>();
         var ownerPlayer = player.GetModPlayer<OwnerPlayer>();
-
-        // A good puppy earns their happy clicky sound reward, don't cheat!
-        if (puppyPlayer.IsPuppy)
-        {
-            if (player.whoAmI == Main.myPlayer)
-            {
-                // Angry growl!!
-                puppyPlayer.Bark(PuppyPlayer.BarksArray.Get(0) with { Pitch = 0f });
-            }
-            return false;
-        }
-
         float rangeInPixels = TileRange * 16f;
         ownerPlayer.TriggerClick(rangeInPixels, BuffDuration, UsageCooldown);
         SoundEngine.PlaySound(ClicksArray.GetRandom(), player.Center);

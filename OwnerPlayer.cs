@@ -5,13 +5,9 @@ namespace PuppyMod;
 
 public class OwnerPlayer : ModPlayer
 {
-    // Future Range for UI
-    // public float ClickRangeHeld { get; private set; }
-
     public float ClickRange { get; private set; }
     public int BuffDuration { get; private set; }
 
-    // Window for preventing puppies entering the range of the clicker in cooldown
     public int ClickSignalTimer { get; private set; }
     public int ClickCooldown { get; private set; }
 
@@ -22,24 +18,9 @@ public class OwnerPlayer : ModPlayer
     {
         ClickRange = rangeInPixels;
         BuffDuration = buffDurationTicks;
-        // The idea is to affect only at the instant of click
         ClickSignalTimer = 10;
         ClickCooldown = cooldownTicks;
-
-        // ClickRangeHeld = rangeInPixels;
     }
-
-    // public override void PreUpdate()
-    // {
-    //     if (Player.HeldItem.ModItem is BaseClickerItem clicker)
-    //     {
-    //         ClickRangeHeld = clicker.TileRange * 16f;
-    //     }
-    //     else
-    //     {
-    //         ClickRangeHeld = 0f;
-    //     }
-    // }
 
     public override void PostUpdate()
     {

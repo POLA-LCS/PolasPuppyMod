@@ -35,7 +35,7 @@ public class PuppyPlayer : ModPlayer
             return barks[index];
         }
 
-        // Get a random bark except for the first one (growl reserved for punishment)
+        // Get a random bark, skipping growl by default
         public static SoundStyle GetRandom(int offset = 1)
         {
             if (offset < 0 || offset >= barks.Length)
