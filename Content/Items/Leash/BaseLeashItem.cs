@@ -16,6 +16,11 @@ public abstract class BaseLeashItem : ModItem
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
 
+    private int ogStyle;
+    private int ogTime;
+    private int ogAnim;
+    private bool ogCached;
+
     public override void SetDefaults()
     {
         Item.width = 32;
@@ -41,20 +46,30 @@ public abstract class BaseLeashItem : ModItem
         if (player.GetModPlayer<PuppyPlayer>().IsPuppy)
             return false;
 
+        if (!ogCached && player.altFunctionUse != 2)
+        {
+            ogStyle = Item.useStyle;
+            ogTime = Item.useTime;
+            ogAnim = Item.useAnimation;
+            ogCached = true;
+        }
+
         if (player.altFunctionUse == 2)
         {
             Item.useStyle = ItemUseStyleID.Thrust;
             Item.useTime = 12;
             Item.useAnimation = 12;
         }
-        else
+        else if (ogCached)
         {
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.useTime = 22;
-            Item.useAnimation = 22;
+            Item.useStyle = ogStyle;
+            Item.useTime = ogTime;
+            Item.useAnimation = ogAnim;
         }
         return base.CanUseItem(player);
     }
+
+    public override bool CanShoot(Player player) => player.altFunctionUse != 2;
 
     public override bool? UseItem(Player player)
     {
