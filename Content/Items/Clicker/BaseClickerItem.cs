@@ -3,7 +3,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace PuppyMod;
+namespace PuppyMod.Content.Items.Clicker;
 
 public abstract class BaseClickerItem : ModItem
 {

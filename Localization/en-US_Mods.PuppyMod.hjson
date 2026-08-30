@@ -29,6 +29,11 @@ Items: {
 			when equipped, puppy can get right clicked.
 			'''
 	}
+
+	CollarItem: {
+		DisplayName: Collar Item
+		Tooltip: ""
+	}
 }
 
 Buffs: {

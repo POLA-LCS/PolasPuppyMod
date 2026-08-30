@@ -1,7 +1,7 @@
 using Terraria;
 using Terraria.ID;
 
-namespace PuppyMod.Content.Items.GoldenClicker;
+namespace PuppyMod.Content.Items.Clicker;
 
 public class GoldenClickerItem : BaseClickerItem
 {
