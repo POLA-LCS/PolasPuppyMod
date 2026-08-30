@@ -1,0 +1,46 @@
+using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+using PuppyMod.Content.Projectiles;
+
+namespace PuppyMod.Content.Items.Leash;
+
+public class ChainLeashItem : BaseLeashItem
+{
+    public override int LeashRangeTiles => 10;
+    public override int LeashDefenseBonus => 5;
+    public override float PoisonChance => 0.33f;
+    public override int PoisonDuration => 300;
+    protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
+    protected override int BaseDamage => 14;
+    protected override float BaseKnockback => 2f;
+
+    public override void SetDefaults()
+    {
+        Item.DefaultToWhip(ModContent.ProjectileType<ChainLeashProjectile>(), 14, 2f, 4);
+        Item.rare = ItemRarityID.Orange;
+        Item.value = Item.sellPrice(gold: 1);
+    }
+
+    public override bool MeleePrefix() => true;
+
+    public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+    {
+        float dir = 0.6f + 0.4f * Main.rand.NextFloat();
+        if (Main.rand.NextBool(3)) dir *= -2.5f;
+        Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0f, dir);
+        return false;
+    }
+
+    public override void AddRecipes()
+    {
+        CreateRecipe(1)
+            .AddIngredient(ItemID.Chain, 20)
+            .AddIngredient(ItemID.IronBar, 3)
+            .AddIngredient(ItemID.Wood, 15)
+            .AddTile(TileID.Anvils)
+            .Register();
+    }
+}

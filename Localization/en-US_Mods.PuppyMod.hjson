@@ -21,18 +21,19 @@ Items: {
 			'''
 	}
 
-	LeashCollarItem: {
-		DisplayName: Leash Collar
+	CollarItem: {
+		DisplayName: Puppy Collar
 		Tooltip:
 			'''
-			looking for walkies!?.
-			when equipped, puppy can get right clicked.
+			+2 defense and a soft glow
+			lets a leash latch on when you are a puppy
+			snug and shiny :3
 			'''
 	}
 
-	CollarItem: {
-		DisplayName: Collar Item
-		Tooltip: ""
+	ChainLeashItem: {
+		DisplayName: Chain Leash
+		Tooltip: a clinky leash for walkies
 	}
 }
 
@@ -42,3 +43,5 @@ Buffs: {
 		Description: Look how good you are!
 	}
 }
+
+Projectiles.ChainLeashProjectile.DisplayName: Chain Leash Projectile
