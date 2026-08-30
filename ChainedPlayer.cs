@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Content.Items.Leash;
 
 namespace PuppyMod;
 
@@ -14,25 +15,48 @@ public class ChainedPlayer : ModPlayer
 
     public bool hasChainLeash = false;
     public int? GrabberIndex { get; private set; }
+    public int ActiveLeashItemType { get; private set; }
 
-    internal void SetGrabberAuthority(int ownerWho)
+    private float ActiveLeashRange
+    {
+        get
+        {
+            if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is BaseLeashItem leash)
+                return leash.LeashRangeTiles * 16f;
+            return MaxDistance;
+        }
+    }
+
+    private int ActiveLeashDefense
+    {
+        get
+        {
+            if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is BaseLeashItem leash)
+                return leash.LeashDefenseBonus;
+            return 0;
+        }
+    }
+
+    internal void SetGrabberAuthority(int ownerWho, int leashItemType = 0)
     {
         if (Main.netMode == NetmodeID.MultiplayerClient) return;
         GrabberIndex = ownerWho >= 0 ? ownerWho : null;
+        ActiveLeashItemType = GrabberIndex.HasValue ? leashItemType : 0;
         if (Main.netMode == NetmodeID.Server)
         {
             var mod = ModContent.GetInstance<PuppyMod>();
             if (GrabberIndex.HasValue)
-                mod.BroadcastLeashState(GrabberIndex.Value, Player.whoAmI);
+                mod.BroadcastLeashState(GrabberIndex.Value, Player.whoAmI, ActiveLeashItemType);
             else
                 mod.BroadcastLeashDetached(Player.whoAmI);
         }
     }
 
-    internal void ApplyClientState(int ownerWho)
+    internal void ApplyClientState(int ownerWho, int leashItemType = 0)
     {
         if (Main.netMode == NetmodeID.Server) return;
         GrabberIndex = ownerWho == byte.MaxValue ? (int?)null : ownerWho;
+        ActiveLeashItemType = GrabberIndex.HasValue ? leashItemType : 0;
     }
 
     public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
@@ -42,6 +66,7 @@ public class ChainedPlayer : ModPlayer
         packet.Write(PuppyMod.LeashState);
         packet.Write((byte)(GrabberIndex ?? byte.MaxValue));
         packet.Write((byte)Player.whoAmI);
+        packet.Write(ActiveLeashItemType);
         if (toWho == -1) packet.Send();
         else packet.Send(toWho);
     }
@@ -50,7 +75,8 @@ public class ChainedPlayer : ModPlayer
     {
         if (owner == null || !owner.active || owner.dead) return;
         float distance = Vector2.Distance(Player.Center, owner.Center);
-        if (distance <= MaxDistance) return;
+        float max = ActiveLeashRange;
+        if (distance <= max) return;
         Vector2 midpoint = (Player.Center + owner.Center) / 2f;
         Vector2 puppyOffset = Player.Center - midpoint;
         Vector2 ownerOffset = owner.Center - midpoint;
@@ -92,6 +118,8 @@ public class ChainedPlayer : ModPlayer
             Player.statDefense += 2; // snug collar
             Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f); // tiny warm glow :3
         }
+        if (GrabberIndex.HasValue && ActiveLeashDefense > 0)
+            Player.statDefense += ActiveLeashDefense;
     }
 
     public override void PostUpdate()
@@ -102,6 +130,7 @@ public class ChainedPlayer : ModPlayer
             if (Main.netMode == NetmodeID.Server)
                 ModContent.GetInstance<PuppyMod>().BroadcastLeashDetached(Player.whoAmI);
             GrabberIndex = null;
+            ActiveLeashItemType = 0;
             return;
         }
         Player.AddBuff(BuffID.Sunflower, 60);
@@ -113,6 +142,7 @@ public class ChainedPlayer : ModPlayer
         if (GrabberIndex.HasValue && Main.netMode == NetmodeID.Server)
             ModContent.GetInstance<PuppyMod>().BroadcastLeashDetached(Player.whoAmI);
         GrabberIndex = null;
+        ActiveLeashItemType = 0;
     }
 
     private void DrawRope(Player owner, PlayerDrawSet drawInfo)
@@ -124,7 +154,7 @@ public class ChainedPlayer : ModPlayer
         float length = direction.Length();
         direction.Normalize();
         Texture2D ropeTexture = ModContent.Request<Texture2D>(RopeTexturePath).Value;
-        Color ropeColor = new Color(193, 154, 107);
+        Color ropeColor = new(193, 154, 107);
         for (float i = 0; i < length; i += ropeTexture.Width)
         {
             Vector2 position = start + direction * i - Main.screenPosition;

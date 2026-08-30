@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Content.Items.Leash;
 
 namespace PuppyMod
 {
@@ -14,12 +15,13 @@ namespace PuppyMod
 
         public override uint ExtraPlayerBuffSlots => 1;
 
-        public void RequestLeashAttach(int targetWho)
+        public void RequestLeashAttach(int targetWho, int leashItemType)
         {
             if (Main.netMode != NetmodeID.MultiplayerClient) return;
             var packet = GetPacket();
             packet.Write(LeashReqAttach);
             packet.Write((byte)targetWho);
+            packet.Write(leashItemType);
             packet.Send();
         }
 
@@ -32,13 +34,14 @@ namespace PuppyMod
             packet.Send();
         }
 
-        public void BroadcastLeashState(int ownerWho, int targetWho)
+        public void BroadcastLeashState(int ownerWho, int targetWho, int leashItemType)
         {
             if (Main.netMode != NetmodeID.Server) return;
             var packet = GetPacket();
             packet.Write(LeashState);
             packet.Write((byte)ownerWho);
             packet.Write((byte)targetWho);
+            packet.Write(leashItemType);
             packet.Send();
         }
 
@@ -49,10 +52,11 @@ namespace PuppyMod
             packet.Write(LeashState);
             packet.Write(byte.MaxValue);
             packet.Write((byte)targetWho);
+            packet.Write(0);
             packet.Send();
         }
 
-        private void HandleServerAttach(int ownerWho, int targetWho)
+        private void HandleServerAttach(int ownerWho, int targetWho, int leashItemType)
         {
             Player owner = Main.player[ownerWho];
             Player target = Main.player[targetWho];
@@ -61,9 +65,13 @@ namespace PuppyMod
             if (owner.GetModPlayer<PuppyPlayer>().IsPuppy) return;
             if (!target.GetModPlayer<PuppyPlayer>().IsPuppy) return;
             if (!target.GetModPlayer<ChainedPlayer>().hasChainLeash) return;
-            if (Vector2.Distance(owner.Center, target.Center) > ChainedPlayer.MaxDistance) return;
-            target.GetModPlayer<ChainedPlayer>().SetGrabberAuthority(ownerWho);
-            BroadcastLeashState(ownerWho, targetWho);
+            if (ModContent.GetModItem(leashItemType) is not BaseLeashItem leash) return;
+            if (owner.HeldItem.type != leashItemType) return;
+            if (Vector2.Distance(owner.Center, target.Center) > leash.LeashRangeTiles * 16f) return;
+            var chain = target.GetModPlayer<ChainedPlayer>();
+            if (chain.GrabberIndex.HasValue && chain.GrabberIndex != ownerWho) return;
+            chain.SetGrabberAuthority(ownerWho, leashItemType);
+            BroadcastLeashState(ownerWho, targetWho, leashItemType);
         }
 
         private void HandleServerDetach(int ownerWho, int targetWho)
@@ -72,7 +80,7 @@ namespace PuppyMod
             if (target == null) return;
             var chain = target.GetModPlayer<ChainedPlayer>();
             if (chain.GrabberIndex != ownerWho) return;
-            chain.SetGrabberAuthority(-1);
+            chain.SetGrabberAuthority(-1, 0);
             BroadcastLeashDetached(targetWho);
         }
 
@@ -83,7 +91,7 @@ namespace PuppyMod
             {
                 case LeashReqAttach:
                     if (Main.netMode == NetmodeID.Server)
-                        HandleServerAttach(whoAmI, reader.ReadByte());
+                        HandleServerAttach(whoAmI, reader.ReadByte(), reader.ReadInt32());
                     break;
                 case LeashReqDetach:
                     if (Main.netMode == NetmodeID.Server)
@@ -94,7 +102,8 @@ namespace PuppyMod
                     {
                         int ownerWho = reader.ReadByte();
                         int targetWho = reader.ReadByte();
-                        Main.player[targetWho].GetModPlayer<ChainedPlayer>().ApplyClientState(ownerWho);
+                        int leashType = reader.ReadInt32();
+                        Main.player[targetWho].GetModPlayer<ChainedPlayer>().ApplyClientState(ownerWho, leashType);
                     }
                     break;
             }

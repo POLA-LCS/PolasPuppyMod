@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -13,8 +12,6 @@ public class OwnerPlayer : ModPlayer
     public int ClickSignalTimer { get; private set; }
     public int ClickCooldown { get; private set; }
 
-    private bool prevMouseRight = false;
-
     public bool HasClicked => ClickSignalTimer > 0;
     public bool CanClick => ClickCooldown <= 0;
 
@@ -26,68 +23,17 @@ public class OwnerPlayer : ModPlayer
         ClickCooldown = cooldownTicks;
     }
 
-    private void HandleLeashInput()
-    {
-        if (Player.whoAmI != Main.myPlayer)
-            return;
-
-        // Only an owner (a human) can leash - never a puppy.
-        if (Player.GetModPlayer<PuppyPlayer>().IsPuppy)
-            return;
-
-        bool curMouseRight = Main.mouseRight;
-        bool freshlyPressed = curMouseRight && !prevMouseRight;
-        prevMouseRight = curMouseRight;
-
-        if (!freshlyPressed)
-            return;
-
-        foreach (Player target in Main.player)
-        {
-            if (target == null || !target.active || target.dead) continue;
-            if (target.whoAmI == Player.whoAmI) continue;
-
-            // Only actual puppies can be leashed.
-            if (!target.GetModPlayer<PuppyPlayer>().IsPuppy) continue;
-
-            // The puppy must be wearing a Leash Collar.
-            var chain = target.GetModPlayer<ChainedPlayer>();
-            if (!chain.hasChainLeash) continue;
-
-            // Cursor must be over the puppy to toggle.
-            if (!target.Hitbox.Contains(Main.MouseWorld.ToPoint())) continue;
-
-            bool alreadyGrabbedByMe = chain.GrabberIndex == Player.whoAmI;
-
-            if (alreadyGrabbedByMe)
-            {
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                    ModContent.GetInstance<PuppyMod>().RequestLeashDetach(target.whoAmI);
-                else
-                    chain.SetGrabberAuthority(-1);
-            }
-            else
-            {
-                if (Vector2.Distance(Player.Center, target.Center) > ChainedPlayer.MaxDistance) continue;
-
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                    ModContent.GetInstance<PuppyMod>().RequestLeashAttach(target.whoAmI);
-                else
-                    chain.SetGrabberAuthority(Player.whoAmI);
-            }
-        }
-    }
+    // leashing now handled by BaseLeashItem right click, no global polling needed
+    // kept for clicker timing; leash logic moved to weapon
 
     public override void PreUpdate()
     {
-        HandleLeashInput();
     }
 
     public override void PostUpdate()
     {
         if (ClickSignalTimer > 0)
             ClickSignalTimer--;
-
         if (ClickCooldown > 0)
             ClickCooldown--;
     }
