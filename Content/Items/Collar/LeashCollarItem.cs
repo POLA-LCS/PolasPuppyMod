@@ -2,7 +2,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace PuppyMod.Content.Items.LeashCollar;
+namespace PuppyMod.Content.Items.Collar;
 
 public class LeashCollarItem : ModItem
 {
