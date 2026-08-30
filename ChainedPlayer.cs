@@ -85,6 +85,15 @@ public class ChainedPlayer : ModPlayer
         hasChainLeash = false;
     }
 
+    public override void PostUpdateEquips()
+    {
+        if (hasChainLeash)
+        {
+            Player.statDefense += 2; // snug collar
+            Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f); // tiny warm glow :3
+        }
+    }
+
     public override void PostUpdate()
     {
         if (!GrabberIndex.HasValue) return;
