@@ -2,6 +2,7 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Networking;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
 
@@ -9,9 +10,9 @@ namespace PuppyMod
 {
     public class PuppyMod : Mod
     {
-        public const byte LeashReqAttach = 1;
-        public const byte LeashReqDetach = 2;
-        public const byte LeashState = 3;
+        public const byte LeashReqAttach = (byte)LeashPacketType.RequestAttach;
+        public const byte LeashReqDetach = (byte)LeashPacketType.RequestDetach;
+        public const byte LeashState = (byte)LeashPacketType.State;
 
         public override uint ExtraPlayerBuffSlots => 1;
 
