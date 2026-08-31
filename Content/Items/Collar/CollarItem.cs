@@ -18,7 +18,7 @@ public class CollarItem : ModItem
     public override void UpdateAccessory(Player player, bool hideVisual)
     {
         // good puppy deserves a shiny collar :3
-        player.GetModPlayer<ChainedPlayer>().hasChainLeash = true;
+        player.GetModPlayer<ChainedPlayer>().hasCollar = true;
     }
 
     public override void AddRecipes()

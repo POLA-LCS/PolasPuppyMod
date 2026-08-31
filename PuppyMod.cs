@@ -64,7 +64,7 @@ namespace PuppyMod
             if (ownerWho == targetWho) return;
             if (owner.GetModPlayer<PuppyPlayer>().IsPuppy) return;
             if (!target.GetModPlayer<PuppyPlayer>().IsPuppy) return;
-            if (!target.GetModPlayer<ChainedPlayer>().hasChainLeash) return;
+            if (!target.GetModPlayer<ChainedPlayer>().hasCollar) return;
             if (ModContent.GetModItem(leashItemType) is not BaseLeashItem leash) return;
             if (owner.HeldItem.type != leashItemType) return;
             if (Vector2.Distance(owner.Center, target.Center) > leash.LeashRangeTiles * 16f) return;

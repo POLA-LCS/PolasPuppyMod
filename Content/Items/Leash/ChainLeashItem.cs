@@ -4,18 +4,19 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Content.Projectiles;
+using System;
 
 namespace PuppyMod.Content.Items.Leash;
 
 public class ChainLeashItem : BaseLeashItem
 {
     public override int LeashRangeTiles => 10;
-    public override int LeashDefenseBonus => 5;
-    public override float PoisonChance => 0.33f;
-    public override int PoisonDuration => 300;
     protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
     protected override int BaseDamage => 14;
     protected override float BaseKnockback => 2f;
+
+    private static float PoisonChance => 0.20f;
+    private static int PoisonDuration => 300;
 
     public override void SetDefaults()
     {
@@ -25,6 +26,18 @@ public class ChainLeashItem : BaseLeashItem
     }
 
     public override bool MeleePrefix() => true;
+
+    public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
+    {
+        if (Main.rand.NextFloat() < PoisonChance)
+            target.AddBuff(BuffID.Poisoned, PoisonDuration);
+    }
+
+    public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo)
+    {
+        if (Main.rand.NextFloat() < PoisonChance)
+            target.AddBuff(BuffID.Poisoned, PoisonDuration);
+    }
 
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
@@ -43,4 +56,11 @@ public class ChainLeashItem : BaseLeashItem
             .AddTile(TileID.Anvils)
             .Register();
     }
+
+    public override void AffectPuppy(Player player)
+    {
+        player.AddBuff(BuffID.Slow, 1, true);
+        player.statDefense += 5;
+    }
+
 }

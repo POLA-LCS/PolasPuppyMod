@@ -1,5 +1,3 @@
-using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace PuppyMod;
@@ -22,9 +20,6 @@ public class OwnerPlayer : ModPlayer
         ClickSignalTimer = 10;
         ClickCooldown = cooldownTicks;
     }
-
-    // leashing now handled by BaseLeashItem right click, no global polling needed
-    // kept for clicker timing; leash logic moved to weapon
 
     public override void PreUpdate()
     {
