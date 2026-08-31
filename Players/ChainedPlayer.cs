@@ -4,14 +4,15 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Content.Items.Leash;
+using PuppyMod.Common.Constants;
+using PuppyMod.Common.Interfaces;
 
 namespace PuppyMod.Players;
 
 public class ChainedPlayer : ModPlayer
 {
-    public const float MaxDistance = 15f * 16f;
-    private const string RopeTexturePath = "Terraria/Images/Chain";
+    public const float MaxDistance = PuppyConstants.MaxLeashPixels;
+    private const string RopeTexturePath = PuppyConstants.RopeTexturePath;
 
     public bool hasCollar = false;
     public int? GrabberIndex { get; private set; }
@@ -21,8 +22,8 @@ public class ChainedPlayer : ModPlayer
     {
         get
         {
-            if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is BaseLeashItem leash)
-                return leash.LeashRangeTiles * 16f;
+            if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is IRangeUsable leash)
+                return leash.RangePixels;
             return MaxDistance;
         }
     }
@@ -70,10 +71,8 @@ public class ChainedPlayer : ModPlayer
         Vector2 midpoint = (Player.Center + owner.Center) / 2f;
         Vector2 puppyOffset = Player.Center - midpoint;
         Vector2 ownerOffset = owner.Center - midpoint;
-        const float puppyPull = 0.10f;
-        const float ownerPull = 0.018f;
-        Player.velocity -= puppyOffset * puppyPull / 8f;
-        owner.velocity -= ownerOffset * ownerPull / 8f;
+        Player.velocity -= puppyOffset * PuppyConstants.PuppyPull / PuppyConstants.PullDivisor;
+        owner.velocity -= ownerOffset * PuppyConstants.OwnerPull / PuppyConstants.PullDivisor;
     }
 
     private bool IsChainValid()
@@ -106,7 +105,7 @@ public class ChainedPlayer : ModPlayer
         if (hasCollar)
         {
             Player.statDefense += 2; // snug collar
-            Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f); // tiny warm glow :3
+            Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f);
         }
     }
 
@@ -121,11 +120,8 @@ public class ChainedPlayer : ModPlayer
             ActiveLeashItemType = 0;
             return;
         }
-        
-        if(ModContent.GetModItem(ActiveLeashItemType) is BaseLeashItem leash)
-        {
+        if (ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
             leash.AffectPuppy(Player);
-        }
         Player.AddBuff(BuffID.Sunflower, 60);
         RestrictMovement(OwnerOf);
     }
@@ -147,7 +143,7 @@ public class ChainedPlayer : ModPlayer
         float length = direction.Length();
         direction.Normalize();
         Texture2D ropeTexture = ModContent.Request<Texture2D>(RopeTexturePath).Value;
-        Color ropeColor = new(193, 154, 107);
+        Color ropeColor = PuppyConstants.RopeColor;
         for (float i = 0; i < length; i += ropeTexture.Width)
         {
             Vector2 position = start + direction * i - Main.screenPosition;
