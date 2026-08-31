@@ -44,4 +44,15 @@ Buffs: {
 	}
 }
 
-Projectiles.ChainLeashProjectile.DisplayName: Chain Leash Projectile
+ Projectiles.ChainLeashProjectile.DisplayName: Chain Leash Projectile
+
+Configs: {
+	PuppyModConfig: {
+		DisplayName: Puppy Mod Config
+		Headers.PuppySet: Puppy Set
+		StartingPuppySet: {
+			Label: Toggle starting Puppy Set
+			Tooltip: Determines either the player starts with a puppy set or not
+		}
+	}
+}
