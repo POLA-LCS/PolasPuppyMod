@@ -1,6 +1,6 @@
 using Terraria.ModLoader;
 
-namespace PuppyMod;
+namespace PuppyMod.Players;
 
 public class OwnerPlayer : ModPlayer
 {

@@ -4,17 +4,17 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Content.Projectiles;
-using System;
 
 namespace PuppyMod.Content.Items.Leash;
 
 public class ChainLeashItem : BaseLeashItem
 {
-    public override int LeashRangeTiles => 10;
+    public override int LeashRangeTiles => 12;
     protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
     protected override int BaseDamage => 14;
     protected override float BaseKnockback => 2f;
 
+    // Rusty chain
     private static float PoisonChance => 0.20f;
     private static int PoisonDuration => 300;
 
@@ -59,7 +59,6 @@ public class ChainLeashItem : BaseLeashItem
 
     public override void AffectPuppy(Player player)
     {
-        player.AddBuff(BuffID.Slow, 1, true);
         player.statDefense += 5;
     }
 

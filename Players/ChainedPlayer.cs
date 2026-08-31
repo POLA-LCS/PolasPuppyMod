@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Content.Items.Leash;
 
-namespace PuppyMod;
+namespace PuppyMod.Players;
 
 public class ChainedPlayer : ModPlayer
 {

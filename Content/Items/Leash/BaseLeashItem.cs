@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+
+using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Leash;
 
@@ -81,8 +82,8 @@ public abstract class BaseLeashItem : ModItem
         if (IsLeashing(player))
         {
             // heavy when walking puppy :3
-            Item.useTime = (int)(Item.useTime * 1.45f);
-            Item.useAnimation = (int)(Item.useAnimation * 1.45f);
+            Item.useTime = (int)(Item.useTime * 1.25f);
+            Item.useAnimation = (int)(Item.useAnimation * 1.25f);
             Item.damage = (int)(BaseDamage * 0.65f);
             Item.knockBack = BaseKnockback * 0.7f;
         }

@@ -2,6 +2,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using PuppyMod.Players;
+
 namespace PuppyMod.Content.Items.Collar;
 public class CollarItem : ModItem
 {
