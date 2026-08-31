@@ -150,7 +150,7 @@ public class ChainedPlayer : ModPlayer
         Vector2 direction = end - start;
         float length = direction.Length();
         direction.Normalize();
-        string texPath = PuppyConstants.RopeTexturePath;
+        string texPath = "Terraria/Images/Chain";
         if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
             texPath = leash.RopeTexturePath;
         Texture2D ropeTexture = ModContent.Request<Texture2D>(texPath).Value;
