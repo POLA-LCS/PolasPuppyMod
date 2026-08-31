@@ -50,14 +50,17 @@ Configs: {
 	PuppyModServerConfig: {
 		DisplayName: Puppy Server Config
 		Headers.PuppySet: Puppy Set
+
 		EnableStartingPuppies: {
 			Label: Enable starting puppies
 			Tooltip: Allows players joining the world to start as puppies if they want
 		}
 	}
+
 	PuppyModClientConfig: {
 		DisplayName: Puppy Client Config
 		Headers.PuppySet: Puppy Set
+
 		StartAsPuppy: {
 			Label: Start being a puppy
 			Tooltip: Whether you want to start with puppy ears and tail

@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+
 using PuppyMod.Content.Items.Leash;
+using PuppyMod.Players;
 
 namespace PuppyMod
 {
