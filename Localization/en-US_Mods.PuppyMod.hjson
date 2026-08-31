@@ -44,15 +44,23 @@ Buffs: {
 	}
 }
 
- Projectiles.ChainLeashProjectile.DisplayName: Chain Leash Projectile
+Projectiles.ChainLeashProjectile.DisplayName: Chain Leash Projectile
 
 Configs: {
-	PuppyModConfig: {
-		DisplayName: Puppy Mod Config
+	PuppyModServerConfig: {
+		DisplayName: Puppy Server Config
 		Headers.PuppySet: Puppy Set
-		StartingPuppySet: {
-			Label: Toggle starting Puppy Set
-			Tooltip: Determines either the player starts with a puppy set or not
+		EnableStartingPuppies: {
+			Label: Enable starting puppies
+			Tooltip: Allows players joining the world to start as puppies if they want
+		}
+	}
+	PuppyModClientConfig: {
+		DisplayName: Puppy Client Config
+		Headers.PuppySet: Puppy Set
+		StartAsPuppy: {
+			Label: Start being a puppy
+			Tooltip: Whether you want to start with puppy ears and tail
 		}
 	}
 }
