@@ -1,9 +1,9 @@
 namespace PuppyMod.Common.Interfaces;
 
-public interface ILeashItem : IRangeUsable
+public interface ILeashItem : IWithRange
 {
     void AffectPuppy(Terraria.Player puppy);
-    string RopeTexturePath { get; }
+    string LeashTexturePath { get; }
     float PuppyPull { get; }
     float OwnerPull { get; }
 }

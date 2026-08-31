@@ -1,5 +1,4 @@
 using Terraria;
-using Terraria.ModLoader;
 using PuppyMod.Players;
 
 namespace PuppyMod.Services.Clicker;
