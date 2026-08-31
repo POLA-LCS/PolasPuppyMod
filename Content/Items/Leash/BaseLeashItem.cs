@@ -10,7 +10,7 @@ using PuppyMod.Services.Leash;
 
 namespace PuppyMod.Content.Items.Leash;
 
-public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
+public abstract class BaseLeashItem : ModItem, ILeashItem, IWithRange
 {
     public const float PenaltyUseTimeMult = 1.25f;
     public const float PenaltyDamageMult = 0.65f;
@@ -18,7 +18,7 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
 
     public abstract int LeashRangeTiles { get; }
     public int RangeTiles => LeashRangeTiles;
-    public abstract string RopeTexturePath { get; }
+    public abstract string LeashTexturePath { get; }
     public virtual float PuppyPull => 0.10f;
     public virtual float OwnerPull => 0.018f;
     protected abstract DamageClass LeashDamageClass { get; }

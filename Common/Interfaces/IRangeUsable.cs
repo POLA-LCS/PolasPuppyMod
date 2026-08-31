@@ -1,7 +1,9 @@
 namespace PuppyMod.Common.Interfaces;
 
-public interface IWithRange
+public interface IRangeUsable
 {
     int RangeTiles { get; }
     float RangePixels => RangeTiles * 16f;
 }
+
+public interface IWithRange : IRangeUsable { }
