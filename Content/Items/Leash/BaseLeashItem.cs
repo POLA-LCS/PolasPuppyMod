@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -125,21 +126,34 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IWithRange
         return true;
     }
 
+    protected virtual IEnumerable<TooltipLine> GetOptionalTooltips()
+    {
+        yield return new TooltipLine(Mod, "LeashPenalty", "Weaker while puppy leashed") { OverrideColor = Color.LightGray };
+    }
+
     public override void ModifyTooltips(List<TooltipLine> tooltips)
     {
-        TooltipUtils.AddLeashRange(tooltips, Mod, LeashRangeTiles);
-        TooltipUtils.AddPenalty(tooltips, Mod);
-        if (LeashExtraDescription != null)
+        TooltipUtils.AddLeashTooltip(tooltips, Mod, LeashRangeTiles);
+        var optional = new List<TooltipLine>(GetOptionalTooltips());
+        if (optional.Count == 0)
+            return;
+        int priceIdx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");
+        if (priceIdx >= 0)
         {
-            var extra = new TooltipLine(Mod, "LeashExtra", LeashExtraDescription) { OverrideColor = Microsoft.Xna.Framework.Color.LightGreen };
-            tooltips.Add(extra);
+            tooltips.InsertRange(priceIdx, optional);
+            return;
         }
+        int kbIdx = tooltips.FindIndex(l => l.Name == "Knockback");
+        if (kbIdx >= 0)
+        {
+            tooltips.InsertRange(kbIdx + 1, optional);
+            return;
+        }
+        tooltips.AddRange(optional);
     }
 
     public virtual void AffectPuppy(Player player)
     {
         return;
     }
-
-    protected virtual string LeashExtraDescription => null;
 }

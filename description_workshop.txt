@@ -1,55 +1,33 @@
-[h1]Puppy Mod — arf arf!! who's a good puppy?? YOU are!! ૮⸝⸝> ﻌ <⸝⸝ა[/h1]
-[i]a soft, silly, 100% SFW owner/puppy mod!! put on the ears, wag wag, *pant pant* and wait for the click that tells you you're SO good!![/i]
+[h1]Puppy Mod — arf arf! who's a good puppy? YOU are! ૮⸝⸝> ﻌ <⸝⸝ა[/h1]
+[i]a soft, silly mod for wagging, zooming, and getting told you're a very good puppy! *pant pant*[/i]
 
-[b]by POLA — v1.4.2 — Terraria 1.4.4+ — multiplayer-ready!! — woof!![/b]
-arfff!! every single bark, woof and click is MEE!! a real puppy recorded it all for you!! *awoo!!*
-
-[hr][/hr]
-[h1]arf!! what dis mod do?? ฅ•ω•ฅ[/h1]
-wanna be puppy?? hehe i got you, pup!! wholesome, cuddly, a lil teasy but never ever naughty!! just headpats, praise, zoomies and happy barks!! *tail wag wag!!*
-
-made for couples, friends, servers, anyone who wanna be more puppy while digging and fighting!! furry + therian friendly!! you pick when to wear ears, you pick when to take off!! all consensual, all cute!! [b]SFW + Steam safe!! bark!![/b]
+[b]by POLA — v1.4.2 | Terraria 1.4.4+ | Multiplayer friendly — woof![/b]
 
 [hr][/hr]
-[h1]how to be puppy?? arf!![/h1]
+[h1]what does it do? ฅ•ω•ฅ[/h1]
+Turn your adventure into walkies! This mod lets you be a little more puppy while you dig, fight and explore — with playful praise and cozy owner/puppy moments with friends. It's light, consensual, and you decide when to be puppy and when not. [i]Gentle and SFW — just headpats and happy zoomies![/i]
+
+[hr][/hr]
+[h1]how to be puppy — arf![/h1]
 [list]
-[*][b]become pupper!![/b] — put on [b]Dog Ears + Dog Tail[/b]!! *arf!!* you do little bark the second you put them on!! you get them free on new character!! take off and you're you again!! easy!!
-[*][b]furry or therian??[/b] — tail in vanity = cozy furry, you go a bit faster + dig faster!! tail in accessory = ZOOMIE therian, much faster, big jumps!! both tell you in the set bonus, hehe!!
-[*][b]get clicked!![/b] — Owner (not puppy!!) holds the [b]Clicker[/b], *clack!!* and every puppy nearby gets [b]Good Puppy!![/b] — regen + zoomies!! *woof!!* puppies can't click, only get clicked!! that's da point, pup!!
-[*][b]bark bark!![/b] — double tap [b]UP[/b] to bark whenever you want attention!! *awoo!!* higher and happier when you're praised!!
-[*][b]walkies!! soft rope!![/b] — puppy wears [b]Chain Leash[/b]?? any Owner can *boop* right click you — bare paws, any item!! *click!!* soft brown rope appears, not rough chain!! keeps you close and [b]happy happy[/b] the whole time!! light tug for Owner, mostly for you!! right click again to unclip!! *rauf raf!!*
+[*][b]Become a puppy —[/b] Equip both [b]Dog Ears + Dog Tail[/b] to feel instantly more puppy! You get the set free on a new character, and you can take them off anytime to be you again. *arf!*
+[*][b]Choose your style —[/b] Wear the Tail in [b]vanity[/b] for cozy [b]Furry[/b] mode (+ movement speed and mining speed) or in an [b]accessory slot[/b] for bouncy [b]Therian[/b] mode (much faster running and big jumps). The set bonus tells you what you picked!
+[*][b]Get praised! —[/b] A non-puppy holding the [b]Clicker[/b] can praise every nearby puppy at once, giving them the [b]Good Puppy![/b] buff for health regen and happy zoomies! Puppies can't click — they get to be good. *clack!*
+[*][b]Bark for attention —[/b] Double-tap [b]UP[/b] to bark whenever you want — it sounds higher and happier right after you've been praised! *awoo!*
+[*][b]Walkies —[/b] The puppy must wear the [b]Chain Leash[/b]; any owner can then [b]right-click[/b] the puppy (even empty-handed) to clip on a soft brown rope that keeps you close. While tethered you get a continuous happy effect with a gentle tug to stay nearby — right-click again to unclip and toggle it off! *wag wag!*
 [/list]
 
 [hr][/hr]
-[h1]features!! *pant pant*[/h1]
-[list]
-[*]instant puppy!! *arf!!* auto-bark with pitchy barks — all me!!
-[*]furry / therian — swap anytime, cute bonus + mining help!!
-[*]clicker — hold for range, click for praise!! one click = whole pack!!
-[*]soft rope leash — toggle on/off, keeps pup close + happy, gentle + server synced!!
-[*]starter ears + tail free!! double-tap UP bark!!
-[*]multiplayer ready!! all SFW, all consensual!! *wag wag!!*
-[/list]
+[h1]good to know — woof?[/h1]
+[b]Solo or with friends?[/b] Both work! Be a happy solo pupper, or bring friends to share the fun!
+[b]Two puppies?[/b] Yep — the whole pack can be good together!
+[b]Can puppies praise themselves?[/b] Nuh-uh — only owners praise, puppies get to be good. That's the fun! :3
 
 [hr][/hr]
-[h1]faq!! woof??[/h1]
-[b]NSFW??[/b] nu uh!! 100% SFW!! Steam safe!! just soft teasing!!
-
-[b]solo??[/b] yesh!! be pupper and bark alone!! need other player for clicks/walkies!!
-
-[b]two puppies??[/b] both get praised!! both can be leashed separately!! *pack!!*
-
-[b]puppy click??[/b] no no!! puppies get clicked!! arf!!
-
-[b]leash??[/b] puppy wears leash, Owner right-clicks pup to toggle rope!! stay close, stay happy!! unequip or click again to free!!
+[h1]credits — thank you, good puppies! ૮꒰ ྀི >⸝⸝⸝< ྀི꒱ა[/h1]
+Made with lots of wags by [b]POLA[/b] — every bark, woof and click is a real recording by yours truly, with pitch variation so it feels alive! *woof woof!*
+Art mixes vanilla favourites with custom-made goodies.
+Thank you to every puppy who tested and said they felt [i]seen[/i] — you did so good! *headpat!*
 
 [hr][/hr]
-[h1]credits!! thank you good puppies!! ૮꒰ ྀི >⸝⸝⸝< ྀི꒱ა[/h1]
-[b]by me, POLA — a real puppy, hi hi!![/b] *woof woof!!*
-[i]every bark/woof/click is me!! with pitch variance so it feels alive!! awoo!![/i]
-art: vanilla DogEars/DogTail + custom clicker + soft rope!! 
-
-thank you to every good puppy who tested and said they felt [i]seen[/i]!! you did SO good!! *headpat headpat!!*
-
-[hr][/hr]
-[i]equip, consent, wag, zoom!! be puppy for five mins or whole playthrough — you're good puppy either way!! now go get clicked — or walked on your pretty rope!! you deserve it!! arf arf!! ฅ>ω<ฅ[/i]
+[i]Equip, wag, zoom — be a puppy for five minutes or the whole playthrough. You're a good puppy either way. Now go get praised! arf arf! ฅ>ω<ฅ[/i]
