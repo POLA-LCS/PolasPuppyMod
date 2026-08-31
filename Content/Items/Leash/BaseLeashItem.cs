@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Common.Constants;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.Utils;
 using PuppyMod.Players;
