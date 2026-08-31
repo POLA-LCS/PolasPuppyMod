@@ -14,6 +14,8 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
 {
     public abstract int LeashRangeTiles { get; }
     public int RangeTiles => LeashRangeTiles;
+    public virtual string RopeTexturePath => PuppyConstants.RopeTexturePath;
+    public virtual Color RopeColor => PuppyConstants.RopeColor;
     protected abstract DamageClass LeashDamageClass { get; }
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;

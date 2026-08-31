@@ -142,8 +142,14 @@ public class ChainedPlayer : ModPlayer
         Vector2 direction = end - start;
         float length = direction.Length();
         direction.Normalize();
-        Texture2D ropeTexture = ModContent.Request<Texture2D>(RopeTexturePath).Value;
+        string texPath = PuppyConstants.RopeTexturePath;
         Color ropeColor = PuppyConstants.RopeColor;
+        if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
+        {
+            texPath = leash.RopeTexturePath;
+            ropeColor = leash.RopeColor;
+        }
+        Texture2D ropeTexture = ModContent.Request<Texture2D>(texPath).Value;
         for (float i = 0; i < length; i += ropeTexture.Width)
         {
             Vector2 position = start + direction * i - Main.screenPosition;
