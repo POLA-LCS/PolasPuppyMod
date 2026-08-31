@@ -71,8 +71,16 @@ public class ChainedPlayer : ModPlayer
         Vector2 midpoint = (Player.Center + owner.Center) / 2f;
         Vector2 puppyOffset = Player.Center - midpoint;
         Vector2 ownerOffset = owner.Center - midpoint;
-        Player.velocity -= puppyOffset * PuppyConstants.PuppyPull / PuppyConstants.PullDivisor;
-        owner.velocity -= ownerOffset * PuppyConstants.OwnerPull / PuppyConstants.PullDivisor;
+        float puppyPull = 0.10f;
+        float ownerPull = 0.018f;
+        if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
+        {
+            puppyPull = leash.PuppyPull;
+            ownerPull = leash.OwnerPull;
+        }
+        const float div = 8f;
+        Player.velocity -= puppyOffset * puppyPull / div;
+        owner.velocity -= ownerOffset * ownerPull / div;
     }
 
     private bool IsChainValid()
