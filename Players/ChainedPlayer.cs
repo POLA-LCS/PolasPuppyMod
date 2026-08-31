@@ -11,9 +11,6 @@ namespace PuppyMod.Players;
 
 public class ChainedPlayer : ModPlayer
 {
-    public const float MaxDistance = PuppyConstants.MaxLeashPixels;
-    private const string RopeTexturePath = PuppyConstants.RopeTexturePath;
-
     public bool hasCollar = false;
     public int? GrabberIndex { get; private set; }
     public int ActiveLeashItemType { get; private set; }
@@ -24,7 +21,7 @@ public class ChainedPlayer : ModPlayer
         {
             if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is IRangeUsable leash)
                 return leash.RangePixels;
-            return MaxDistance;
+            return 0f;
         }
     }
 
@@ -152,7 +149,7 @@ public class ChainedPlayer : ModPlayer
         direction.Normalize();
         string texPath = "Terraria/Images/Chain";
         if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
-            texPath = leash.RopeTexturePath;
+            texPath = leash.LeashTexturePath;
         Texture2D ropeTexture = ModContent.Request<Texture2D>(texPath).Value;
         Color ropeColor = Color.White;
         for (float i = 0; i < length; i += ropeTexture.Width)

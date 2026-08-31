@@ -3,8 +3,6 @@ namespace PuppyMod.Common.Constants;
 public static class PuppyConstants
 {
     public const float TileToPixels = 16f;
-    public const int MaxLeashTiles = 15;
-    public const float MaxLeashPixels = MaxLeashTiles * TileToPixels;
 
     public const int ClickSignalTicks = 10;
     public const int BarkCooldownTicks = 20;
