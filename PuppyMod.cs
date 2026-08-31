@@ -2,12 +2,18 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Networking;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
 
 namespace PuppyMod
 {
+    public enum LeashPacketType : byte
+    {
+        RequestAttach = 1,
+        RequestDetach = 2,
+        State = 3
+    }
+
     public class PuppyMod : Mod
     {
         public const byte LeashReqAttach = (byte)LeashPacketType.RequestAttach;
