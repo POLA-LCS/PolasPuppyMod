@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,12 +7,15 @@ using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
-using Microsoft.Xna.Framework;
 
 namespace PuppyMod.Content.Items.Leash;
 
 public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
 {
+    public const float PenaltyUseTimeMult = 1.25f;
+    public const float PenaltyDamageMult = 0.65f;
+    public const float PenaltyKnockMult = 0.7f;
+
     public abstract int LeashRangeTiles { get; }
     public int RangeTiles => LeashRangeTiles;
     public abstract string RopeTexturePath { get; }
@@ -23,10 +25,10 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
 
-    private int _origStyle;
-    private int _origTime;
-    private int _origAnim;
-    private bool _hasOriginal;
+    private int originStyle;
+    private int origTime;
+    private int origAnim;
+    private bool hasOriginal;
 
     public override void SetDefaults()
     {
@@ -50,11 +52,11 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
 
     private void EnsureOriginalCached()
     {
-        if (_hasOriginal) return;
-        _origStyle = Item.useStyle;
-        _origTime = Item.useTime;
-        _origAnim = Item.useAnimation;
-        _hasOriginal = true;
+        if (hasOriginal) return;
+        originStyle = Item.useStyle;
+        origTime = Item.useTime;
+        origAnim = Item.useAnimation;
+        hasOriginal = true;
     }
 
     public override bool CanUseItem(Player player)
@@ -71,19 +73,19 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
             Item.useTime = 12;
             Item.useAnimation = 12;
         }
-        else if (_hasOriginal)
+        else if (hasOriginal)
         {
-            Item.useStyle = _origStyle;
-            Item.useTime = _origTime;
-            Item.useAnimation = _origAnim;
+            Item.useStyle = originStyle;
+            Item.useTime = origTime;
+            Item.useAnimation = origAnim;
         }
 
         if (LeashService.IsLeashing(player, Type))
         {
-            Item.useTime = (int)(Item.useTime * PuppyConstants.LeashPenaltyUseTimeMult);
-            Item.useAnimation = (int)(Item.useAnimation * PuppyConstants.LeashPenaltyUseTimeMult);
-            Item.damage = (int)(BaseDamage * PuppyConstants.LeashPenaltyDamageMult);
-            Item.knockBack = BaseKnockback * PuppyConstants.LeashPenaltyKnockMult;
+            Item.useTime = (int)(Item.useTime * PenaltyUseTimeMult);
+            Item.useAnimation = (int)(Item.useAnimation * PenaltyUseTimeMult);
+            Item.damage = (int)(BaseDamage * PenaltyDamageMult);
+            Item.knockBack = BaseKnockback * PenaltyKnockMult;
         }
         else
         {
@@ -141,7 +143,4 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
     }
 
     protected virtual string LeashExtraDescription => null;
-
-    Color ILeashItem.RopeColor => throw new System.NotImplementedException();
-
 }
