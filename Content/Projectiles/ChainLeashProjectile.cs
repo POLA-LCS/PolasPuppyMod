@@ -18,14 +18,8 @@ public class ChainLeashProjectile : ModProjectile
     public override void SetDefaults()
     {
         Projectile.DefaultToWhip();
-        Projectile.WhipSettings.Segments = 20;
-        Projectile.WhipSettings.RangeMultiplier = 1f;
-    }
-
-    private float Timer
-    {
-        get => Projectile.ai[0];
-        set => Projectile.ai[0] = value;
+        Projectile.WhipSettings.Segments = 21;
+        Projectile.WhipSettings.RangeMultiplier = 0.75f;
     }
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -41,26 +35,25 @@ public class ChainLeashProjectile : ModProjectile
         List<Vector2> list = [];
         Projectile.FillWhipControlPoints(Projectile, list);
 
-        var sel = new List<int> { 0 };
-        for (int i = 2; i < list.Count - 1; i += 2)
-            sel.Add(i);
-        if (sel[^1] != list.Count - 1)
-            sel.Add(list.Count - 1);
-
         Texture2D texture = TextureAssets.Projectile[Type].Value;
-        Vector2 origin = new(texture.Width / 2f, texture.Height / 2f);
+        Vector2 origin = texture.Size() / 2f;
 
-        for (int k = 0; k < sel.Count - 1; k++)
+        void PrintSegment(int i)
         {
-            Vector2 a = list[sel[k]];
-            Vector2 b = list[sel[k + 1]];
-            Vector2 diff = b - a;
+            Vector2 element = list[i];
+            Vector2 diff = list[i + 1] - element;
             float rot = diff.ToRotation() - MathHelper.PiOver2;
-            Color col = Lighting.GetColor(a.ToTileCoordinates());
-            Vector2 pos = a + diff * 0.5f - Main.screenPosition;
-            Vector2 scale = new(1f, diff.Length() / texture.Height);
-            // chain links on evens + tip :3
-            Main.EntitySpriteDraw(texture, pos, null, col, rot, origin, scale, SpriteEffects.None, 0);
+            Color col = Lighting.GetColor(element.ToTileCoordinates());
+            Vector2 pos = element + diff * 0.5f - Main.screenPosition;
+            // tiny chain link at each point :3
+            Main.EntitySpriteDraw(texture, pos, null, col, rot, origin, 1f, SpriteEffects.None, 0);
+        }
+
+        PrintSegment(0);
+        PrintSegment(list.Count - 2);
+        for (int i = 0; i < list.Count - 2; i += 3)
+        {
+            PrintSegment(i);
         }
         return false;
     }

@@ -13,7 +13,7 @@ public class ChainedPlayer : ModPlayer
     public const float MaxDistance = 15f * 16f;
     private const string RopeTexturePath = "Terraria/Images/Chain";
 
-    public bool hasChainLeash = false;
+    public bool hasCollar = false;
     public int? GrabberIndex { get; private set; }
     public int ActiveLeashItemType { get; private set; }
 
@@ -24,16 +24,6 @@ public class ChainedPlayer : ModPlayer
             if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is BaseLeashItem leash)
                 return leash.LeashRangeTiles * 16f;
             return MaxDistance;
-        }
-    }
-
-    private int ActiveLeashDefense
-    {
-        get
-        {
-            if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is BaseLeashItem leash)
-                return leash.LeashDefenseBonus;
-            return 0;
         }
     }
 
@@ -89,7 +79,7 @@ public class ChainedPlayer : ModPlayer
     private bool IsChainValid()
     {
         if (!Player.GetModPlayer<PuppyPlayer>().IsPuppy) return false;
-        if (!hasChainLeash) return false;
+        if (!hasCollar) return false;
         Player owner = OwnerOf;
         if (owner == null || !owner.active || owner.dead) return false;
         if (owner.GetModPlayer<PuppyPlayer>().IsPuppy) return false;
@@ -108,18 +98,16 @@ public class ChainedPlayer : ModPlayer
 
     public override void ResetEffects()
     {
-        hasChainLeash = false;
+        hasCollar = false;
     }
 
     public override void PostUpdateEquips()
     {
-        if (hasChainLeash)
+        if (hasCollar)
         {
             Player.statDefense += 2; // snug collar
             Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f); // tiny warm glow :3
         }
-        if (GrabberIndex.HasValue && ActiveLeashDefense > 0)
-            Player.statDefense += ActiveLeashDefense;
     }
 
     public override void PostUpdate()
@@ -132,6 +120,11 @@ public class ChainedPlayer : ModPlayer
             GrabberIndex = null;
             ActiveLeashItemType = 0;
             return;
+        }
+        
+        if(ModContent.GetModItem(ActiveLeashItemType) is BaseLeashItem leash)
+        {
+            leash.AffectPuppy(Player);
         }
         Player.AddBuff(BuffID.Sunflower, 60);
         RestrictMovement(OwnerOf);

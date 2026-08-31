@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -9,9 +10,6 @@ namespace PuppyMod.Content.Items.Leash;
 public abstract class BaseLeashItem : ModItem
 {
     public abstract int LeashRangeTiles { get; }
-    public virtual int LeashDefenseBonus => 0;
-    public virtual float PoisonChance => 0f;
-    public virtual int PoisonDuration => 300;
     protected abstract DamageClass LeashDamageClass { get; }
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
@@ -39,11 +37,24 @@ public abstract class BaseLeashItem : ModItem
         Item.UseSound = SoundID.Item1;
     }
 
+    private bool IsLeashing(Player player)
+    {
+        foreach (Player t in Main.player)
+        {
+            if (t == null || !t.active) continue;
+            var c = t.GetModPlayer<ChainedPlayer>();
+            if (c.GrabberIndex == player.whoAmI && c.ActiveLeashItemType == Type)
+                return true;
+        }
+        return false;
+    }
+
     public override bool AltFunctionUse(Player player) => true;
 
     public override bool CanUseItem(Player player)
     {
-        if (player.GetModPlayer<PuppyPlayer>().IsPuppy)
+        var puppyPlayer = player.GetModPlayer<PuppyPlayer>();
+        if (puppyPlayer.IsPuppy)
             return false;
 
         if (!ogCached && player.altFunctionUse != 2)
@@ -66,6 +77,20 @@ public abstract class BaseLeashItem : ModItem
             Item.useTime = ogTime;
             Item.useAnimation = ogAnim;
         }
+
+        if (IsLeashing(player))
+        {
+            // heavy when walking puppy :3
+            Item.useTime = (int)(Item.useTime * 1.45f);
+            Item.useAnimation = (int)(Item.useAnimation * 1.45f);
+            Item.damage = (int)(BaseDamage * 0.65f);
+            Item.knockBack = BaseKnockback * 0.7f;
+        }
+        else
+        {
+            Item.damage = BaseDamage;
+            Item.knockBack = BaseKnockback;
+        }
         return base.CanUseItem(player);
     }
 
@@ -82,7 +107,7 @@ public abstract class BaseLeashItem : ModItem
                 if (target == null || !target.active || target.dead) continue;
                 if (target.whoAmI == player.whoAmI) continue;
                 if (!target.GetModPlayer<PuppyPlayer>().IsPuppy) continue;
-                if (!target.GetModPlayer<ChainedPlayer>().hasChainLeash) continue;
+                if (!target.GetModPlayer<ChainedPlayer>().hasCollar) continue;
                 if (!target.Hitbox.Contains(Main.MouseWorld.ToPoint())) continue;
                 if (Vector2.Distance(player.Center, target.Center) > rangePx) continue;
 
@@ -112,46 +137,26 @@ public abstract class BaseLeashItem : ModItem
         return true;
     }
 
-    public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
-    {
-        if (PoisonChance > 0f && Main.rand.NextFloat() < PoisonChance)
-            target.AddBuff(BuffID.Poisoned, PoisonDuration);
-    }
-
-    public override void OnHitPvp(Player player, Player target, Player.HurtInfo hurtInfo)
-    {
-        if (PoisonChance > 0f && Main.rand.NextFloat() < PoisonChance)
-            target.AddBuff(BuffID.Poisoned, PoisonDuration);
-    }
-
     public override void ModifyTooltips(List<TooltipLine> tooltips)
     {
         int idx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");
-        var rangeLine = new TooltipLine(Mod, "LeashRange", $"{LeashRangeTiles} leash range");
-        rangeLine.OverrideColor = new Color(193, 154, 107);
+        var rangeLine = new TooltipLine(Mod, "LeashRange", $"{LeashRangeTiles} leash range")
+        {
+            OverrideColor = new Color(193, 154, 107)
+        };
         if (idx >= 0) tooltips.Insert(idx, rangeLine);
         else tooltips.Add(rangeLine);
 
-        if (LeashDefenseBonus > 0)
+        var penLine = new TooltipLine(Mod, "LeashPenalty", "slower and weaker while walking a puppy")
         {
-            var defLine = new TooltipLine(Mod, "LeashDefense", $"+{LeashDefenseBonus} defense to leashed puppy");
-            defLine.OverrideColor = Color.LightGreen;
-            tooltips.Add(defLine);
-        }
+            OverrideColor = Color.Gray
+        };
+        tooltips.Add(penLine);
+    }
 
-        if (PoisonChance > 0f)
-        {
-            var poiLine = new TooltipLine(Mod, "LeashPoison", $"has chance to inflict Poisoned");
-            poiLine.OverrideColor = Color.LightGreen;
-            tooltips.Add(poiLine);
-        }
-
-        if (LeashExtraDescription != null)
-        {
-            var extra = new TooltipLine(Mod, "LeashExtra", LeashExtraDescription);
-            extra.OverrideColor = Color.LightGreen;
-            tooltips.Add(extra);
-        }
+    public virtual void AffectPuppy(Player player)
+    {
+        return;
     }
 
     protected virtual string LeashExtraDescription => null;
