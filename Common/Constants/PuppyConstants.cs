@@ -1,5 +1,3 @@
-using Microsoft.Xna.Framework;
-
 namespace PuppyMod.Common.Constants;
 
 public static class PuppyConstants
@@ -12,7 +10,6 @@ public static class PuppyConstants
     public const int BarkCooldownTicks = 20;
     public const int DoubleTapWindow = 18;
 
-    public static readonly Color RopeColor = new(193, 154, 107);
     public const string RopeTexturePath = "Terraria/Images/Chain";
 
     public const float LeashPenaltyUseTimeMult = 1.45f;

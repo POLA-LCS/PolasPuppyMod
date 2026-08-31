@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
-using PuppyMod.Common.Constants;
 
 namespace PuppyMod.Common.Utils;
 
@@ -10,7 +9,7 @@ public static class TooltipUtils
     public static void AddLeashRange(List<TooltipLine> tooltips, Mod mod, int tiles)
     {
         int idx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");
-        var line = new TooltipLine(mod, "LeashRange", $"{tiles} leash range") { OverrideColor = PuppyConstants.RopeColor };
+        var line = new TooltipLine(mod, "LeashRange", $"{tiles} leash range") { OverrideColor = new Color(193, 154, 107) };
         if (idx >= 0) tooltips.Insert(idx, line);
         else tooltips.Add(line);
     }

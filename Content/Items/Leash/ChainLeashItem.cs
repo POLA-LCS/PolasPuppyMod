@@ -15,7 +15,6 @@ public class ChainLeashItem : BaseLeashItem
     protected override float BaseKnockback => 2f;
 
     public override string RopeTexturePath => "Terraria/Images/Chain";
-    public override Color RopeColor => new(160, 160, 160);
     public override float PuppyPull => 0.10f;
     public override float OwnerPull => 0.018f;
 
