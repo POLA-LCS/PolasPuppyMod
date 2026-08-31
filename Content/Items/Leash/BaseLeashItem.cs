@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -7,6 +8,7 @@ using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
+using Microsoft.Xna.Framework;
 
 namespace PuppyMod.Content.Items.Leash;
 
@@ -16,6 +18,8 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
     public int RangeTiles => LeashRangeTiles;
     public virtual string RopeTexturePath => PuppyConstants.RopeTexturePath;
     public virtual Color RopeColor => PuppyConstants.RopeColor;
+    public virtual float PuppyPull => 0.10f;
+    public virtual float OwnerPull => 0.018f;
     protected abstract DamageClass LeashDamageClass { get; }
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
@@ -138,4 +142,7 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
     }
 
     protected virtual string LeashExtraDescription => null;
+
+    Color ILeashItem.RopeColor => throw new System.NotImplementedException();
+
 }

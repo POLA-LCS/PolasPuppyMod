@@ -5,6 +5,10 @@ namespace PuppyMod.Content.Buffs.GoodPuppy;
 
 public class GoodPuppyBuff : ModBuff
 {
+    public const int LifeRegen = 14;
+    public const float MoveSpeed = 0.6f;
+    public const float AccRunSpeed = 1.5f;
+    public const float JumpBoost = 1.0f;
 
     public override void SetStaticDefaults()
     {
@@ -13,10 +17,10 @@ public class GoodPuppyBuff : ModBuff
 
     public override void Update(Player player, ref int buffIndex)
     {
-        // Get buffed you good little puppy, you deserve it
-        player.lifeRegen += 14;
-        player.moveSpeed += 0.6f;
-        player.accRunSpeed += 1.5f;
-        player.jumpSpeedBoost += 1.0f;
+        // good little puppy :3
+        player.lifeRegen += LifeRegen;
+        player.moveSpeed += MoveSpeed;
+        player.accRunSpeed += AccRunSpeed;
+        player.jumpSpeedBoost += JumpBoost;
     }
 }
