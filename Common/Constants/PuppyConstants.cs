@@ -10,8 +10,6 @@ public static class PuppyConstants
     public const int BarkCooldownTicks = 20;
     public const int DoubleTapWindow = 18;
 
-    public const string RopeTexturePath = "Terraria/Images/Chain";
-
     public const float LeashPenaltyUseTimeMult = 1.45f;
     public const float LeashPenaltyDamageMult = 0.65f;
     public const float LeashPenaltyKnockMult = 0.7f;
