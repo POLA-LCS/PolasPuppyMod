@@ -4,6 +4,8 @@ namespace PuppyMod.Players;
 
 public class OwnerPlayer : ModPlayer
 {
+    public const int ClickSignalTicks = 10;
+
     public float ClickRange { get; private set; }
     public int BuffDuration { get; private set; }
 
@@ -17,7 +19,7 @@ public class OwnerPlayer : ModPlayer
     {
         ClickRange = rangeInPixels;
         BuffDuration = buffDurationTicks;
-        ClickSignalTimer = 10;
+        ClickSignalTimer = ClickSignalTicks;
         ClickCooldown = cooldownTicks;
     }
 
