@@ -7,37 +7,10 @@ using PuppyMod.Content.Buffs.GoodPuppy;
 using System.Collections.Generic;
 using System;
 
-namespace PuppyMod;
+namespace PuppyMod.Players;
 
-public class PuppyPlayer : ModPlayer
+public class PuppyPlayer : PolasBasePlayer
 {
-    public static class BarksArray
-    {
-        private static SoundStyle LoadPuppySound(string name) =>
-            new($"PuppyMod/Assets/Barks/{name}") { Pitch = 0.5f, PitchVariance = 0.5f };
-
-        private static readonly SoundStyle[] barks = [
-            LoadPuppySound("growl"),
-            LoadPuppySound("growl_woof"),
-            LoadPuppySound("woof"),
-            LoadPuppySound("woof2"),
-        ];
-
-        public static SoundStyle Get(int index)
-        {
-            if (index < 0 || index >= barks.Length)
-                throw new ArgumentOutOfRangeException(nameof(index));
-            return barks[index];
-        }
-
-        public static SoundStyle GetRandom(int offset = 1)
-        {
-            if (offset < 0 || offset >= barks.Length)
-                throw new ArgumentOutOfRangeException(nameof(offset));
-            return barks[Main.rand.Next(offset, barks.Length)];
-        }
-    }
-
     public enum PuppyState
     {
         Human = 0,
@@ -51,69 +24,18 @@ public class PuppyPlayer : ModPlayer
 
     public PuppyState HowPuppy { get; private set; } = PuppyState.Human;
     public bool IsPuppy => HowPuppy != PuppyState.Human;
-    public bool IsGoodPuppyHappy => Player.HasBuff(ModContent.BuffType<GoodPuppyBuff>());
 
     private bool IsWearingPuppyEars => Player.armor[10].type == ItemID.DogEars;
-    private bool HasAccesory(short item, bool accessory = true, bool vanity = true)
-    {
-        int extra = Player.GetAmountOfExtraAccessorySlotsToShow();
-
-        if (accessory)
-        {
-            for (int i = 3; i < 10 + extra && i < Player.armor.Length; i++)
-            {
-                if (Player.armor[i].type == item)
-                    return true;
-            }
-            return false;
-        }
-        if (vanity)
-        {
-            for (int i = 13; i < Player.armor.Length; i++)
-            {
-                if (Player.armor[i].type == item)
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
-    private short[] HasAccesories(short[] items, bool accessory = true, bool vanity = true)
-    {
-        var hasItems = new List<short>(items.Length);
-
-        if (accessory)
-        {
-            foreach (var item in items)
-            {
-                if (HasAccesory(item, vanity: false))
-                {
-                    hasItems.Add(item);
-                }
-            }
-        }
-        if (vanity)
-        {
-            foreach (var item in items)
-            {
-                if (HasAccesory(item, accessory: false))
-                {
-                    hasItems.Add(item);
-                }
-            }
-        }
-        return items;
-    }
 
     private PuppyState GetPuppyTailState()
     {
-        if (HasAccesory(ItemID.DogTail, vanity: false))
+        var whereTailEquipped = HasEquippedAccessoryVanity(ItemID.DogTail);
+        if (whereTailEquipped.HasValue)
         {
-            return PuppyState.Therian;
-        }
-        if (HasAccesory(ItemID.DogTail, accessory: false))
-        {
+            if (whereTailEquipped.Value)
+            {
+                return PuppyState.Therian;
+            }
             return PuppyState.Furry;
         }
         return PuppyState.Human;
@@ -129,19 +51,29 @@ public class PuppyPlayer : ModPlayer
     public void PlayRandomBark(bool forcePitch = false)
     {
         var bark = BarksArray.GetRandom();
-        if (forcePitch || IsGoodPuppyHappy)
+        bool isGoodPuppy = Player.HasBuff(ModContent.BuffType<GoodPuppyBuff>());
+        if (forcePitch || isGoodPuppy)
             Bark(bark, pitched: true);
         else
             Bark(bark);
     }
 
+    // ====== Overriding section =========
     public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
     {
-        Item ears = new();
-        ears.SetDefaults(ItemID.DogEars);
-        Item tail = new();
-        tail.SetDefaults(ItemID.DogTail);
-        return [ears, tail];
+        var server = ModContent.GetInstance<PuppyModServerConfig>();
+        if (!server.EnableStartingPuppies)
+            return [];
+
+        var client = ModContent.GetInstance<PuppyModClientConfig>();
+        if (!client.StartAsPuppy)
+            return [];
+
+        Item dog_ears = new();
+        dog_ears.SetDefaults(ItemID.DogEars);
+        Item dog_tail = new();
+        dog_tail.SetDefaults(ItemID.DogTail);
+        return [dog_ears, dog_tail];
     }
 
     public override void PostUpdateEquips()
@@ -154,11 +86,9 @@ public class PuppyPlayer : ModPlayer
         if (HowPuppy == PuppyState.Human && tailState != PuppyState.Human)
             PlayRandomBark();
 
-
-
         HowPuppy = tailState;
         if (HowPuppy == PuppyState.Therian)
-            Player.setBonus = "Therian Puppy Set: Greatly improved mobility and +15% mining speed\nDouble tap UP to bark! Arf!";
+            Player.setBonus = "Therian Puppy Set: better Puppy Set and +15% mining speed\nDouble tap UP to bark! Arf!";
         else if (HowPuppy == PuppyState.Furry)
             Player.setBonus = "Puppy Set: Improved mobility and +15% mining speed\nDouble tap UP to bark! Arf!";
     }
@@ -176,7 +106,7 @@ public class PuppyPlayer : ModPlayer
             {
                 if (doubleTapUpTimer > 0)
                 {
-                    PlayRandomBark(forcePitch: IsGoodPuppyHappy);
+                    PlayRandomBark();
                     doubleTapUpTimer = 0;
                     barkCooldown = 20;
                 }
@@ -222,6 +152,7 @@ public class PuppyPlayer : ModPlayer
         if (HowPuppy == PuppyState.Human)
             return;
 
+        // Dog Set bonus
         if (HowPuppy == PuppyState.Therian)
         {
             Player.moveSpeed += 0.3f;
@@ -238,6 +169,11 @@ public class PuppyPlayer : ModPlayer
             Player.jumpSpeedBoost += 0.3f;
         }
 
+        HappyIfClicker();
+    }
+
+    private void HappyIfClicker()
+    {
         for (int i = 0; i < Main.player.Length; i++)
         {
             Player other = Main.player[i];
@@ -249,9 +185,34 @@ public class PuppyPlayer : ModPlayer
 
             var owner = other.GetModPlayer<OwnerPlayer>();
             int buffTime = owner.BuffDuration;
-            if (buffTime <= 0)
-                buffTime = 60;
             Player.AddBuff(ModContent.BuffType<GoodPuppyBuff>(), buffTime);
         }
+    }
+}
+
+internal static class BarksArray
+{
+    private static SoundStyle LoadPuppySound(string name) =>
+        new($"PuppyMod/Assets/Barks/{name}") { Pitch = 0.5f, PitchVariance = 0.5f };
+
+    private static readonly SoundStyle[] barks = [
+        LoadPuppySound("growl"),
+            LoadPuppySound("growl_woof"),
+            LoadPuppySound("woof"),
+            LoadPuppySound("woof2"),
+        ];
+
+    public static SoundStyle Get(int index)
+    {
+        if (index < 0 || index >= barks.Length)
+            throw new ArgumentOutOfRangeException(nameof(index));
+        return barks[index];
+    }
+
+    public static SoundStyle GetRandom(int offset = 1)
+    {
+        if (offset < 0 || offset >= barks.Length)
+            throw new ArgumentOutOfRangeException(nameof(offset));
+        return barks[Main.rand.Next(offset, barks.Length)];
     }
 }
