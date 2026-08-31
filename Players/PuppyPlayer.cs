@@ -11,6 +11,9 @@ namespace PuppyMod.Players;
 
 public class PuppyPlayer : PolasBasePlayer
 {
+    public const int BarkCooldownTicks = 20;
+    public const int DoubleTapWindow = 18;
+
     public enum PuppyState
     {
         Human = 0,
@@ -108,11 +111,11 @@ public class PuppyPlayer : PolasBasePlayer
                 {
                     PlayRandomBark();
                     doubleTapUpTimer = 0;
-                    barkCooldown = 20;
+                    barkCooldown = BarkCooldownTicks;
                 }
                 else
                 {
-                    doubleTapUpTimer = 18;
+                    doubleTapUpTimer = DoubleTapWindow;
                 }
             }
 
