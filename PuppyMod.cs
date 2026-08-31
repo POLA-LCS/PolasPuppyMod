@@ -1,11 +1,9 @@
 using System.IO;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
-using PuppyMod.Content.Items.Leash;
 using PuppyMod.Players;
+using PuppyMod.Services.Leash;
 
 namespace PuppyMod
 {
@@ -64,14 +62,8 @@ namespace PuppyMod
             Player target = Main.player[targetWho];
             if (owner == null || target == null) return;
             if (ownerWho == targetWho) return;
-            if (owner.GetModPlayer<PuppyPlayer>().IsPuppy) return;
-            if (!target.GetModPlayer<PuppyPlayer>().IsPuppy) return;
-            if (!target.GetModPlayer<ChainedPlayer>().hasCollar) return;
-            if (ModContent.GetModItem(leashItemType) is not BaseLeashItem leash) return;
-            if (owner.HeldItem.type != leashItemType) return;
-            if (Vector2.Distance(owner.Center, target.Center) > leash.LeashRangeTiles * 16f) return;
+            if (!LeashService.CanAttach(owner, target, leashItemType)) return;
             var chain = target.GetModPlayer<ChainedPlayer>();
-            if (chain.GrabberIndex.HasValue && chain.GrabberIndex != ownerWho) return;
             chain.SetGrabberAuthority(ownerWho, leashItemType);
             BroadcastLeashState(ownerWho, targetWho, leashItemType);
         }
