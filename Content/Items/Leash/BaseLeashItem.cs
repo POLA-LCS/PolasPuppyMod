@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Constants;
 using PuppyMod.Common.Interfaces;
+using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
 
@@ -18,10 +18,10 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
 
-    private int ogStyle;
-    private int ogTime;
-    private int ogAnim;
-    private bool ogCached;
+    private int _origStyle;
+    private int _origTime;
+    private int _origAnim;
+    private bool _hasOriginal;
 
     public override void SetDefaults()
     {
@@ -43,19 +43,22 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
 
     public override bool AltFunctionUse(Player player) => true;
 
+    private void EnsureOriginalCached()
+    {
+        if (_hasOriginal) return;
+        _origStyle = Item.useStyle;
+        _origTime = Item.useTime;
+        _origAnim = Item.useAnimation;
+        _hasOriginal = true;
+    }
+
     public override bool CanUseItem(Player player)
     {
-        var puppyPlayer = player.GetModPlayer<PuppyPlayer>();
-        if (puppyPlayer.IsPuppy)
+        if (player.GetModPlayer<PuppyPlayer>().IsPuppy)
             return false;
 
-        if (!ogCached && player.altFunctionUse != 2)
-        {
-            ogStyle = Item.useStyle;
-            ogTime = Item.useTime;
-            ogAnim = Item.useAnimation;
-            ogCached = true;
-        }
+        if (player.altFunctionUse != 2)
+            EnsureOriginalCached();
 
         if (player.altFunctionUse == 2)
         {
@@ -63,11 +66,11 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
             Item.useTime = 12;
             Item.useAnimation = 12;
         }
-        else if (ogCached)
+        else if (_hasOriginal)
         {
-            Item.useStyle = ogStyle;
-            Item.useTime = ogTime;
-            Item.useAnimation = ogAnim;
+            Item.useStyle = _origStyle;
+            Item.useTime = _origTime;
+            Item.useAnimation = _origAnim;
         }
 
         if (LeashService.IsLeashing(player, Type))
@@ -118,19 +121,13 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, IRangeUsable
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)
     {
-        int idx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");
-        var rangeLine = new TooltipLine(Mod, "LeashRange", $"{LeashRangeTiles} leash range")
+        TooltipUtils.AddLeashRange(tooltips, Mod, LeashRangeTiles);
+        TooltipUtils.AddPenalty(tooltips, Mod);
+        if (LeashExtraDescription != null)
         {
-            OverrideColor = new Color(193, 154, 107)
-        };
-        if (idx >= 0) tooltips.Insert(idx, rangeLine);
-        else tooltips.Add(rangeLine);
-
-        var penLine = new TooltipLine(Mod, "LeashPenalty", "slower and weaker while walking a puppy")
-        {
-            OverrideColor = Color.Gray
-        };
-        tooltips.Add(penLine);
+            var extra = new TooltipLine(Mod, "LeashExtra", LeashExtraDescription) { OverrideColor = Microsoft.Xna.Framework.Color.LightGreen };
+            tooltips.Add(extra);
+        }
     }
 
     public virtual void AffectPuppy(Player player)
