@@ -7,8 +7,4 @@ public static class PuppyConstants
     public const int ClickSignalTicks = 10;
     public const int BarkCooldownTicks = 20;
     public const int DoubleTapWindow = 18;
-
-    public const float LeashPenaltyUseTimeMult = 1.45f;
-    public const float LeashPenaltyDamageMult = 0.65f;
-    public const float LeashPenaltyKnockMult = 0.7f;
 }
