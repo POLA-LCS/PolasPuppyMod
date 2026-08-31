@@ -14,7 +14,10 @@ public class ChainLeashItem : BaseLeashItem
     protected override int BaseDamage => 14;
     protected override float BaseKnockback => 2f;
 
-    // Rusty chain
+    public override string RopeTexturePath => "Terraria/Images/Chain";
+    public override Color RopeColor => new(160, 160, 160);
+
+    // rusty chain
     private static float PoisonChance => 0.20f;
     private static int PoisonDuration => 300;
 
