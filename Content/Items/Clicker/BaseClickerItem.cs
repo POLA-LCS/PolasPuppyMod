@@ -2,8 +2,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-
 using PuppyMod.Players;
+using PuppyMod.Services.Clicker;
 
 namespace PuppyMod.Content.Items.Clicker;
 
@@ -64,9 +64,7 @@ public abstract class BaseClickerItem : ModItem
 
     public override bool? UseItem(Player player)
     {
-        var ownerPlayer = player.GetModPlayer<OwnerPlayer>();
-        float rangeInPixels = TileRange * 16f;
-        ownerPlayer.TriggerClick(rangeInPixels, BuffDuration, UsageCooldown);
+        ClickerService.Trigger(player, TileRange * 16f, BuffDuration, UsageCooldown);
         SoundEngine.PlaySound(ClicksArray.GetRandom(), player.Center);
         return true;
     }
