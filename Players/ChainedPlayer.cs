@@ -4,7 +4,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Common.Constants;
 using PuppyMod.Common.Interfaces;
 
 namespace PuppyMod.Players;
@@ -19,7 +18,7 @@ public class ChainedPlayer : ModPlayer
     {
         get
         {
-            if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is IRangeUsable leash)
+            if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is IWithRange leash)
                 return leash.RangePixels;
             return 0f;
         }
@@ -59,6 +58,10 @@ public class ChainedPlayer : ModPlayer
         else packet.Send(toWho);
     }
 
+    /// <summary>
+    /// Credits to https://github.com/LostZealous/BoundTogether
+    /// </summary>
+    /// <param name="owner"></param>
     private void RestrictMovement(Player owner)
     {
         if (owner == null || !owner.active || owner.dead) return;
