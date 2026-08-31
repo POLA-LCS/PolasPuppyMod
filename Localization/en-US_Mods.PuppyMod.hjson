@@ -33,7 +33,7 @@ Items: {
 
 	ChainLeashItem: {
 		DisplayName: Chain Leash
-		Tooltip: Strike enemies to poison them
+		Tooltip: ""
 	}
 }
 

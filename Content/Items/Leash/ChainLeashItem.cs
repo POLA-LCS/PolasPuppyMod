@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -22,6 +23,7 @@ public class ChainLeashItem : BaseLeashItem
     // rusty chain
     private static float PoisonChance => 0.20f;
     private static int PoisonDuration => 300;
+
 
     public override void SetDefaults()
     {
@@ -51,6 +53,14 @@ public class ChainLeashItem : BaseLeashItem
         Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0f, dir);
         return false;
     }
+
+    protected override IEnumerable<TooltipLine> GetOptionalTooltips()
+    {
+        foreach (var line in base.GetOptionalTooltips())
+            yield return line;
+        yield return new TooltipLine(Mod, "LeashTooltip", "Strike enemies to poison them");
+    }
+
 
     public override void AddRecipes()
     {
