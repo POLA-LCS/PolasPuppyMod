@@ -23,6 +23,16 @@ Items: {
 		DisplayName: Chain Leash
 		Tooltip: ""
 	}
+
+	RopeLeashItem: {
+		DisplayName: Rope Leash Item
+		Tooltip: ""
+	}
+
+	RubberLeashItem: {
+		DisplayName: Rubber Leash Item
+		Tooltip: ""
+	}
 }
 
 Buffs: {

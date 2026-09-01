@@ -4,6 +4,8 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Common.Data;
+using PuppyMod.Common.Enums;
 using PuppyMod.Content.Projectiles;
 
 namespace PuppyMod.Content.Items.Leash;
@@ -17,13 +19,18 @@ public class ChainLeashItem : BaseLeashItem
 
     public const string ChainTexture = "Terraria/Images/Chain";
     public override string LeashTexturePath => ChainTexture;
-    public override float PuppyPull => 0.10f;
-    public override float OwnerPull => 0.018f;
+    public override LeashPhysicsProfile Physics => new(
+        SlackRatio: 0.92f,
+        Stiffness: 0.34f,
+        Damping: 0.85f,
+        MaxStretchRatio: 1.06f,
+        Curve: LeashElasticityCurve.SteepStep,
+        PuppyInertia: 1.80f,
+        OwnerInertia: 0.12f
+    );
 
-    // rusty chain
     private static float PoisonChance => 0.20f;
     private static int PoisonDuration => 300;
-
 
     public override void SetDefaults()
     {
@@ -61,7 +68,6 @@ public class ChainLeashItem : BaseLeashItem
         yield return new TooltipLine(mod, "ChainPoison", "Strike enemies to poison them");
     }
 
-
     public override void AddRecipes()
     {
         CreateRecipe(1)
@@ -76,5 +82,4 @@ public class ChainLeashItem : BaseLeashItem
     {
         player.statDefense += 5;
     }
-
 }

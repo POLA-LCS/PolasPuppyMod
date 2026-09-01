@@ -4,7 +4,9 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Common.Data;
 using PuppyMod.Common.Interfaces;
+using PuppyMod.Services.Leash;
 
 namespace PuppyMod.Players;
 
@@ -13,6 +15,7 @@ public class ChainedPlayer : ModPlayer
     public bool hasCollar = false;
     public int? GrabberIndex { get; private set; }
     public int ActiveLeashItemType { get; private set; }
+    private int _overstretchTicks;
 
     private float ActiveLeashRange
     {
@@ -21,6 +24,16 @@ public class ChainedPlayer : ModPlayer
             if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is IWithRange leash)
                 return leash.RangePixels;
             return 0f;
+        }
+    }
+
+    private int ActiveLeashRangeTiles
+    {
+        get
+        {
+            if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is IWithRange leash)
+                return leash.RangeTiles;
+            return 0;
         }
     }
 
@@ -58,10 +71,6 @@ public class ChainedPlayer : ModPlayer
         else packet.Send(toWho);
     }
 
-    /// <summary>
-    /// Credits to https://github.com/LostZealous/BoundTogether
-    /// </summary>
-    /// <param name="owner"></param>
     private void RestrictMovement(Player owner)
     {
         if (owner == null || !owner.active || owner.dead) return;
@@ -81,6 +90,39 @@ public class ChainedPlayer : ModPlayer
         const float div = 8f;
         Player.velocity -= puppyOffset * puppyPull / div;
         owner.velocity -= ownerOffset * ownerPull / div;
+    }
+
+    private void ApplyLeashPhysics(Player owner)
+    {
+        if (owner == null || !owner.active || owner.dead) return;
+        int rangeTiles = ActiveLeashRangeTiles;
+        if (rangeTiles <= 0)
+        {
+            RestrictMovement(owner);
+            return;
+        }
+        if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
+        {
+            int tiles = leash.RangeTiles;
+            if (tiles <= 0)
+                tiles = rangeTiles;
+            LeashPhysicsProfile profile = leash.Physics;
+            var result = LeashPhysicsService.Compute(Player.Center, owner.Center, Player.velocity, owner.velocity, tiles, profile);
+            if (result.Overstretched)
+                _overstretchTicks++;
+            else if (_overstretchTicks > 0)
+                _overstretchTicks--;
+
+            if (result.IsTaut)
+            {
+                Player.velocity += result.PuppyImpulse;
+                owner.velocity += result.OwnerImpulse;
+            }
+        }
+        else
+        {
+            RestrictMovement(owner);
+        }
     }
 
     private bool IsChainValid()
@@ -112,7 +154,7 @@ public class ChainedPlayer : ModPlayer
     {
         if (hasCollar)
         {
-            Player.statDefense += 2; // snug collar
+            Player.statDefense += 2;
             Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f);
         }
     }
@@ -131,7 +173,7 @@ public class ChainedPlayer : ModPlayer
         if (ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
             leash.AffectPuppy(Player);
         Player.AddBuff(BuffID.Sunflower, 60);
-        RestrictMovement(OwnerOf);
+        ApplyLeashPhysics(OwnerOf);
     }
 
     public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)

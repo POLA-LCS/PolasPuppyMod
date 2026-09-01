@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Common.Data;
+using PuppyMod.Common.Enums;
 using PuppyMod.Common.Extensions;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Players;
@@ -18,8 +20,11 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 
     public abstract int RangeTiles { get; }
     public abstract string LeashTexturePath { get; }
-    public virtual float PuppyPull => 0.10f;
-    public virtual float OwnerPull => 0.018f;
+    public virtual LeashPhysicsProfile Physics => new LeashPhysicsProfile();
+    [System.Obsolete("Use Physics.PuppyInertia")]
+    public virtual float PuppyPull => Physics.PuppyInertia * 0.10f;
+    [System.Obsolete("Use Physics.OwnerInertia")]
+    public virtual float OwnerPull => Physics.OwnerInertia * 0.10f;
     protected abstract DamageClass LeashDamageClass { get; }
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
