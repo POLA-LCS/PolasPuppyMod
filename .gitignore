@@ -1,19 +1,11 @@
-# tModLoader build
 bin/
 obj/
 *.tmod
-
-# IDE
 .vs/
 .idea/
 *.user
 *.suo
-
-# OS
 Thumbs.db
 Desktop.ini
 .DS_Store
-
-
-# Backups
 *.bak
