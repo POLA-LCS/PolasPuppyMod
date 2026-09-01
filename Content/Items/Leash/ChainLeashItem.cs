@@ -10,7 +10,7 @@ namespace PuppyMod.Content.Items.Leash;
 
 public class ChainLeashItem : BaseLeashItem
 {
-    public override int LeashRangeTiles => 12;
+    public override int RangeTiles => 12;
     protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
     protected override int BaseDamage => 14;
     protected override float BaseKnockback => 2f;
@@ -54,11 +54,11 @@ public class ChainLeashItem : BaseLeashItem
         return false;
     }
 
-    protected override IEnumerable<TooltipLine> GetOptionalTooltips()
+    public override IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        foreach (var line in base.GetOptionalTooltips())
+        foreach (var line in base.GetTooltipLines(mod))
             yield return line;
-        yield return new TooltipLine(Mod, "LeashTooltip", "Strike enemies to poison them");
+        yield return new TooltipLine(mod, "ChainPoison", "Strike enemies to poison them");
     }
 
 

@@ -3,21 +3,20 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Common.Extensions;
 using PuppyMod.Common.Interfaces;
-using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
 
 namespace PuppyMod.Content.Items.Leash;
 
-public abstract class BaseLeashItem : ModItem, ILeashItem
+public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 {
     public const float PenaltyUseTimeMult = 1.25f;
     public const float PenaltyDamageMult = 0.65f;
     public const float PenaltyKnockMult = 0.7f;
 
-    public abstract int LeashRangeTiles { get; }
-    public int RangeTiles => LeashRangeTiles;
+    public abstract int RangeTiles { get; }
     public abstract string LeashTexturePath { get; }
     public virtual float PuppyPull => 0.10f;
     public virtual float OwnerPull => 0.018f;
@@ -101,7 +100,7 @@ public abstract class BaseLeashItem : ModItem, ILeashItem
     {
         if (player.altFunctionUse == 2)
         {
-            var target = LeashService.FindPuppyUnderCursor(player, LeashRangeTiles);
+            var target = LeashService.FindPuppyUnderCursor(player, RangeTiles);
             if (target == null) return false;
             var chain = target.GetModPlayer<ChainedPlayer>();
             bool ownedByMe = chain.GrabberIndex == player.whoAmI;
@@ -126,31 +125,13 @@ public abstract class BaseLeashItem : ModItem, ILeashItem
         return true;
     }
 
-    protected virtual IEnumerable<TooltipLine> GetOptionalTooltips()
+    public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        yield return new TooltipLine(Mod, "LeashPenalty", "Weaker while puppy leashed") { OverrideColor = Color.LightGray };
+        yield return new TooltipLine(mod, "LeashRange", $"{RangeTiles} leash range") { OverrideColor = new Color(193, 154, 107) };
+        yield return new TooltipLine(mod, "LeashPenalty", "Weaker while puppy leashed") { OverrideColor = Color.LightGray };
     }
 
-    public override void ModifyTooltips(List<TooltipLine> tooltips)
-    {
-        TooltipUtils.AddLeashTooltip(tooltips, Mod, LeashRangeTiles);
-        var optional = new List<TooltipLine>(GetOptionalTooltips());
-        if (optional.Count == 0)
-            return;
-        int priceIdx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");
-        if (priceIdx >= 0)
-        {
-            tooltips.InsertRange(priceIdx, optional);
-            return;
-        }
-        int kbIdx = tooltips.FindIndex(l => l.Name == "Knockback");
-        if (kbIdx >= 0)
-        {
-            tooltips.InsertRange(kbIdx + 1, optional);
-            return;
-        }
-        tooltips.AddRange(optional);
-    }
+    public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);
 
     public virtual void AffectPuppy(Player player)
     {

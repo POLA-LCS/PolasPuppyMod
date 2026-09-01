@@ -4,12 +4,16 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Players;
 using PuppyMod.Services.Clicker;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using PuppyMod.Common.Extensions;
+using PuppyMod.Common.Interfaces;
 
 namespace PuppyMod.Content.Items.Clicker;
 
-public abstract class BaseClickerItem : ModItem
+public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
 {
-    public int TileRange { get; protected set; } // tile amount
+    public int RangeTiles { get; protected set; } // tile amount
     public int UsageCooldown { get; protected set; } // amount of ticks
     public int BuffDuration { get; protected set; } // amount of ticks (60 = 1 second)
     public static class ClicksArray
@@ -64,8 +68,16 @@ public abstract class BaseClickerItem : ModItem
 
     public override bool? UseItem(Player player)
     {
-        ClickerService.Trigger(player, TileRange * 16f, BuffDuration, UsageCooldown);
+        ClickerService.Trigger(player, RangeTiles * 16f, BuffDuration, UsageCooldown);
         SoundEngine.PlaySound(ClicksArray.GetRandom(), player.Center);
         return true;
     }
+
+    public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
+    {
+        yield return new TooltipLine(mod, "ClickerRange", $"{RangeTiles} clicker range") { OverrideColor = new Color(193, 154, 107) };
+        yield return new TooltipLine(mod, "PraisingTime", $"{BuffDuration / 60f:0.#} seconds praising time") { OverrideColor = Color.LightGray };
+    }
+
+    public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);
 }

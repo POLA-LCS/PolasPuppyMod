@@ -1,33 +1,21 @@
 Items: {
 	ClickerItem: {
 		DisplayName: Clicker
-		Tooltip:
-			'''
-			10 clicker range
-			Average speed
-			3s praising
-			clack! click! use it when you see a good puppy
-			'''
+		Tooltip: clack! click! use it when you see a good puppy
 	}
 
 	GoldenClickerItem: {
 		DisplayName: Golden Clicker
-		Tooltip:
-			'''
-			15 clicker range
-			Fast speed
-			4s praising
-			puppy deserves expensive clicks
-			'''
+		Tooltip: puppy deserves expensive clicks
 	}
 
 	CollarItem: {
 		DisplayName: Puppy Collar
 		Tooltip:
 			'''
-			+2 defense and a soft glow
 			lets a leash latch on when you are a puppy
 			snug and shiny :3
+			2 defense
 			'''
 	}
 

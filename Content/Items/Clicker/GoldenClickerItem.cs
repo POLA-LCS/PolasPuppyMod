@@ -9,7 +9,7 @@ public class GoldenClickerItem : BaseClickerItem
     public override void SetDefaults()
     {
         base.SetDefaults();
-        TileRange = 15;
+        RangeTiles = 15;
         UsageCooldown = 45; // slightly faster than regular
         BuffDuration = 240; // 4 seconds
         Item.rare = ItemRarityID.Yellow;

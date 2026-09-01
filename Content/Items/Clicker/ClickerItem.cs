@@ -9,7 +9,7 @@ public class ClickerItem : BaseClickerItem
     public override void SetDefaults()
     {
         base.SetDefaults();
-        TileRange = 10;
+        RangeTiles = 10;
         UsageCooldown = 60; // 1 second cooldown between clicks
         BuffDuration = 180; // 3 seconds Good Puppy buff
         Item.rare = ItemRarityID.Pink;
