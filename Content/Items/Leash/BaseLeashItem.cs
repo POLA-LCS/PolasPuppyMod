@@ -10,7 +10,7 @@ using PuppyMod.Services.Leash;
 
 namespace PuppyMod.Content.Items.Leash;
 
-public abstract class BaseLeashItem : ModItem, ILeashItem, IWithRange
+public abstract class BaseLeashItem : ModItem, ILeashItem
 {
     public const float PenaltyUseTimeMult = 1.25f;
     public const float PenaltyDamageMult = 0.65f;
