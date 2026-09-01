@@ -7,8 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace PuppyMod.Content.Projectiles;
-
-public class ChainLeashProjectile : ModProjectile
+public class RopeLeashProjectile : ModProjectile
 {
     public override void SetStaticDefaults()
     {
@@ -18,27 +17,25 @@ public class ChainLeashProjectile : ModProjectile
     public override void SetDefaults()
     {
         Projectile.DefaultToWhip();
-        Projectile.WhipSettings.Segments = 21;
-        Projectile.WhipSettings.RangeMultiplier = 0.75f;
+        Projectile.WhipSettings.Segments = 14;
+        Projectile.WhipSettings.RangeMultiplier = 0.60f;
     }
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
     {
         Main.player[Projectile.owner].MinionAttackTargetNPC = target.whoAmI;
-        Projectile.damage = (int)(Projectile.damage * 0.5f);
-        if (Main.rand.NextFloat() < 0.33f)
-            target.AddBuff(BuffID.Poisoned, 300);
+        Projectile.damage = (int)(Projectile.damage * 0.75f);
     }
 
     public override bool PreDraw(ref Color lightColor)
     {
-        List<Vector2> list = [];
+        List<Vector2> list = new();
         Projectile.FillWhipControlPoints(Projectile, list);
 
         Texture2D texture = TextureAssets.Projectile[Type].Value;
         Vector2 origin = texture.Size() / 2f;
 
-        void PrintSegment(int i)
+        void DrawSegment(int i)
         {
             Vector2 element = list[i];
             Vector2 diff = list[i + 1] - element;
@@ -48,12 +45,11 @@ public class ChainLeashProjectile : ModProjectile
             Main.EntitySpriteDraw(texture, pos, null, col, rot, origin, 1f, SpriteEffects.None, 0);
         }
 
-        PrintSegment(0);
-        PrintSegment(list.Count - 2);
-        for (int i = 0; i < list.Count - 2; i += 2)
+        for (int i = 0; i < list.Count - 1; i++)
         {
-            PrintSegment(i);
+            DrawSegment(i);
         }
+
         return false;
     }
 }

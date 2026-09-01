@@ -12,35 +12,39 @@ namespace PuppyMod.Content.Items.Leash;
 
 public class RopeLeashItem : BaseLeashItem
 {
-    public override int RangeTiles => 14;
-    protected override DamageClass LeashDamageClass => DamageClass.Melee;
-    protected override int BaseDamage => 18;
-    protected override float BaseKnockback => 3f;
+    public override int RangeTiles => 8;
+    protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
+    protected override int BaseDamage => 8;
+    protected override float BaseKnockback => 0.75f;
+    protected override bool AppliesPenalty => false;
 
-    public const string RopeTexture = "Terraria/Images/Chain";
-    public override string LeashTexturePath => RopeTexture;
+    public override string LeashTexturePath => "Terraria/Images/Chain34";
     public override LeashPhysicsProfile Physics => new(
         SlackRatio: 0.78f,
-        Stiffness: 0.12f,
-        Damping: 0.55f,
-        MaxStretchRatio: 1.18f,
-        Curve: LeashElasticityCurve.SmoothRamp,
-        PuppyInertia: 1.00f,
-        OwnerInertia: 0.18f
+        Stiffness: 0.14f,
+        Damping: 0.72f,
+        MaxStretchRatio: 1.42f,
+        Curve: LeashElasticityCurve.Elastic,
+        PuppyInertia: 1.15f,
+        OwnerInertia: 0.22f
     );
 
     public override void SetDefaults()
     {
-        Item.DefaultToWhip(ModContent.ProjectileType<ChainLeashProjectile>(), 18, 3f, 4);
+        Item.DefaultToWhip(ModContent.ProjectileType<RopeLeashProjectile>(), 8, 0.75f, 9);
+        Item.useTime = 25;
+        Item.useAnimation = 25;
         Item.rare = ItemRarityID.Green;
-        Item.value = Item.sellPrice(silver: 80);
+        Item.value = Item.sellPrice(silver: 22);
     }
 
     public override bool MeleePrefix() => true;
 
     public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
-        Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+        float dir = 0.8f + 0.2f * Main.rand.NextFloat();
+        if (Main.rand.NextBool(3)) dir *= -1.5f;
+        Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0f, dir);
         return false;
     }
 
@@ -48,21 +52,18 @@ public class RopeLeashItem : BaseLeashItem
     {
         foreach (var line in base.GetTooltipLines(mod))
             yield return line;
-        yield return new TooltipLine(mod, "RopeSteady", "Steady pull");
     }
 
     public override void AddRecipes()
     {
         CreateRecipe(1)
-            .AddIngredient(ItemID.Rope, 30)
-            .AddIngredient(ItemID.Wood, 10)
-            .AddIngredient(ItemID.Silk, 2)
-            .AddTile(TileID.Loom)
+            .AddIngredient(ItemID.Rope, 50)
+            .AddTile(TileID.WorkBenches)
             .Register();
     }
 
     public override void AffectPuppy(Player player)
     {
-        // No extra effect; steady handling keeps puppy stable.
+        player.moveSpeed += 0.15f;
     }
 }

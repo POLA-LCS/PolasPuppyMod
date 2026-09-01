@@ -28,6 +28,7 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
     protected abstract DamageClass LeashDamageClass { get; }
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
+    protected virtual bool AppliesPenalty => true;
 
     private int originStyle;
     private int origTime;
@@ -84,7 +85,7 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
             Item.useAnimation = origAnim;
         }
 
-        if (LeashService.IsLeashing(player, Type))
+        if (AppliesPenalty && LeashService.IsLeashing(player, Type))
         {
             Item.useTime = (int)(Item.useTime * PenaltyUseTimeMult);
             Item.useAnimation = (int)(Item.useAnimation * PenaltyUseTimeMult);
@@ -133,7 +134,6 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
     public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
         yield return new TooltipLine(mod, "LeashRange", $"{RangeTiles} leash range") { OverrideColor = new Color(193, 154, 107) };
-        yield return new TooltipLine(mod, "LeashPenalty", "Weaker while puppy leashed") { OverrideColor = Color.LightGray };
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);

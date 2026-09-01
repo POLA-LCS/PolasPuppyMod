@@ -12,31 +12,31 @@ namespace PuppyMod.Content.Items.Leash;
 
 public class ChainLeashItem : BaseLeashItem
 {
-    public override int RangeTiles => 12;
+    public override int RangeTiles => 10;
     protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
-    protected override int BaseDamage => 14;
+    protected override int BaseDamage => 17;
     protected override float BaseKnockback => 2f;
 
-    public const string ChainTexture = "Terraria/Images/Chain";
-    public override string LeashTexturePath => ChainTexture;
+    public override string LeashTexturePath => "Terraria/Images/Chain22";
     public override LeashPhysicsProfile Physics => new(
         SlackRatio: 0.92f,
         Stiffness: 0.34f,
         Damping: 0.85f,
         MaxStretchRatio: 1.06f,
-        Curve: LeashElasticityCurve.SteepStep,
+        Curve: LeashElasticityCurve.PasitoAPasito,
         PuppyInertia: 1.80f,
         OwnerInertia: 0.12f
     );
 
     private static float PoisonChance => 0.20f;
     private static int PoisonDuration => 300;
-
     public override void SetDefaults()
     {
-        Item.DefaultToWhip(ModContent.ProjectileType<ChainLeashProjectile>(), 14, 2f, 4);
+        Item.DefaultToWhip(ModContent.ProjectileType<ChainLeashProjectile>(), 17, 2f, 4);
+        Item.useTime = 38;
+        Item.useAnimation = 38;
         Item.rare = ItemRarityID.Orange;
-        Item.value = Item.sellPrice(gold: 1);
+        Item.value = Item.sellPrice(silver: 47);
     }
 
     public override bool MeleePrefix() => true;
@@ -66,6 +66,7 @@ public class ChainLeashItem : BaseLeashItem
         foreach (var line in base.GetTooltipLines(mod))
             yield return line;
         yield return new TooltipLine(mod, "ChainPoison", "Strike enemies to poison them");
+        yield return new TooltipLine(mod, "LeashPenalty", "Weaker while puppy leashed") { OverrideColor = Color.LightGray };
     }
 
     public override void AddRecipes()
