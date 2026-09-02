@@ -10,4 +10,8 @@ public class PuppyModClientConfig : ModConfig
     [Header("PuppySet")]
     [DefaultValue(true)]
     public bool StartAsPuppy;
+
+    [Header("Debug")]
+    [DefaultValue(false)]
+    public bool BarkDebug;
 }

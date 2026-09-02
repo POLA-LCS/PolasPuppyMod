@@ -10,8 +10,8 @@ public class ClickerItem : BaseClickerItem
     {
         base.SetDefaults();
         RangeTiles = 10;
-        UsageCooldown = 60; // 1 second cooldown between clicks
-        BuffDuration = 180; // 3 seconds Good Puppy buff
+        UsageCooldown = 60;
+        BuffDuration = 180;
         Item.rare = ItemRarityID.Pink;
         Item.value = Item.sellPrice(gold: 1, silver: 4, copper: 1);
     }

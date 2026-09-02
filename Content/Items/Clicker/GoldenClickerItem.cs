@@ -11,7 +11,7 @@ public class GoldenClickerItem : BaseClickerItem
         base.SetDefaults();
         RangeTiles = 15;
         UsageCooldown = 45;
-        BuffDuration = 240; // 4 seconds
+        BuffDuration = 240;
         Item.rare = ItemRarityID.Yellow;
         Item.value = Item.sellPrice(gold: 1, silver: 4, copper: 1);
     }

@@ -43,6 +43,16 @@ Items: {
 		DisplayName: Exponential Leash Item
 		Tooltip: ""
 	}
+
+	PuppyEarsItem: {
+		DisplayName: Puppy Ears Item
+		Tooltip: ""
+	}
+
+	PuppyTailItem: {
+		DisplayName: Puppy Tail Item
+		Tooltip: ""
+	}
 }
 
 Buffs: {
@@ -70,11 +80,20 @@ Configs: {
 
 	PuppyModClientConfig: {
 		DisplayName: Puppy Client Config
-		Headers.PuppySet: Puppy Set
+
+		Headers: {
+			PuppySet: Puppy Set
+			Debug: Debug Header
+		}
 
 		StartAsPuppy: {
 			Label: Start being a puppy
 			Tooltip: Whether you want to start with puppy ears and tail
+		}
+
+		BarkDebug: {
+			Label: Bark Debug
+			Tooltip: ""
 		}
 	}
 }

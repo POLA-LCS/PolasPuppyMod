@@ -13,6 +13,16 @@ public class PuppyPlayer : PolasBasePlayer
 {
     public const int BarkCooldownTicks = 20;
     public const int DoubleTapWindow = 18;
+    public const float EarsPickAccessory = 0.10f;
+    public const float EarsPickVanity = 0.05f;
+    public const float TailMoveAccessory = 0.30f;
+    public const float TailAccRunAccessory = 0.45f;
+    public const float TailMaxRunAccessory = 0.30f;
+    public const float TailJumpAccessory = 1.0f;
+    public const float TailMoveVanity = 0.15f;
+    public const float TailAccRunVanity = 0.22f;
+    public const float TailMaxRunVanity = 0.15f;
+    public const float TailJumpVanity = 0.5f;
 
     public enum PuppyState
     {
@@ -25,22 +35,17 @@ public class PuppyPlayer : PolasBasePlayer
     private bool prevControlUp = false;
     private int barkCooldown = 0;
 
-    public PuppyState HowPuppy { get; private set; } = PuppyState.Human;
-    public bool IsPuppy => HowPuppy != PuppyState.Human;
-
-    private bool IsWearingPuppyEars => Player.armor[10].type == ItemID.DogEars;
-
-    private PuppyState GetPuppyTailState()
+    public bool HasDogEarsAccessory;
+    public bool HasDogEarsVanity;
+    public bool HasDogTailAccessory;
+    public bool HasDogTailVanity;
+    public bool HasDogEars => HasDogEarsAccessory || HasDogEarsVanity;
+    public bool HasDogTail => HasDogTailAccessory || HasDogTailVanity;
+    public bool IsPuppy => HasDogEars && HasDogTail;
+    public PuppyState HowPuppy()
     {
-        var whereTailEquipped = HasEquippedAccessoryVanity(ItemID.DogTail);
-        if (whereTailEquipped.HasValue)
-        {
-            if (whereTailEquipped.Value)
-            {
-                return PuppyState.Therian;
-            }
-            return PuppyState.Furry;
-        }
+        if (HasDogEars && HasDogTail)
+            return PuppyState.Therian;
         return PuppyState.Human;
     }
 
@@ -59,9 +64,10 @@ public class PuppyPlayer : PolasBasePlayer
             Bark(bark, pitched: true);
         else
             Bark(bark);
+
+        TryShowBarkDebug();
     }
 
-    // ====== Overriding section =========
     public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
     {
         var server = ModContent.GetInstance<PuppyModServerConfig>();
@@ -79,27 +85,24 @@ public class PuppyPlayer : PolasBasePlayer
         return [dog_ears, dog_tail];
     }
 
-    public override void PostUpdateEquips()
+    public override void ResetEffects()
     {
-        PuppyState tailState = PuppyState.Human;
-
-        if (IsWearingPuppyEars)
-            tailState = GetPuppyTailState();
-
-        if (HowPuppy == PuppyState.Human && tailState != PuppyState.Human)
-            PlayRandomBark();
-
-        HowPuppy = tailState;
-        if (HowPuppy == PuppyState.Therian)
-            Player.setBonus = "Therian Puppy Set: better Puppy Set and +15% mining speed\nDouble tap UP to bark! Arf!";
-        else if (HowPuppy == PuppyState.Furry)
-            Player.setBonus = "Puppy Set: Improved mobility and +15% mining speed\nDouble tap UP to bark! Arf!";
+        HasDogEarsAccessory = false;
+        HasDogEarsVanity = false;
+        HasDogTailAccessory = false;
+        HasDogTailVanity = false;
     }
 
     public override void PreUpdate()
     {
+    }
+
+    public override void PostUpdate()
+    {
         if (barkCooldown > 0)
             barkCooldown--;
+        if (doubleTapUpTimer > 0)
+            doubleTapUpTimer--;
 
         if (IsPuppy && barkCooldown <= 0)
         {
@@ -125,9 +128,6 @@ public class PuppyPlayer : PolasBasePlayer
         {
             prevControlUp = false;
         }
-
-        if (doubleTapUpTimer > 0)
-            doubleTapUpTimer--;
     }
 
     public override void OnHurt(Player.HurtInfo info)
@@ -150,27 +150,51 @@ public class PuppyPlayer : PolasBasePlayer
         return Vector2.DistanceSquared(Player.Center, clickerHolder.Center) <= range * range;
     }
 
+    private void UpdatePuppySetFlags()
+    {
+        bool ea = HasDogEarsAccessory, ev = HasDogEarsVanity, ta = HasDogTailAccessory, tv = HasDogTailVanity;
+        GetDogSetLocationFlags(out bool earsAcc, out bool earsVan, out bool tailAcc, out bool tailVan);
+        HasDogEarsAccessory = ea || earsAcc;
+        HasDogEarsVanity = ev || earsVan;
+        HasDogTailAccessory = ta || tailAcc;
+        HasDogTailVanity = tv || tailVan;
+    }
+
+    public override void PostUpdateEquips()
+    {
+        UpdatePuppySetFlags();
+        if (IsPuppy)
+        {
+            Player.setBonus = "Double tap to bark! arf! wruuf!";
+        }
+    }
+
     public override void PostUpdateMiscEffects()
     {
-        if (HowPuppy == PuppyState.Human)
-            return;
+        float earPick = 0f;
+        if (HasDogEarsAccessory) earPick = EarsPickAccessory;
+        else if (HasDogEarsVanity) earPick = EarsPickVanity;
+        Player.pickSpeed -= earPick;
 
-        // Dog Set bonus
-        if (HowPuppy == PuppyState.Therian)
+        float move = 0f, accRun = 0f, maxRun = 0f, jump = 0f;
+        if (HasDogTailAccessory)
         {
-            Player.moveSpeed += 0.3f;
-            Player.accRunSpeed += 0.5f;
-            Player.maxRunSpeed += 0.3f;
-            Player.jumpSpeedBoost += 0.75f;
-            Player.pickSpeed -= 0.15f;
+            move = TailMoveAccessory;
+            accRun = TailAccRunAccessory;
+            maxRun = TailMaxRunAccessory;
+            jump = TailJumpAccessory;
         }
-        else
+        else if (HasDogTailVanity)
         {
-            Player.moveSpeed += 0.15f;
-            Player.accRunSpeed += 0.2f;
-            Player.maxRunSpeed += 0.15f;
-            Player.jumpSpeedBoost += 0.3f;
+            move = TailMoveVanity;
+            accRun = TailAccRunVanity;
+            maxRun = TailMaxRunVanity;
+            jump = TailJumpVanity;
         }
+        Player.moveSpeed += move;
+        Player.accRunSpeed += accRun;
+        Player.maxRunSpeed += maxRun;
+        Player.jumpSpeedBoost += jump;
 
         HappyIfClicker();
     }
@@ -190,6 +214,29 @@ public class PuppyPlayer : PolasBasePlayer
             int buffTime = owner.BuffDuration;
             Player.AddBuff(ModContent.BuffType<GoodPuppyBuff>(), buffTime);
         }
+    }
+
+    private void TryShowBarkDebug()
+    {
+        if (!ModContent.GetInstance<PuppyModClientConfig>().BarkDebug)
+            return;
+        if (Player.whoAmI != Main.myPlayer)
+            return;
+        if (Main.netMode == Terraria.ID.NetmodeID.Server)
+            return;
+
+        float pick = Player.pickSpeed;
+        float move = Player.moveSpeed;
+        float acc = Player.accRunSpeed;
+        float max = Player.maxRunSpeed;
+        float jump = Player.jumpSpeedBoost;
+
+        string earsSrc = HasDogEarsAccessory ? "Acc" : HasDogEarsVanity ? "Van" : "None";
+        string tailSrc = HasDogTailAccessory ? "Acc" : HasDogTailVanity ? "Van" : "None";
+        var state = HowPuppy();
+
+        string msg = $"[Bark] {state} (Ears:{earsSrc} Tail:{tailSrc}) pick:{pick:F2} move:{move:F2} accRun:{acc:F2} maxRun:{max:F2} jump:{jump:F2}";
+        Main.NewText(msg, Color.Cyan);
     }
 }
 

@@ -12,7 +12,7 @@ namespace PuppyMod.Content.Items.Leash;
 
 public class RopeLeashItem : BaseLeashItem
 {
-    public override int RangeTiles => 8;
+    public override int RangeTiles => 12;
     protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
     protected override int BaseDamage => 8;
     protected override float BaseKnockback => 0.75f;
