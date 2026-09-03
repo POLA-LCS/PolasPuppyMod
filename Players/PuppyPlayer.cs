@@ -24,13 +24,6 @@ public class PuppyPlayer : PolasBasePlayer
     public const float TailMaxRunVanity = 0.15f;
     public const float TailJumpVanity = 0.5f;
 
-    public enum PuppyState
-    {
-        Human = 0,
-        Furry = 1,
-        Therian = 2,
-    }
-
     private int doubleTapUpTimer = 0;
     private bool prevControlUp = false;
     private int barkCooldown = 0;
@@ -42,12 +35,6 @@ public class PuppyPlayer : PolasBasePlayer
     public bool HasDogEars => HasDogEarsAccessory || HasDogEarsVanity;
     public bool HasDogTail => HasDogTailAccessory || HasDogTailVanity;
     public bool IsPuppy => HasDogEars && HasDogTail;
-    public PuppyState HowPuppy()
-    {
-        if (HasDogEars && HasDogTail)
-            return PuppyState.Therian;
-        return PuppyState.Human;
-    }
 
     public void Bark(SoundStyle sound, bool pitched = false)
     {
@@ -233,9 +220,8 @@ public class PuppyPlayer : PolasBasePlayer
 
         string earsSrc = HasDogEarsAccessory ? "Acc" : HasDogEarsVanity ? "Van" : "None";
         string tailSrc = HasDogTailAccessory ? "Acc" : HasDogTailVanity ? "Van" : "None";
-        var state = HowPuppy();
 
-        string msg = $"[Bark] {state} (Ears:{earsSrc} Tail:{tailSrc}) pick:{pick:F2} move:{move:F2} accRun:{acc:F2} maxRun:{max:F2} jump:{jump:F2}";
+        string msg = $"[Bark] (Ears:{earsSrc} Tail:{tailSrc}) pick:{pick:F2} move:{move:F2} accRun:{acc:F2} maxRun:{max:F2} jump:{jump:F2}";
         Main.NewText(msg, Color.Cyan);
     }
 }

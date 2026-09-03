@@ -7,36 +7,31 @@ using Terraria.ModLoader;
 
 namespace PuppyMod.Content.GlobalItems
 {
-    public class DogSetGlobalItem : GlobalItem
+    public class DogTailGlobalItem : GlobalItem
     {
-        public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == ItemID.DogEars || entity.type == ItemID.DogTail;
+        public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == ItemID.DogTail;
 
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)
         {
             var puppy = player.GetModPlayer<PuppyPlayer>();
-            if (item.type == ItemID.DogEars) puppy.HasDogEarsAccessory = true;
-            if (item.type == ItemID.DogTail) puppy.HasDogTailAccessory = true;
+            puppy.HasDogTailAccessory = true;
         }
 
         public override void UpdateEquip(Item item, Player player)
         {
             var puppy = player.GetModPlayer<PuppyPlayer>();
-            if (item.type == ItemID.DogEars) puppy.HasDogEarsAccessory = true;
-            if (item.type == ItemID.DogTail) puppy.HasDogTailAccessory = true;
+            puppy.HasDogTailAccessory = true;
+
         }
 
         public override void UpdateVanity(Item item, Player player)
         {
             var puppy = player.GetModPlayer<PuppyPlayer>();
-            if (item.type == ItemID.DogEars) puppy.HasDogEarsVanity = true;
-            if (item.type == ItemID.DogTail) puppy.HasDogTailVanity = true;
+            puppy.HasDogTailVanity = true;
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            if (item.type != ItemID.DogEars && item.type != ItemID.DogTail)
-                return;
-
             // Puppy is puppy no matter what Terraria says!
             tooltips.RemoveAll(l => l.Mod == "Terraria" && l.Name == "Social");
             tooltips.RemoveAll(l => l.Mod == "Terraria" && l.Name == "SocialDesc");
@@ -83,12 +78,10 @@ namespace PuppyMod.Content.GlobalItems
                 }
             }
 
-            bool earsAcc = false, earsVan = false, tailAcc = false, tailVan = false;
+            bool tailAcc = false, tailVan = false;
             if (Main.LocalPlayer != null && Main.LocalPlayer.active)
             {
                 var helper = Main.LocalPlayer.GetModPlayer<PolasBasePlayer>();
-                earsAcc = helper.HasInAccessory(ItemID.DogEars);
-                earsVan = helper.HasInVanity(ItemID.DogEars);
                 tailAcc = helper.HasInAccessory(ItemID.DogTail);
                 tailVan = helper.HasInVanity(ItemID.DogTail);
             }
@@ -99,41 +92,20 @@ namespace PuppyMod.Content.GlobalItems
             if (index == -1) index = tooltips.Count - 1;
 
             // Don't judge this statements, is going to make my life easier in a hipotetical future
-            if (item.type == ItemID.DogEars)
+            if (tailAcc)
             {
-                if (earsAcc)
-                {
-                    tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEarsStat", "Increase digging speed"));
-                    tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "\u00b4Lets make a hole! *paw* *paw*\u00b4"));
-                }
-                else if (earsVan)
-                {
-                    tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEarsHalf", "Increase digging speed (halved)"));
-                    tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "\u00b4Lets make a hole! *paw* *paw*\u00b4"));
-                }
-                else
-                {
-                    tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEars", "Increase digging speed"));
-                    tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "\u00b4Lets make a hole! *paw* *paw*\u00b4"));
-                }
+                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTailStat", "Increase movility"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "\u00b4Walkies will be zooming! aarrruf!\u00b4"));
+            }
+            else if (tailVan)
+            {
+                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTailHalf", "[c/C8C864:halved:] Increase movility"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "´Walkies will be zooming! aarrruf!´"));
             }
             else
             {
-                if (tailAcc)
-                {
-                    tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTailStat", "Increase movility"));
-                    tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "\u00b4Walkies will be zooming! aarrruf!\u00b4"));
-                }
-                else if (tailVan)
-                {
-                    tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTailHalf", "Increase movility (halved)"));
-                    tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "\u00b4Walkies will be zooming! aarrruf!\u00b4"));
-                }
-                else
-                {
-                    tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTail", "Increase movility"));
-                    tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "\u00b4Walkies will be zooming! aarrruf!\u00b4"));
-                }
+                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTail", "Increase movility"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "\u00b4Walkies will be zooming! aarrruf!\u00b4"));
             }
         }
     }
