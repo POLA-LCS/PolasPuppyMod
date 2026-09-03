@@ -17,8 +17,8 @@ public class RopeLeashProjectile : ModProjectile
     public override void SetDefaults()
     {
         Projectile.DefaultToWhip();
-        Projectile.WhipSettings.Segments = 14;
-        Projectile.WhipSettings.RangeMultiplier = 0.60f;
+        Projectile.WhipSettings.Segments = 17;
+        Projectile.WhipSettings.RangeMultiplier = 0.50f;
     }
 
     public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -29,23 +29,23 @@ public class RopeLeashProjectile : ModProjectile
 
     public override bool PreDraw(ref Color lightColor)
     {
-        List<Vector2> list = new();
-        Projectile.FillWhipControlPoints(Projectile, list);
+        List<Vector2> controlPoints = [];
+        Projectile.FillWhipControlPoints(Projectile, controlPoints);
 
         Texture2D texture = TextureAssets.Projectile[Type].Value;
         Vector2 origin = texture.Size() / 2f;
 
         void DrawSegment(int i)
         {
-            Vector2 element = list[i];
-            Vector2 diff = list[i + 1] - element;
+            Vector2 element = controlPoints[i];
+            Vector2 diff = controlPoints[i + 1] - element;
             float rot = diff.ToRotation() - MathHelper.PiOver2;
             Color col = Lighting.GetColor(element.ToTileCoordinates());
             Vector2 pos = element + diff * 0.5f - Main.screenPosition;
             Main.EntitySpriteDraw(texture, pos, null, col, rot, origin, 1f, SpriteEffects.None, 0);
         }
 
-        for (int i = 0; i < list.Count - 1; i++)
+        for (int i = 0; i < controlPoints.Count - 1; i++)
         {
             DrawSegment(i);
         }

@@ -73,19 +73,25 @@ public class ChainedPlayer : ModPlayer
 
     private void RestrictMovement(Player owner)
     {
-        if (owner == null || !owner.active || owner.dead) return;
+        if (owner == null || !owner.active || owner.dead)
+        {
+            return;
+        }
         float distance = Vector2.Distance(Player.Center, owner.Center);
         float max = ActiveLeashRange;
-        if (distance <= max) return;
+        if (distance <= max)
+        {
+            return;
+        }
         Vector2 midpoint = (Player.Center + owner.Center) / 2f;
         Vector2 puppyOffset = Player.Center - midpoint;
         Vector2 ownerOffset = owner.Center - midpoint;
-        float puppyPull = 0.10f;
-        float ownerPull = 0.018f;
+        float puppyPull = 0f;
+        float ownerPull = 0f;
         if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
         {
-            puppyPull = leash.PuppyPull;
-            ownerPull = leash.OwnerPull;
+            puppyPull = leash.Physics.PuppyInertia;
+            ownerPull = leash.Physics.OwnerInertia;
         }
         const float div = 8f;
         Player.velocity -= puppyOffset * puppyPull / div;

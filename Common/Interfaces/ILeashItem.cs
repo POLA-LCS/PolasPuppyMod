@@ -6,7 +6,5 @@ public interface ILeashItem : IWithRange
 {
     void AffectPuppy(Terraria.Player puppy);
     string LeashTexturePath { get; }
-    float PuppyPull { get; }
-    float OwnerPull { get; }
-    LeashPhysicsProfile Physics => new LeashPhysicsProfile();
+    LeashPhysicsProfile Physics => new();
 }

@@ -32,9 +32,9 @@ public class ChainLeashItem : BaseLeashItem
     private static int PoisonDuration => 300;
     public override void SetDefaults()
     {
-        Item.DefaultToWhip(ModContent.ProjectileType<ChainLeashProjectile>(), 17, 2f, 4);
-        Item.useTime = 38;
-        Item.useAnimation = 38;
+        Item.DefaultToWhip(ModContent.ProjectileType<ChainLeashProjectile>(), 17, 5f, 4);
+        Item.useTime = 45;
+        Item.useAnimation = 45;
         Item.rare = ItemRarityID.Orange;
         Item.value = Item.sellPrice(silver: 47);
     }

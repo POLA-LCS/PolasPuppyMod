@@ -99,13 +99,27 @@ namespace PuppyMod.Content.GlobalItems
             }
             else if (earsVan)
             {
-                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEarsHalf", "[c/C8C864:halved:] Increase digging speed"));
+                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEarsHalf", "[c/C8C864:halved]: Increase digging speed"));
                 tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "´Lets make a hole! *paw* *paw*´"));
             }
             else
             {
                 tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEars", "Increase digging speed"));
                 tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "´Lets make a hole! *paw* *paw*´"));
+            }
+
+            if (Main.LocalPlayer != null && Main.LocalPlayer.active)
+            {
+                var puppy = Main.LocalPlayer.GetModPlayer<PuppyPlayer>();
+                if (puppy.IsPuppy)
+                {
+                    var bonusLine = new TooltipLine(Mod, "PuppyBonus", "Puppy bonus: Double tap to bark! arf! wruuf!") { OverrideColor = new Microsoft.Xna.Framework.Color(255, 190, 125) };
+                    int bonusIdx = tooltips.FindLastIndex(x => x.Name.StartsWith("Tooltip"));
+                    if (bonusIdx != -1)
+                        tooltips.Insert(bonusIdx + 1, bonusLine);
+                    else
+                        tooltips.Add(bonusLine);
+                }
             }
         }
     }

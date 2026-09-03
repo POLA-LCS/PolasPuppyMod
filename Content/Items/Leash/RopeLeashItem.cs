@@ -31,9 +31,9 @@ public class RopeLeashItem : BaseLeashItem
 
     public override void SetDefaults()
     {
-        Item.DefaultToWhip(ModContent.ProjectileType<RopeLeashProjectile>(), 8, 0.75f, 9);
-        Item.useTime = 25;
-        Item.useAnimation = 25;
+        Item.DefaultToWhip(ModContent.ProjectileType<RopeLeashProjectile>(), 8, 1f, 5);
+        Item.useTime = 32;
+        Item.useAnimation = 32;
         Item.rare = ItemRarityID.Green;
         Item.value = Item.sellPrice(silver: 22);
     }

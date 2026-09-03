@@ -20,11 +20,7 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 
     public abstract int RangeTiles { get; }
     public abstract string LeashTexturePath { get; }
-    public virtual LeashPhysicsProfile Physics => new LeashPhysicsProfile();
-    [System.Obsolete("Use Physics.PuppyInertia")]
-    public virtual float PuppyPull => Physics.PuppyInertia * 0.10f;
-    [System.Obsolete("Use Physics.OwnerInertia")]
-    public virtual float OwnerPull => Physics.OwnerInertia * 0.10f;
+    public virtual LeashPhysicsProfile Physics => new();
     protected abstract DamageClass LeashDamageClass { get; }
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;

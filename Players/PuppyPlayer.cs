@@ -152,7 +152,7 @@ public class PuppyPlayer : PolasBasePlayer
         UpdatePuppySetFlags();
         if (IsPuppy)
         {
-            Player.setBonus = "Double tap to bark! arf! wruuf!";
+            Player.setBonus = "Puppy bonus: Double tap to bark! arf! wruuf!";
         }
     }
 
