@@ -11,47 +11,42 @@ Items: {
 
 	CollarItem: {
 		DisplayName: Puppy Collar
-		Tooltip:
-			'''
-			lets a leash latch on when you are a puppy
-			snug and shiny :3
-			2 defense
-			'''
+		Tooltip: Wear this so an Owner can gently leash you — snug & shiny :3 (+2 defense!)
 	}
 
 	ChainLeashItem: {
 		DisplayName: Chain Leash
-		Tooltip: ""
+		Tooltip: Sturdy chain, 10 tiles — may poison foes, puppy gets +5 defense! Right-click a collared puppy to clip! *walkies!*
 	}
 
 	RopeLeashItem: {
 		DisplayName: Rope Leash
-		Tooltip: ""
+		Tooltip: Soft rope, 12 tiles — stretchy and zoomy! Puppy gets +15% move speed! Right-click to clip/unclip! *wag!*
 	}
 
 	RubberLeashItem: {
-		DisplayName: Rubber Leash Item
-		Tooltip: ""
+		DisplayName: Rubber Leash
+		Tooltip: Bouncy rubber, super stretchy walkies! *boing!* :3
 	}
 
 	ElasticLeashItem: {
-		DisplayName: Elastic Leash Item
-		Tooltip: ""
+		DisplayName: Elastic Leash
+		Tooltip: Extra elastic walkies — stretchy & zoomy! *stretch!* :3
 	}
 
 	ExponentialLeashItem: {
-		DisplayName: Exponential Leash Item
-		Tooltip: ""
+		DisplayName: Springy Leash
+		Tooltip: Springy and bouncy walkies! *spring!* zoom zoom! :3
 	}
 
 	PuppyEarsItem: {
-		DisplayName: Puppy Ears Item
-		Tooltip: ""
+		DisplayName: Puppy Ears
+		Tooltip: Floppy ears! *paw paw* diggy zoom! :3
 	}
 
 	PuppyTailItem: {
-		DisplayName: Puppy Tail Item
-		Tooltip: ""
+		DisplayName: Puppy Tail
+		Tooltip: Waggy tail! *wag wag* zoomies incoming! :3
 	}
 }
 
@@ -73,8 +68,8 @@ Configs: {
 		Headers.PuppySet: Puppy Set
 
 		EnableStartingPuppies: {
-			Label: Enable starting puppies
-			Tooltip: Allows players joining the world to start as puppies if they want
+			Label: Puppy start enabled :3
+			Tooltip: Lets new pups join with ears & tail ready! *wag* :3
 		}
 	}
 
@@ -87,13 +82,13 @@ Configs: {
 		}
 
 		StartAsPuppy: {
-			Label: Start being a puppy
-			Tooltip: Whether you want to start with puppy ears and tail
+			Label: Start as a puppy :3
+			Tooltip: Begin your adventure with floppy ears & waggly tail! *arf!* :3
 		}
 
 		BarkDebug: {
-			Label: Bark Debug
-			Tooltip: ""
+			Label: Show bark stats :3
+			Tooltip: Shows a cute *arf!* when you bark — just for fun! *wag* :3
 		}
 	}
 }

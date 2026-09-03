@@ -129,7 +129,8 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 
     public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        yield return new TooltipLine(mod, "LeashRange", $"{RangeTiles} leash range") { OverrideColor = new Color(193, 154, 107) };
+        // gentle walkies! *wag wag* :3
+        yield return new TooltipLine(mod, "LeashRange", $"{RangeTiles} tiles — gentle walkies! *wag wag*") { OverrideColor = new Color(193, 154, 107) };
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);

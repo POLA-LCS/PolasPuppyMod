@@ -13,9 +13,9 @@ namespace PuppyMod.Content.Items.Clicker;
 
 public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
 {
-    public int RangeTiles { get; protected set; } // tile amount
-    public int UsageCooldown { get; protected set; } // amount of ticks
-    public int BuffDuration { get; protected set; } // amount of ticks (60 = 1 second)
+    public int RangeTiles { get; protected set; } // *clack!* how far your praise reaches :3
+    public int UsageCooldown { get; protected set; } // *paw tap* little pause between clicks :3
+    public int BuffDuration { get; protected set; } // *good puppy!* zoom time :3
     public static class ClicksArray
     {
         private static SoundStyle LoadPuppySound(string name) =>
@@ -75,8 +75,9 @@ public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
 
     public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        yield return new TooltipLine(mod, "ClickerRange", $"{RangeTiles} clicker range") { OverrideColor = new Color(193, 154, 107) };
-        yield return new TooltipLine(mod, "PraisingTime", $"{BuffDuration / 60f:0.#} seconds praising time") { OverrideColor = Color.LightGray };
+        // *clack clack* cute praises for good puppies! :3
+        yield return new TooltipLine(mod, "ClickerRange", $"{RangeTiles} tiles — *clack!* praises puppies nearby") { OverrideColor = new Color(193, 154, 107) };
+        yield return new TooltipLine(mod, "PraisingTime", $"{BuffDuration / 60f:0.#}s of Good Puppy! *good job!*") { OverrideColor = Color.LightGray };
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);

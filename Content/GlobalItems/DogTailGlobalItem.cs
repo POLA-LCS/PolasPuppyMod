@@ -91,21 +91,21 @@ namespace PuppyMod.Content.GlobalItems
             if (index == -1) index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Defense");
             if (index == -1) index = tooltips.Count - 1;
 
-            // Don't judge this statements, is going to make my life easier in a hipotetical future
+            // *wag wag* zoomies time! :3
             if (tailAcc)
             {
-                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTailStat", "Increase movility"));
-                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "\u00b4Walkies will be zooming! aarrruf!\u00b4"));
+                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTailStat", "Increase mobility"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "'Walkies = zoomies! Aarr-woof! :3'"));
             }
             else if (tailVan)
             {
-                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTailHalf", "[c/C8C864:halved]: Increase movility"));
-                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "´Walkies will be zooming! aarrruf!´"));
+                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTailHalf", "[c/C8C864:halved]: Increase mobility"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "'Walkies = zoomies! Aarr-woof! :3'"));
             }
             else
             {
-                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTail", "Increase movility"));
-                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "\u00b4Walkies will be zooming! aarrruf!\u00b4"));
+                tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyTail", "Increase mobility"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyTailFlavor", "'Walkies = zoomies! Aarr-woof! :3'"));
             }
 
             if (Main.LocalPlayer != null && Main.LocalPlayer.active)
@@ -113,7 +113,7 @@ namespace PuppyMod.Content.GlobalItems
                 var puppy = Main.LocalPlayer.GetModPlayer<PuppyPlayer>();
                 if (puppy.IsPuppy)
                 {
-                    var bonusLine = new TooltipLine(Mod, "PuppyBonus", "Puppy bonus: Double tap to bark! arf! wruuf!") { OverrideColor = new Microsoft.Xna.Framework.Color(255, 190, 125) };
+                    var bonusLine = new TooltipLine(Mod, "PuppyBonus", "Puppy bonus: Double tap to bark! Arf! Woof! :3") { OverrideColor = new Microsoft.Xna.Framework.Color(255, 190, 125) };
                     int bonusIdx = tooltips.FindLastIndex(x => x.Name.StartsWith("Tooltip"));
                     if (bonusIdx != -1)
                         tooltips.Insert(bonusIdx + 1, bonusLine);

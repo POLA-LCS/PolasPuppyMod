@@ -63,10 +63,11 @@ public class ChainLeashItem : BaseLeashItem
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
+        // sturdy chain *clink* walkies + protection! :3
         foreach (var line in base.GetTooltipLines(mod))
             yield return line;
-        yield return new TooltipLine(mod, "ChainPoison", "Strike enemies to poison them");
-        yield return new TooltipLine(mod, "LeashPenalty", "Weaker while puppy leashed") { OverrideColor = Color.LightGray };
+        yield return new TooltipLine(mod, "ChainPoison", "Chain sting may poison foes! *tingle*");
+        yield return new TooltipLine(mod, "LeashPenalty", "A little weaker while walking your puppy — hands full! *soft tug*") { OverrideColor = Color.LightGray };
     }
 
     public override void AddRecipes()

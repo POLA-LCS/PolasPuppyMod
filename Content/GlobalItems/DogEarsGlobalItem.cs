@@ -91,21 +91,21 @@ namespace PuppyMod.Content.GlobalItems
             if (index == -1) index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Defense");
             if (index == -1) index = tooltips.Count - 1;
 
-            // Don't judge this statements, is going to make my life easier in a hipotetical future
+            // *paw paw* cute ears go zoom! :3
             if (earsAcc)
             {
                 tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEarsStat", "Increase digging speed"));
-                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "´Lets make a hole! *paw* *paw*´"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "'Let's make a hole! *paw paw* :3'"));
             }
             else if (earsVan)
             {
                 tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEarsHalf", "[c/C8C864:halved]: Increase digging speed"));
-                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "´Lets make a hole! *paw* *paw*´"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "'Let's make a hole! *paw paw* :3'"));
             }
             else
             {
                 tooltips.Insert(index + 1, new TooltipLine(Mod, "PuppyEars", "Increase digging speed"));
-                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "´Lets make a hole! *paw* *paw*´"));
+                tooltips.Insert(index + 2, new TooltipLine(Mod, "PuppyEarsFlavor", "'Let's make a hole! *paw paw* :3'"));
             }
 
             if (Main.LocalPlayer != null && Main.LocalPlayer.active)
@@ -113,7 +113,7 @@ namespace PuppyMod.Content.GlobalItems
                 var puppy = Main.LocalPlayer.GetModPlayer<PuppyPlayer>();
                 if (puppy.IsPuppy)
                 {
-                    var bonusLine = new TooltipLine(Mod, "PuppyBonus", "Puppy bonus: Double tap to bark! arf! wruuf!") { OverrideColor = new Microsoft.Xna.Framework.Color(255, 190, 125) };
+                    var bonusLine = new TooltipLine(Mod, "PuppyBonus", "Puppy bonus: Double tap to bark! Arf! Woof! :3") { OverrideColor = new Microsoft.Xna.Framework.Color(255, 190, 125) };
                     int bonusIdx = tooltips.FindLastIndex(x => x.Name.StartsWith("Tooltip"));
                     if (bonusIdx != -1)
                         tooltips.Insert(bonusIdx + 1, bonusLine);

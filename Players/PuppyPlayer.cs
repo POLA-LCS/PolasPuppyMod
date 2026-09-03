@@ -11,18 +11,19 @@ namespace PuppyMod.Players;
 
 public class PuppyPlayer : PolasBasePlayer
 {
-    public const int BarkCooldownTicks = 20;
-    public const int DoubleTapWindow = 18;
-    public const float EarsPickAccessory = 0.10f;
-    public const float EarsPickVanity = 0.05f;
-    public const float TailMoveAccessory = 0.30f;
-    public const float TailAccRunAccessory = 0.45f;
-    public const float TailMaxRunAccessory = 0.30f;
-    public const float TailJumpAccessory = 1.0f;
-    public const float TailMoveVanity = 0.15f;
-    public const float TailAccRunVanity = 0.22f;
-    public const float TailMaxRunVanity = 0.15f;
-    public const float TailJumpVanity = 0.5f;
+    // *arf!* pup stats — soft & zoomy, not code! :3
+    public const int BarkCooldownTicks = 20; // *bark!* little breather :3
+    public const int DoubleTapWindow = 18; // *tap tap* zoom window :3
+    public const float EarsPickAccessory = 0.10f; // digging zoom! *paw paw* :3
+    public const float EarsPickVanity = 0.05f; // lil halved diggy :3
+    public const float TailMoveAccessory = 0.30f; // zoomies! *wag wag* :3
+    public const float TailAccRunAccessory = 0.45f; // speedy paws :3
+    public const float TailMaxRunAccessory = 0.30f; // max zoom! :3
+    public const float TailJumpAccessory = 1.0f; // boing! :3
+    public const float TailMoveVanity = 0.15f; // soft zoom :3
+    public const float TailAccRunVanity = 0.22f; // gentle paws :3
+    public const float TailMaxRunVanity = 0.15f; // lil zoom :3
+    public const float TailJumpVanity = 0.5f; // little boing :3
 
     private int doubleTapUpTimer = 0;
     private bool prevControlUp = false;
@@ -152,7 +153,8 @@ public class PuppyPlayer : PolasBasePlayer
         UpdatePuppySetFlags();
         if (IsPuppy)
         {
-            Player.setBonus = "Puppy bonus: Double tap to bark! arf! wruuf!";
+            // *arf!* cute set bonus :3
+            Player.setBonus = "Puppy bonus: Double tap to bark! Arf! Woof! :3";
         }
     }
 
@@ -212,16 +214,11 @@ public class PuppyPlayer : PolasBasePlayer
         if (Main.netMode == Terraria.ID.NetmodeID.Server)
             return;
 
-        float pick = Player.pickSpeed;
-        float move = Player.moveSpeed;
-        float acc = Player.accRunSpeed;
-        float max = Player.maxRunSpeed;
-        float jump = Player.jumpSpeedBoost;
-
+        // *arf!* cute debug for zoomy pups :3
         string earsSrc = HasDogEarsAccessory ? "Acc" : HasDogEarsVanity ? "Van" : "None";
         string tailSrc = HasDogTailAccessory ? "Acc" : HasDogTailVanity ? "Van" : "None";
 
-        string msg = $"[Bark] (Ears:{earsSrc} Tail:{tailSrc}) pick:{pick:F2} move:{move:F2} accRun:{acc:F2} maxRun:{max:F2} jump:{jump:F2}";
+        string msg = $"*arf!* You're feeling zoomy! Ears:{earsSrc} Tail:{tailSrc} *wag*";
         Main.NewText(msg, Color.Cyan);
     }
 }

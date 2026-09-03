@@ -11,7 +11,7 @@ Turn your adventure into walkies! This mod lets you be a little more puppy while
 [h1]how to be puppy — arf![/h1]
 [list]
 [*][b]Become a puppy —[/b] Equip both [b]Dog Ears + Dog Tail[/b] to feel instantly more puppy! You get the set free on a new character, and you can take them off anytime to be you again. *arf!*
-[*][b]Choose your style —[/b] Wear the Tail in [b]vanity[/b] for cozy [b]Furry[/b] mode (+ movement speed and mining speed) or in an [b]accessory slot[/b] for bouncy [b]Therian[/b] mode (much faster running and big jumps). The set bonus tells you what you picked!
+[*][b]Mix and match —[/b] [b]Dog Ears[/b] boost digging, [b]Dog Tail[/b] boosts mobility (both [c/C8C864:halved] in vanity). Equip both for [b]Puppy bonus: Double tap UP to bark![/b] — even in vanity!
 [*][b]Get praised! —[/b] A non-puppy holding the [b]Clicker[/b] can praise every nearby puppy at once, giving them the [b]Good Puppy![/b] buff for health regen and happy zoomies! Puppies can't click — they get to be good. *clack!*
 [*][b]Bark for attention —[/b] Double-tap [b]UP[/b] to bark whenever you want — it sounds higher and happier right after you've been praised! *awoo!*
 [*][b]Walkies —[/b] The puppy must wear the [b]Chain Leash[/b]; any owner can then [b]right-click[/b] the puppy (even empty-handed) to clip on a soft brown rope that keeps you close. While tethered you get a continuous happy effect with a gentle tug to stay nearby — right-click again to unclip and toggle it off! *wag wag!*
