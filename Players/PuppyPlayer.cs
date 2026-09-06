@@ -110,10 +110,10 @@ public class PuppyPlayer : PolasBasePlayer
         if (!IsPuppy)
             return;
 
-        var growl = Growls.GetRandom().WithVolumeScale(0.80f);
-        Bark(growl);
-        var cry = Cries.GetRandom().WithVolumeScale(0.30f);
-        Bark(cry);
+        if (Main.rand.NextBool())
+            Bark(Growls.GetRandom().WithVolumeScale(0.80f));
+        else
+            Bark(Cries.GetRandom().WithVolumeScale(0.30f));
     }
 
     public bool CanHearClicker(Player clickerHolder)
