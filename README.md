@@ -1,6 +1,6 @@
 # Puppy Mod - arf arf! who's a good puppy? ૮⸝⸝> ﻌ <⸝⸝ა
 
-v1.5.14 - for Terraria 1.4.4+
+v1.5.15 - for Terraria 1.4.4+
 
 Puppy Mod is a small puppy-focused mod I made for myself. I always liked the vanilla Dog Ears and Dog Tail, so I wanted them to actually feel like being a puppy - cute, a bit useful, and totally optional.
 
