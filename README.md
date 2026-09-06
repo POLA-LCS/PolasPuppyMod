@@ -1,4 +1,4 @@
-# Puppy Mod - arf arf! who's a good puppy? YOU are! ૮⸝⸝> ﻌ <⸝⸝ა
+# Puppy Mod - arf arf! who's a good puppy? ૮⸝⸝> ﻌ <⸝⸝ა
 
 v1.5.12 - for Terraria 1.4.4+
 
