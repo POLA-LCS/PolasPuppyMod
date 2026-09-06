@@ -107,21 +107,20 @@ public class PuppyPlayer : PolasBasePlayer
 
     public override void ModifyHurt(ref Player.HurtModifiers modifiers)
     {
-        if (IsPuppy)
-            modifiers.DisableSound();
-    }
-
-    public override void OnHurt(Player.HurtInfo info)
-    {
         if (!IsPuppy)
             return;
         if (Player.dead)
             return;
-
-        if (Main.rand.NextBool())
-            Bark(Growls.GetRandom().WithVolumeScale(0.80f));
-        else
-            Bark(Cries.GetRandom().WithVolumeScale(0.60f));
+        modifiers.DisableSound();
+        modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) =>
+        {
+            if (Player.statLife - info.Damage <= 0)
+                return;
+            if (Main.rand.NextBool())
+                Bark(Growls.GetRandom().WithVolumeScale(0.80f));
+            else
+                Bark(Cries.GetRandom().WithVolumeScale(0.60f));
+        };
     }
 
     public bool CanHearClicker(Player clickerHolder)
