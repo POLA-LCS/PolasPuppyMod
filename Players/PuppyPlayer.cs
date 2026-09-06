@@ -14,7 +14,7 @@ namespace PuppyMod.Players;
 
 public class PuppyPlayer : PolasBasePlayer
 {
-    public const int BarkCooldownTicks = 20; // *bark!* little breather :3
+    public const int BarkCooldownTicks = 25; // *bark!* little breather :3
     public const int DoubleTapWindow = 18; // *tap tap* zoom window :3
     public const float EarsPickAccessory = 0.10f; // digging zoom! *paw paw* :3
     public const float EarsPickVanity = 0.05f; // lil halved diggy :3
@@ -103,6 +103,12 @@ public class PuppyPlayer : PolasBasePlayer
             return;
         PlayRandomBark();
         barkCooldown = BarkCooldownTicks;
+    }
+
+    public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+    {
+        if (IsPuppy)
+            modifiers.DisableSound();
     }
 
     public override void OnHurt(Player.HurtInfo info)
