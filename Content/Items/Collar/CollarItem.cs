@@ -1,12 +1,15 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
+using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Collar;
+
 public class CollarItem : ModItem
 {
+    public override string Texture => AssetUtils.GetItemTexturePath(nameof(CollarItem));
+
     public override void SetDefaults()
     {
         Item.width = 32;

@@ -10,6 +10,9 @@ using PuppyMod.Services.Leash;
 
 namespace PuppyMod.Players;
 
+/// <summary>
+/// Tracks leash-related state for a player, including collar possession, grabber authority, and active leash type.
+/// </summary>
 public class ChainedPlayer : ModPlayer
 {
     public bool hasCollar = false;
@@ -69,6 +72,44 @@ public class ChainedPlayer : ModPlayer
         packet.Write(ActiveLeashItemType);
         if (toWho == -1) packet.Send();
         else packet.Send(toWho);
+    }
+
+    public override void ResetEffects()
+    {
+        hasCollar = false;
+    }
+
+    public override void PostUpdateEquips()
+    {
+        if (hasCollar)
+        {
+            Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f);
+        }
+    }
+
+    public override void PostUpdate()
+    {
+        if (!GrabberIndex.HasValue) return;
+        if (!IsChainValid())
+        {
+            if (Main.netMode == NetmodeID.Server)
+                ModContent.GetInstance<PuppyMod>().BroadcastLeashDetached(Player.whoAmI);
+            GrabberIndex = null;
+            ActiveLeashItemType = 0;
+            return;
+        }
+        if (ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
+            leash.AffectPuppy(Player);
+        Player.AddBuff(BuffID.Sunflower, 60);
+        ApplyLeashPhysics(OwnerOf);
+    }
+
+    public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+    {
+        if (GrabberIndex.HasValue && Main.netMode == NetmodeID.Server)
+            ModContent.GetInstance<PuppyMod>().BroadcastLeashDetached(Player.whoAmI);
+        GrabberIndex = null;
+        ActiveLeashItemType = 0;
     }
 
     private void RestrictMovement(Player owner)
@@ -151,47 +192,8 @@ public class ChainedPlayer : ModPlayer
         }
     }
 
-    public override void ResetEffects()
+    private void DrawRope(Player owner)
     {
-        hasCollar = false;
-    }
-
-    public override void PostUpdateEquips()
-    {
-        if (hasCollar)
-        {
-            Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f);
-        }
-    }
-
-    public override void PostUpdate()
-    {
-        if (!GrabberIndex.HasValue) return;
-        if (!IsChainValid())
-        {
-            if (Main.netMode == NetmodeID.Server)
-                ModContent.GetInstance<PuppyMod>().BroadcastLeashDetached(Player.whoAmI);
-            GrabberIndex = null;
-            ActiveLeashItemType = 0;
-            return;
-        }
-        if (ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
-            leash.AffectPuppy(Player);
-        Player.AddBuff(BuffID.Sunflower, 60);
-        ApplyLeashPhysics(OwnerOf);
-    }
-
-    public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
-    {
-        if (GrabberIndex.HasValue && Main.netMode == NetmodeID.Server)
-            ModContent.GetInstance<PuppyMod>().BroadcastLeashDetached(Player.whoAmI);
-        GrabberIndex = null;
-        ActiveLeashItemType = 0;
-    }
-
-    private void DrawRope(Player owner, PlayerDrawSet drawInfo)
-    {
-        _ = drawInfo;
         Vector2 start = Player.Center;
         Vector2 end = owner.Center;
         Vector2 direction = end - start;
@@ -224,6 +226,6 @@ public class ChainedPlayer : ModPlayer
         if (!GrabberIndex.HasValue) return;
         Player owner = OwnerOf;
         if (owner == null || !owner.active || owner.dead) return;
-        DrawRope(owner, drawInfo);
+        DrawRope(owner);
     }
 }

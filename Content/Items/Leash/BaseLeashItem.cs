@@ -4,7 +4,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Data;
-using PuppyMod.Common.Enums;
 using PuppyMod.Common.Extensions;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Players;
@@ -20,7 +19,7 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 
     public abstract int RangeTiles { get; }
     public abstract string LeashTexturePath { get; }
-    public virtual LeashPhysicsProfile Physics => new();
+    public virtual LeashPhysicsProfile Physics => default;
     protected abstract DamageClass LeashDamageClass { get; }
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
@@ -51,6 +50,9 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 
     public override bool AltFunctionUse(Player player) => true;
 
+    /// <summary>
+    /// Caches the original item use properties if not already cached.
+    /// </summary>
     private void EnsureOriginalCached()
     {
         if (hasOriginal) return;

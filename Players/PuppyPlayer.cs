@@ -3,29 +3,85 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs.GoodPuppy;
 using System.Collections.Generic;
-using System;
-using Stubble.Core;
 
 namespace PuppyMod.Players;
 
+/// <summary>
+/// Provides puppy-specific behavior including ear/tail accessories, barking mechanics, and clicker detection.
+/// </summary>
 public class PuppyPlayer : PolasBasePlayer
 {
-    public const int BarkCooldownTicks = 25; // *bark!* little breather :3
-    public const int DoubleTapWindow = 18; // *tap tap* zoom window :3
-    public const float EarsPickAccessory = 0.10f; // digging zoom! *paw paw* :3
-    public const float EarsPickVanity = 0.05f; // lil halved diggy :3
-    public const float TailMoveAccessory = 0.30f; // zoomies! *wag wag* :3
-    public const float TailAccRunAccessory = 0.45f; // speedy paws :3
-    public const float TailMaxRunAccessory = 0.30f; // max zoom! :3
-    public const float TailJumpAccessory = 1.0f; // boing! :3
-    public const float TailMoveVanity = 0.15f; // soft zoom :3
-    public const float TailAccRunVanity = 0.22f; // gentle paws :3
-    public const float TailMaxRunVanity = 0.15f; // lil zoom :3
-    public const float TailJumpVanity = 0.5f; // little boing :3
+    /// <summary>
+    /// The number of ticks between when a puppy can bark again after barking.
+    /// </summary>
+    public const int BarkCooldownTicks = 25;
+    /// <summary>
+    /// The window of ticks for double-tap detection to trigger barking.
+    /// </summary>
+    public const int DoubleTapWindow = 18;
+    /// <summary>
+    /// The pick speed increase from dog ears when used as an accessory.
+    /// </summary>
+    public const float EarsPickAccessory = 0.10f;
+    /// <summary>
+    /// The pick speed increase from dog ears when used as a vanity item.
+    /// </summary>
+    public const float EarsPickVanity = 0.05f;
+    /// <summary>
+    /// The move speed increase from a dog tail when used as an accessory.
+    /// </summary>
+    public const float TailMoveAccessory = 0.30f;
+    /// <summary>
+    /// The acceleration run speed increase from a dog tail when used as an accessory.
+    /// </summary>
+    public const float TailAccRunAccessory = 0.45f;
+    /// <summary>
+    /// The maximum run speed increase from a dog tail when used as an accessory.
+    /// </summary>
+    public const float TailMaxRunAccessory = 0.30f;
+    /// <summary>
+    /// The jump speed boost from a dog tail when used as an accessory.
+    /// </summary>
+    public const float TailJumpAccessory = 1.0f;
+    /// <summary>
+    /// The move speed increase from dog ears when used as a vanity item.
+    /// </summary>
+    public const float TailMoveVanity = 0.15f;
+    /// <summary>
+    /// The acceleration run speed increase from a dog tail when used as a vanity item.
+    /// </summary>
+    public const float TailAccRunVanity = 0.22f;
+    /// <summary>
+    /// The maximum run speed increase from a dog tail when used as a vanity item.
+    /// </summary>
+    public const float TailMaxRunVanity = 0.15f;
+    /// <summary>
+    /// The jump speed boost from a dog tail when used as a vanity item.
+    /// </summary>
+    public const float TailJumpVanity = 0.5f;
+    /// <summary>
+    /// The pitch increase applied when barking is pitched up.
+    /// </summary>
+    private const float BarkPitchIncrease = 0.4f;
+    /// <summary>
+    /// The maximum value for random chance comparisons.
+    /// </summary>
+    private const int RandomChanceMax = 100;
+    /// <summary>
+    /// The chance threshold (out of <see cref="RandomChanceMax"/>) for triggering a growl bark.
+    /// </summary>
+    private const int GrowlChanceThreshold = 75;
+    /// <summary>
+    /// The minimum pitch clamp value for sound pitch adjustment.
+    /// </summary>
+    private const float PitchClampMin = -1f;
+    /// <summary>
+    /// The maximum pitch clamp value for sound pitch adjustment.
+    /// </summary>
+    private const float PitchClampMax = 1f;
 
     private int barkCooldown = 0;
 
@@ -39,7 +95,7 @@ public class PuppyPlayer : PolasBasePlayer
 
     public void Bark(SoundStyle sound, bool pitched = false)
     {
-        SoundStyle bark = pitched ? sound with { Pitch = MathHelper.Clamp(sound.Pitch + 0.4f, -1f, 1f) } : sound;
+        SoundStyle bark = pitched ? sound with { Pitch = MathHelper.Clamp(sound.Pitch + BarkPitchIncrease, PitchClampMin, PitchClampMax) } : sound;
         if (Player.whoAmI == Main.myPlayer)
             SoundEngine.PlaySound(bark, Player.Center);
     }
@@ -119,7 +175,7 @@ public class PuppyPlayer : PolasBasePlayer
                 Bark(Cries.GetRandom());
                 return;
             }
-            if (Main.rand.Next(100) < 75)
+            if (Main.rand.Next(RandomChanceMax) < GrowlChanceThreshold)
                 Bark(Growls.GetRandom());
             else
                 Bark(Cries.GetRandom());
@@ -152,7 +208,6 @@ public class PuppyPlayer : PolasBasePlayer
         UpdatePuppySetFlags();
         if (IsPuppy)
         {
-            // *arf!* cute set bonus :3
             string dir = Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
             Player.setBonus = $"Puppy bonus: Double tap {dir} to bark, arf!";
         }

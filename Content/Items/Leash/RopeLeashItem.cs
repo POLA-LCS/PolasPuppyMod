@@ -6,12 +6,15 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Data;
 using PuppyMod.Common.Enums;
+using PuppyMod.Common.Utils;
 using PuppyMod.Content.Projectiles;
 
 namespace PuppyMod.Content.Items.Leash;
 
 public class RopeLeashItem : BaseLeashItem
 {
+    public override string Texture => AssetUtils.GetItemTexturePath(nameof(RopeLeashItem));
+
     public override int RangeTiles => 12;
     protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
     protected override int BaseDamage => 8;

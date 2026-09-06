@@ -1,10 +1,13 @@
 using Terraria;
 using Terraria.ModLoader;
+using PuppyMod.Common.Utils;
 
 namespace PuppyMod.Content.Buffs.GoodPuppy;
 
 public class GoodPuppyBuff : ModBuff
 {
+    public override string Texture => AssetUtils.GetItemTexturePath(nameof(GoodPuppyBuff));
+
     public const int LifeRegen = 14;
     public const float MoveSpeed = 0.6f;
     public const float AccRunSpeed = 1.5f;
@@ -17,7 +20,6 @@ public class GoodPuppyBuff : ModBuff
 
     public override void Update(Player player, ref int buffIndex)
     {
-        // good little puppy :3
         player.lifeRegen += LifeRegen;
         player.moveSpeed += MoveSpeed;
         player.accRunSpeed += AccRunSpeed;

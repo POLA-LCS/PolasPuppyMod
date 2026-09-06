@@ -5,13 +5,10 @@ namespace PuppyMod.Players;
 public class OwnerPlayer : ModPlayer
 {
     public const int ClickSignalTicks = 10;
-
     public float ClickRange { get; private set; }
     public int BuffDuration { get; private set; }
-
     public int ClickSignalTimer { get; private set; }
     public int ClickCooldown { get; private set; }
-
     public bool HasClicked => ClickSignalTimer > 0;
     public bool CanClick => ClickCooldown <= 0;
 

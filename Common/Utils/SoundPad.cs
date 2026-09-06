@@ -26,15 +26,13 @@ public sealed class SoundPad
 
     private static string[] ScanCategory(string category)
     {
+        var assemblyPath = Path.GetDirectoryName(typeof(SoundPad).Assembly.Location) ?? "";
+        var modPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games", "Terraria", "tModLoader", "ModSources", "PuppyMod", "Assets", "Sounds", category);
         var candidates = new[]
         {
-            Path.Combine("Assets", "Sounds", category),
-            Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Sounds", category),
-            Path.Combine(AppContext.BaseDirectory, "Assets", "Sounds", category),
-            Path.Combine(Path.GetDirectoryName(typeof(SoundPad).Assembly.Location) ?? "", "Assets", "Sounds", category),
+            Path.Combine(assemblyPath, "Assets", "Sounds", category),
+            modPath
         };
-        var modSources = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games", "Terraria", "tModLoader", "ModSources", "PuppyMod", "Assets", "Sounds", category);
-        candidates = candidates.Append(modSources).ToArray();
         foreach (var c in candidates)
         {
             if (Directory.Exists(c))
@@ -46,33 +44,7 @@ public sealed class SoundPad
                 if (files.Length > 0) return files;
             }
         }
-        var dir = FindAssetsCategory(category);
-        if (dir != null)
-        {
-            return Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly)
-                .Select(Path.GetFileNameWithoutExtension)
-                .Where(n => !string.IsNullOrEmpty(n))
-                .ToArray();
-        }
         return Array.Empty<string>();
-    }
-
-    private static string FindAssetsCategory(string category)
-    {
-        try
-        {
-            var start = Path.GetDirectoryName(typeof(SoundPad).Assembly.Location);
-            for (int i = 0; i < 6 && !string.IsNullOrEmpty(start); i++)
-            {
-                var candidate = Path.Combine(start, "Assets", "Sounds", category);
-                if (Directory.Exists(candidate)) return candidate;
-                var candidate2 = Path.Combine(start, "ModSources", "PuppyMod", "Assets", "Sounds", category);
-                if (Directory.Exists(candidate2)) return candidate2;
-                start = Path.GetDirectoryName(start);
-            }
-        }
-        catch { }
-        return null;
     }
 
     public static SoundPad LoadCategory(string category, float pitch = 0.5f, float variance = 0.5f, float volume = 1f)

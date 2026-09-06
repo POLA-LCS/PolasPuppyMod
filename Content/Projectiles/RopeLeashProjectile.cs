@@ -5,10 +5,14 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Common.Utils;
 
 namespace PuppyMod.Content.Projectiles;
+
 public class RopeLeashProjectile : ModProjectile
 {
+    public override string Texture => AssetUtils.GetItemTexturePath(nameof(RopeLeashProjectile));
+
     public override void SetStaticDefaults()
     {
         ProjectileID.Sets.IsAWhip[Type] = true;

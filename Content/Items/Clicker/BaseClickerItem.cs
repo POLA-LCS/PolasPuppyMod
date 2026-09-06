@@ -14,9 +14,9 @@ namespace PuppyMod.Content.Items.Clicker;
 
 public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
 {
-    public int RangeTiles { get; protected set; } // *clack!* how far your praise reaches :3
-    public int UsageCooldown { get; protected set; } // *paw tap* little pause between clicks :3
-    public int BuffDuration { get; protected set; } // *good puppy!* zoom time :3
+    public int RangeTiles { get; protected set; }
+    public int UsageCooldown { get; protected set; }
+    public int BuffDuration { get; protected set; }
     public static readonly SoundPad Clicks = SoundPad.LoadCategory("Clicks", pitch: 0f, variance: 0.5f, volume: 0.9f);
 
     public override void SetDefaults()

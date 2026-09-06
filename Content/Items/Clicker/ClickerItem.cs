@@ -1,10 +1,12 @@
 using Terraria;
 using Terraria.ID;
+using PuppyMod.Common.Utils;
 
 namespace PuppyMod.Content.Items.Clicker;
 
 public class ClickerItem : BaseClickerItem
 {
+    public override string Texture => AssetUtils.GetItemTexturePath(nameof(ClickerItem));
 
     public override void SetDefaults()
     {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
@@ -31,6 +30,9 @@ public static class TooltipExtensions
     public static void ApplyTooltips(this List<TooltipLine> tooltips, Mod mod, ITooltipProvider provider)
         => tooltips.InsertLines(provider.GetTooltipLines(mod));
 
+    public static void AddRangeTooltip(this List<TooltipLine> tooltips, Mod mod, string lineName, int rangeTiles, string suffix, Color color)
+        => AddRangeTooltipCore(tooltips, mod, lineName, rangeTiles, suffix, color);
+
     private static void AddRangeTooltipCore(List<TooltipLine> tooltips, Mod mod, string lineName, int rangeTiles, string suffix, Color color)
     {
         var line = new TooltipLine(mod, lineName, $"{rangeTiles} {suffix}") { OverrideColor = color };
@@ -46,7 +48,4 @@ public static class TooltipExtensions
         else
             tooltips.Add(line);
     }
-
-    public static void AddRangeTooltip(this List<TooltipLine> tooltips, Mod mod, string lineName, int rangeTiles, string suffix, Color color)
-        => AddRangeTooltipCore(tooltips, mod, lineName, rangeTiles, suffix, color);
 }

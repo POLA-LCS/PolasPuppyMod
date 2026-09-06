@@ -5,6 +5,8 @@ namespace PuppyMod.Common.Interfaces;
 public interface ILeashItem : IWithRange
 {
     void AffectPuppy(Terraria.Player puppy);
+
     string LeashTexturePath { get; }
-    LeashPhysicsProfile Physics => new();
+
+    LeashPhysicsProfile Physics => default;
 }
