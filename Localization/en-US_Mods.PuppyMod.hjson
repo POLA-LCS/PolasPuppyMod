@@ -11,7 +11,7 @@ Items: {
 
 	CollarItem: {
 		DisplayName: Puppy Collar
-		Tooltip: Wear this so an Owner can gently leash you — snug & shiny :3 (+2 defense!)
+		Tooltip: Allows an owner to leash you
 	}
 
 	ChainLeashItem: {

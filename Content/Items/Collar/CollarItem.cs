@@ -12,6 +12,7 @@ public class CollarItem : ModItem
         Item.width = 32;
         Item.height = 32;
         Item.accessory = true;
+        Item.defense = 2;
         Item.maxStack = 1;
         Item.rare = ItemRarityID.Pink;
         Item.value = Item.sellPrice(silver: 27, copper: 1);

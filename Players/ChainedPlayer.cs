@@ -160,7 +160,6 @@ public class ChainedPlayer : ModPlayer
     {
         if (hasCollar)
         {
-            Player.statDefense += 2;
             Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f);
         }
     }
