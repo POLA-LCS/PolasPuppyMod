@@ -116,13 +116,13 @@ public class PuppyPlayer : PolasBasePlayer
         {
             if (Player.statLife - info.Damage <= 0)
             {
-                Bark(Cries.GetRandom().WithVolumeScale(0.60f));
+                Bark(Cries.GetRandom().WithVolumeScale(0.70f));
                 return;
             }
             if (Main.rand.Next(100) < 75)
-                Bark(Growls.GetRandom().WithVolumeScale(0.80f));
+                Bark(Growls.GetRandom().WithVolumeScale(0.90f));
             else
-                Bark(Cries.GetRandom().WithVolumeScale(0.60f));
+                Bark(Cries.GetRandom().WithVolumeScale(0.70f));
         };
     }
 
