@@ -115,8 +115,14 @@ public class PuppyPlayer : PolasBasePlayer
         modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) =>
         {
             if (Player.statLife - info.Damage <= 0)
+            {
+                Bark(Cries.GetRandom().WithVolumeScale(0.60f));
                 return;
-            Bark(Cries.GetRandom().WithVolumeScale(0.60f));
+            }
+            if (Main.rand.Next(100) < 75)
+                Bark(Growls.GetRandom().WithVolumeScale(0.80f));
+            else
+                Bark(Cries.GetRandom().WithVolumeScale(0.60f));
         };
     }
 
