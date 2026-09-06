@@ -16,12 +16,12 @@ Items: {
 
 	ChainLeashItem: {
 		DisplayName: Chain Leash
-		Tooltip: Sturdy chain, 10 tiles — may poison foes, puppy gets +5 defense! Right-click a collared puppy to clip! *walkies!*
+		Tooltip: ""
 	}
 
 	RopeLeashItem: {
 		DisplayName: Rope Leash
-		Tooltip: Soft rope, 12 tiles — stretchy and zoomy! Puppy gets +15% move speed! Right-click to clip/unclip! *wag!*
+		Tooltip: ""
 	}
 
 	RubberLeashItem: {

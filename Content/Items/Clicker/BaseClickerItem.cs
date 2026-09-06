@@ -2,6 +2,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 using PuppyMod.Services.Clicker;
 using System.Collections.Generic;
@@ -16,31 +17,7 @@ public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
     public int RangeTiles { get; protected set; } // *clack!* how far your praise reaches :3
     public int UsageCooldown { get; protected set; } // *paw tap* little pause between clicks :3
     public int BuffDuration { get; protected set; } // *good puppy!* zoom time :3
-    public static class ClicksArray
-    {
-        private static SoundStyle LoadPuppySound(string name) =>
-            new($"PuppyMod/Assets/Clicks/{name}") { Volume = 0.9f, PitchVariance = 0.5f };
-
-        private static readonly SoundStyle[] clicks = [
-            LoadPuppySound("clicker1"),
-            LoadPuppySound("clicker2"),
-            LoadPuppySound("clicker3"),
-        ];
-
-        public static SoundStyle Get(int index)
-        {
-            if (index < 0 || index >= clicks.Length)
-                throw new System.ArgumentOutOfRangeException(nameof(index));
-            return clicks[index];
-        }
-
-        public static SoundStyle GetRandom(int offset = 0)
-        {
-            if (offset < 0 || offset >= clicks.Length)
-                throw new System.ArgumentOutOfRangeException(nameof(offset));
-            return clicks[Main.rand.Next(offset, clicks.Length)];
-        }
-    }
+    public static readonly SoundPad Clicks = SoundPad.LoadCategory("Clicks", pitch: 0f, variance: 0.5f, volume: 0.9f);
 
     public override void SetDefaults()
     {
@@ -69,15 +46,14 @@ public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
     public override bool? UseItem(Player player)
     {
         ClickerService.Trigger(player, RangeTiles * 16f, BuffDuration, UsageCooldown);
-        SoundEngine.PlaySound(ClicksArray.GetRandom(), player.Center);
+        SoundEngine.PlaySound(Clicks.GetRandom(), player.Center);
         return true;
     }
 
     public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
         // *clack clack* cute praises for good puppies! :3
-        yield return new TooltipLine(mod, "ClickerRange", $"{RangeTiles} tiles — *clack!* praises puppies nearby") { OverrideColor = new Color(193, 154, 107) };
-        yield return new TooltipLine(mod, "PraisingTime", $"{BuffDuration / 60f:0.#}s of Good Puppy! *good job!*") { OverrideColor = Color.LightGray };
+        yield return new TooltipLine(mod, "ClickerRange", $"{RangeTiles} tiles") { OverrideColor = new Color(193, 154, 107) };
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);

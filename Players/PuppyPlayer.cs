@@ -3,15 +3,17 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod;
+using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs.GoodPuppy;
 using System.Collections.Generic;
 using System;
+using Stubble.Core;
 
 namespace PuppyMod.Players;
 
 public class PuppyPlayer : PolasBasePlayer
 {
-    // *arf!* pup stats — soft & zoomy, not code! :3
     public const int BarkCooldownTicks = 20; // *bark!* little breather :3
     public const int DoubleTapWindow = 18; // *tap tap* zoom window :3
     public const float EarsPickAccessory = 0.10f; // digging zoom! *paw paw* :3
@@ -25,8 +27,6 @@ public class PuppyPlayer : PolasBasePlayer
     public const float TailMaxRunVanity = 0.15f; // lil zoom :3
     public const float TailJumpVanity = 0.5f; // little boing :3
 
-    private int doubleTapUpTimer = 0;
-    private bool prevControlUp = false;
     private int barkCooldown = 0;
 
     public bool HasDogEarsAccessory;
@@ -44,9 +44,13 @@ public class PuppyPlayer : PolasBasePlayer
             SoundEngine.PlaySound(bark, Player.Center);
     }
 
+    public static readonly SoundPad Barks = SoundPad.LoadCategory("PuppySounds/woof");
+    public static readonly SoundPad Cries = SoundPad.LoadCategory("PuppySounds/cry");
+    public static readonly SoundPad Growls = SoundPad.LoadCategory("PuppySounds/growl");
+
     public void PlayRandomBark(bool forcePitch = false)
     {
-        var bark = BarksArray.GetRandom();
+        var bark = Barks.GetRandom();
         bool isGoodPuppy = Player.HasBuff(ModContent.BuffType<GoodPuppyBuff>());
         if (forcePitch || isGoodPuppy)
             Bark(bark, pitched: true);
@@ -89,33 +93,16 @@ public class PuppyPlayer : PolasBasePlayer
     {
         if (barkCooldown > 0)
             barkCooldown--;
-        if (doubleTapUpTimer > 0)
-            doubleTapUpTimer--;
+    }
 
-        if (IsPuppy && barkCooldown <= 0)
-        {
-            bool curUp = Player.controlUp;
-
-            if (curUp && !prevControlUp)
-            {
-                if (doubleTapUpTimer > 0)
-                {
-                    PlayRandomBark();
-                    doubleTapUpTimer = 0;
-                    barkCooldown = BarkCooldownTicks;
-                }
-                else
-                {
-                    doubleTapUpTimer = DoubleTapWindow;
-                }
-            }
-
-            prevControlUp = curUp;
-        }
-        else if (!Player.controlUp)
-        {
-            prevControlUp = false;
-        }
+    public override void ArmorSetBonusActivated()
+    {
+        if (!IsPuppy)
+            return;
+        if (barkCooldown > 0)
+            return;
+        PlayRandomBark();
+        barkCooldown = BarkCooldownTicks;
     }
 
     public override void OnHurt(Player.HurtInfo info)
@@ -123,7 +110,7 @@ public class PuppyPlayer : PolasBasePlayer
         if (!IsPuppy)
             return;
 
-        var growl = BarksArray.Get(Main.rand.Next(0, 2)).WithVolumeScale(0.50f);
+        var growl = Growls.GetRandom().WithVolumeScale(0.50f);
         Bark(growl);
     }
 
@@ -154,7 +141,8 @@ public class PuppyPlayer : PolasBasePlayer
         if (IsPuppy)
         {
             // *arf!* cute set bonus :3
-            Player.setBonus = "Puppy bonus: Double tap to bark! Arf! Woof! :3";
+            string dir = Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
+            Player.setBonus = $"Puppy bonus: Double tap {dir} to bark, arf!";
         }
     }
 
@@ -220,32 +208,5 @@ public class PuppyPlayer : PolasBasePlayer
 
         string msg = $"*arf!* You're feeling zoomy! Ears:{earsSrc} Tail:{tailSrc} *wag*";
         Main.NewText(msg, Color.Cyan);
-    }
-}
-
-internal static class BarksArray
-{
-    private static SoundStyle LoadPuppySound(string name) =>
-        new($"PuppyMod/Assets/Barks/{name}") { Pitch = 0.5f, PitchVariance = 0.5f };
-
-    private static readonly SoundStyle[] barks = [
-        LoadPuppySound("growl"),
-            LoadPuppySound("growl_woof"),
-            LoadPuppySound("woof"),
-            LoadPuppySound("woof2"),
-        ];
-
-    public static SoundStyle Get(int index)
-    {
-        if (index < 0 || index >= barks.Length)
-            throw new ArgumentOutOfRangeException(nameof(index));
-        return barks[index];
-    }
-
-    public static SoundStyle GetRandom(int offset = 1)
-    {
-        if (offset < 0 || offset >= barks.Length)
-            throw new ArgumentOutOfRangeException(nameof(offset));
-        return barks[Main.rand.Next(offset, barks.Length)];
     }
 }

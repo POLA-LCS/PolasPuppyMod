@@ -113,7 +113,8 @@ namespace PuppyMod.Content.GlobalItems
                 var puppy = Main.LocalPlayer.GetModPlayer<PuppyPlayer>();
                 if (puppy.IsPuppy)
                 {
-                    var bonusLine = new TooltipLine(Mod, "PuppyBonus", "Puppy bonus: Double tap to bark! Arf! Woof! :3") { OverrideColor = new Microsoft.Xna.Framework.Color(255, 190, 125) };
+                    string dir = Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
+                    var bonusLine = new TooltipLine(Mod, "PuppyBonus", $"Puppy bonus: Double tap {dir} to bark, arf!") { OverrideColor = new Microsoft.Xna.Framework.Color(255, 190, 125) };
                     int bonusIdx = tooltips.FindLastIndex(x => x.Name.StartsWith("Tooltip"));
                     if (bonusIdx != -1)
                         tooltips.Insert(bonusIdx + 1, bonusLine);

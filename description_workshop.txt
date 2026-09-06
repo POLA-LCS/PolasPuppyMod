@@ -1,33 +1,33 @@
-[h1]Puppy Mod — arf arf! who's a good puppy? YOU are! ૮⸝⸝> ﻌ <⸝⸝ა[/h1]
+[h1]Puppy Mod - arf arf! who's a good puppy? YOU are! ૮⸝⸝> ﻌ <⸝⸝ა[/h1]
 [i]a soft, silly mod for wagging, zooming, and getting told you're a very good puppy! *pant pant*[/i]
 
-[b]by POLA — v1.5.11 | Terraria 1.4.4+ | Multiplayer friendly — woof![/b]
+[b]v1.5.12 | Terraria 1.4.4+ | Multiplayer friendly - woof![/b]
 
 [hr][/hr]
 [h1]what does it do? ฅ•ω•ฅ[/h1]
-Turn your adventure into walkies! This mod lets you be a little more puppy while you dig, fight and explore — with playful praise and cozy owner/puppy moments with friends. It's light, consensual, and you decide when to be puppy and when not. [i]Gentle and SFW — just headpats and happy zoomies![/i]
+Turn your adventure into walkies! This mod lets you be a little more puppy while you dig, fight and explore - with playful praise and cozy owner/puppy moments with friends. It's light, consensual, and you decide when to be puppy and when not. [i]Gentle and SFW - just headpats and happy zoomies![/i]
 
 [hr][/hr]
-[h1]how to be puppy — arf![/h1]
+[h1]how to be puppy - arf![/h1]
 [list]
-[*][b]Become a puppy —[/b] Equip both [b]Dog Ears + Dog Tail[/b] to feel instantly more puppy! You get the set free on a new character, and you can take them off anytime to be you again. *arf!*
-[*][b]Mix and match —[/b] [b]Dog Ears[/b] boost digging, [b]Dog Tail[/b] boosts mobility (both [c/C8C864:halved] in vanity). Equip both for [b]Puppy bonus: Double tap UP to bark![/b] — even in vanity!
-[*][b]Get praised! —[/b] A non-puppy holding the [b]Clicker[/b] can praise every nearby puppy at once, giving them the [b]Good Puppy![/b] buff for health regen and happy zoomies! Puppies can't click — they get to be good. *clack!*
-[*][b]Bark for attention —[/b] Double-tap [b]UP[/b] to bark whenever you want — it sounds higher and happier right after you've been praised! *awoo!*
-[*][b]Walkies —[/b] The puppy must wear the [b]Chain Leash[/b]; any owner can then [b]right-click[/b] the puppy (even empty-handed) to clip on a soft brown rope that keeps you close. While tethered you get a continuous happy effect with a gentle tug to stay nearby — right-click again to unclip and toggle it off! *wag wag!*
+[*][b]Become a puppy -[/b] Equip both [b]Dog Ears + Dog Tail[/b] to feel instantly more puppy! You get the set free on a new character if you want it in configs, and you can take them off anytime to be you again. *arf!*
+[*][b]Mix and match -[/b] [b]Dog Ears[/b] helps with digging, [b]Dog Tail[/b] gives you zoomies for moving and jumping (both softer in vanity). Equip both for [b]Puppy bonus: Double tap DOWN to bark, arf![/b] - even in vanity!
+[*][b]Get praised! -[/b] A non-puppy holding the [b]Clicker[/b] can praise every nearby puppy at once, giving them the [b]Good Puppy![/b] buff for happy zoomies! Puppies can't click - they get to be good. *clack!*
+[*][b]Bark for attention -[/b] Double-tap [b]DOWN[/b] to bark whenever you want - it sounds higher and happier right after you've been praised! *awoo!*
+[*][b]Walkies -[/b] If you want, wear a [b]collar[/b]. An owner with a [b]leash or leash weapon[/b] can right-click you to clip on - you go for walkies together and you both get a buff while tethered. Right-click again to let go. *wag wag!*
 [/list]
 
 [hr][/hr]
-[h1]good to know — woof?[/h1]
+[h1]good to know - woof?[/h1]
 [b]Solo or with friends?[/b] Both work! Be a happy solo pupper, or bring friends to share the fun!
-[b]Two puppies?[/b] Yep — the whole pack can be good together!
-[b]Can puppies praise themselves?[/b] Nuh-uh — only owners praise, puppies get to be good. That's the fun! :3
+[b]Two puppies?[/b] Yep - the whole pack can be good together!
+[b]Can puppies praise themselves?[/b] Nuh-uh - only owners praise, puppies get to be good. That's the fun! :3
 
 [hr][/hr]
-[h1]credits — thank you, good puppies! ૮꒰ ྀི >⸝⸝⸝< ྀི꒱ა[/h1]
-Made with lots of wags by [b]POLA[/b] — every bark, woof and click is a real recording by yours truly, with pitch variation so it feels alive! *woof woof!*
+[h1]credits - thank you, good puppies! ૮꒰ ྀི >⸝⸝⸝< ྀི꒱ა[/h1]
+Made with lots of wags - every bark, woof and click is a real recording by me, so it feels alive! *woof woof!* :3
 Art mixes vanilla favourites with custom-made goodies.
-Thank you to every puppy who tested and said they felt [i]seen[/i] — you did so good! *headpat!*
+Thank you to every puppy who tested and said they felt [i]seen[/i] - you did so good! *headpat!*
 
 [hr][/hr]
-[i]Equip, wag, zoom — be a puppy for five minutes or the whole playthrough. You're a good puppy either way. Now go get praised! arf arf! ฅ>ω<ฅ[/i]
+[i]Equip, wag, zoom - be a puppy for five minutes or the whole playthrough. You're a good puppy either way. Now go get praised! arf arf! ฅ>ω<ฅ[/i]

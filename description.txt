@@ -1,4 +1,2 @@
-﻿Who's a good puppy? YOU are!
-Become puppy with Dog Ears + Dog Tail — each gives its own bonus (ears: digging, tail: mobility, halved in vanity) and together give Puppy bonus: Double tap UP to bark!
-Owner's Clicker praises every puppy in range, and a soft rope leash lets any Owner gently clip on with a right click — toggle on/off, keeps you close and happy while tethered, with only a light tug for them. Bare-handed, sweet and consensual.
-All barks, woofs and clicks are me — a real puppy recorded them for you. 100% SFW, opt-in, everyone friendly.
+﻿A puppy-focused mod for the Dog Ears + Dog Tail. Wear both for a cute + useful puppy bonus - bark (sounds recorded by me) and zoomies. Works in vanity too.
+Owners can praise nearby puppies with a Clicker for the Good Puppy buff, and if you wear a collar an owner with a leash can right-click you for walkies - you both get buffed while tethered. Configs for starter gear and preferences.
