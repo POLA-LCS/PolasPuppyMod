@@ -78,7 +78,7 @@ public class ChainLeashItem : BaseLeashItem
         CreateRecipe(1)
             .AddIngredient(ItemID.Chain, 20)
             .AddRecipeGroup(RecipeGroupID.IronBar, 3)
-            .AddIngredient(ItemID.Wood, 15)
+            .AddRecipeGroup(RecipeGroupID.Wood, 15)
             .AddTile(TileID.Anvils)
             .Register();
     }
