@@ -31,7 +31,7 @@ public class CollarItem : ModItem
     {
         CreateRecipe(1)
             .AddIngredient(ItemID.Silk, 10)
-            .AddIngredient(ItemID.IronBar, 5)
+            .AddRecipeGroup(RecipeGroupID.IronBar, 5)
             .AddTile(TileID.Anvils)
             .Register();
     }

@@ -21,14 +21,7 @@ public class GoldenClickerItem : BaseClickerItem
     public override void AddRecipes()
     {
         CreateRecipe(1)
-            .AddIngredient(ItemID.IronBar, 5)
-            .AddIngredient(ItemID.GoldBar, 10)
-            .AddIngredient(ItemID.Chain, 3)
-            .AddTile(TileID.WorkBenches)
-            .Register();
-
-        CreateRecipe(1)
-            .AddIngredient(ItemID.LeadBar, 5)
+            .AddRecipeGroup(RecipeGroupID.IronBar, 5)
             .AddIngredient(ItemID.GoldBar, 10)
             .AddIngredient(ItemID.Chain, 3)
             .AddTile(TileID.WorkBenches)
