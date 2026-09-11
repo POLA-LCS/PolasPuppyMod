@@ -1,18 +1,53 @@
 Items: {
-	ClickerItem: {
-		DisplayName: Clicker
-		Tooltip: clack! click! use it when you see a good puppy
-	}
-
-	GoldenClickerItem: {
-		DisplayName: Golden Clicker
-		Tooltip: puppy deserves expensive clicks
-	}
-
 	CollarItem: {
-		DisplayName: Puppy Collar
+		DisplayName: Pink Collar
 		Tooltip: Allows an owner to leash you
 	}
+
+	// AmethystCollarItem: {
+		// DisplayName: Amethyst Collar
+		// Tooltip: A mystical collar pulsing with arcane energy
+	// }
+
+	// TopazCollarItem: {
+		// DisplayName: Topaz Collar
+		// Tooltip: Keen and precise like a hunter's eye
+	// }
+
+	// SapphireCollarItem: {
+		// DisplayName: Sapphire Collar
+		// Tooltip: Ocean breeze guides swift paws
+	// }
+
+	// EmeraldCollarItem: {
+		// DisplayName: Emerald Collar
+		// Tooltip: Jungle vigor flows through woven silk
+	// }
+
+	// RubyCollarItem: {
+		// DisplayName: Ruby Collar
+		// Tooltip: Burning heart of a fearless pup
+	// }
+
+	// DiamondCollarItem: {
+		// DisplayName: Diamond Collar
+		// Tooltip: Unbreakable bond gleaming in light
+	// }
+
+	// AmberCollarItem: {
+		// DisplayName: Amber Collar
+		// Tooltip: Ancient resin holding timeless loyalty
+	// }
+
+	// MoltenCollarItem: {
+		// DisplayName: Molten Collar
+		// Tooltip: Forged in hellfire for the bravest walkies
+	// }
+
+	// HallowedCollarItem: {
+		// DisplayName: Hallowed Collar
+		// Tooltip: Blessed light protects every step
+	// }
 
 	ChainLeashItem: {
 		DisplayName: Chain Leash
@@ -24,29 +59,79 @@ Items: {
 		Tooltip: ""
 	}
 
-	RubberLeashItem: {
-		DisplayName: Rubber Leash
-		Tooltip: Bouncy rubber, super stretchy walkies! *boing!* :3
+	// AmethystSparkLeashItem: {
+		// DisplayName: Amethyst Spark Leash
+		// Tooltip: Crackling with violet starlight
+	// }
+
+	// TopazBoltLeashItem: {
+		// DisplayName: Topaz Bolt Leash
+		// Tooltip: Swift bolt streaks like desert sun
+	// }
+
+	// RubyFieryLeashItem: {
+		// DisplayName: Ruby Fiery Leash
+		// Tooltip: Lashes leave trails of searing flame
+	// }
+
+	// EmeraldVineLeashItem: {
+		// DisplayName: Emerald Vine Leash
+		// Tooltip: Vines coil and mark prey for the pack
+	// }
+
+	// DiamondGleamLeashItem: {
+		// DisplayName: Diamond Gleam Leash
+		// Tooltip: Prismatic gleam cuts through darkness
+	// }
+
+	// SapphireFrostLeashItem: {
+		// DisplayName: Sapphire Frost Leash
+		// Tooltip: Icy bite chills foes to the bone
+	// }
+
+	// AmberFangLeashItem: {
+		// DisplayName: Amber Fang Leash
+		// Tooltip: Fossilized fangs drip with ancient venom
+	// }
+
+	// HallowedLightLeashItem: {
+		// DisplayName: Hallowed Light Leash
+		// Tooltip: Radiant tether sears with holy light
+	// }
+
+	// SilkRibbonLeashItem: {
+		// DisplayName: Silk Ribbon Leash
+		// Tooltip: Soft ribbon for gentle promenades
+	// }
+
+	// EmeraldHarnessItem: {
+		// DisplayName: Emerald Harness
+		// Tooltip: Sturdy emerald-studded harness
+	// }
+
+	// RubyHarnessItem: {
+		// DisplayName: Ruby Harness
+		// Tooltip: Fierce ruby harness for bold pups
+	// }
+
+	// ShadowWeaveLeashItem: {
+		// DisplayName: Shadow Weave Leash
+		// Tooltip: Woven with shadows of the underworld
+	// }
+
+	// HallowedTetherItem: {
+		// DisplayName: Hallowed Tether
+		// Tooltip: Ethereal tether blessed by light
+	// }
+
+	ClickerItem: {
+		DisplayName: Clicker
+		Tooltip: clack! click! use it when you see a good puppy
 	}
 
-	ElasticLeashItem: {
-		DisplayName: Elastic Leash
-		Tooltip: Extra elastic walkies — stretchy & zoomy! *stretch!* :3
-	}
-
-	ExponentialLeashItem: {
-		DisplayName: Springy Leash
-		Tooltip: Springy and bouncy walkies! *spring!* zoom zoom! :3
-	}
-
-	PuppyEarsItem: {
-		DisplayName: Puppy Ears
-		Tooltip: Floppy ears! *paw paw* diggy zoom! :3
-	}
-
-	PuppyTailItem: {
-		DisplayName: Puppy Tail
-		Tooltip: Waggy tail! *wag wag* zoomies incoming! :3
+	GoldenClickerItem: {
+		DisplayName: Golden Clicker
+		Tooltip: puppy deserves expensive clicks
 	}
 }
 
@@ -60,6 +145,14 @@ Buffs: {
 Projectiles: {
 	ChainLeashProjectile.DisplayName: Chain Leash
 	RopeLeashProjectile.DisplayName: Rope Leash
+	// AmethystSparkLeashProjectile.DisplayName: Amethyst Spark Leash
+	// TopazBoltLeashProjectile.DisplayName: Topaz Bolt Leash
+	// RubyFieryLeashProjectile.DisplayName: Ruby Fiery Leash
+	// EmeraldVineLeashProjectile.DisplayName: Emerald Vine Leash
+	// DiamondGleamLeashProjectile.DisplayName: Diamond Gleam Leash
+	// SapphireFrostLeashProjectile.DisplayName: Sapphire Frost Leash
+	// AmberFangLeashProjectile.DisplayName: Amber Fang Leash
+	// HallowedLightLeashProjectile.DisplayName: Hallowed Light Leash
 }
 
 Configs: {
@@ -88,7 +181,7 @@ Configs: {
 
 		BarkDebug: {
 			Label: Show bark stats :3
-			Tooltip: Shows a cute *arf!* when you bark — just for fun! *wag* :3
+			Tooltip: Shows a cute *arf!* when you bark - just for fun! *wag* :3
 		}
 	}
 }

@@ -100,7 +100,7 @@ public class PuppyPlayer : PolasBasePlayer
             SoundEngine.PlaySound(bark, Player.Center);
     }
 
-    public static readonly SoundPad Barks = SoundPad.LoadCategory("PuppySounds/woof");
+    public static readonly SoundPad Barks = SoundPad.LoadCategory("PuppySounds/woof").AppendSpecific("PuppySounds", ["growl_woof"]);
     public static readonly SoundPad Cries = SoundPad.LoadCategory("PuppySounds/cry");
     public static readonly SoundPad Growls = SoundPad.LoadCategory("PuppySounds/growl");
 
