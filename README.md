@@ -4,7 +4,7 @@ v1.5.18 - for Terraria 1.4.4+
 
 Puppy Mod is a small puppy-focused mod I made for myself. I always liked the vanilla Dog Ears and Dog Tail, so I wanted them to actually feel like being a puppy - cute, a bit useful, and totally optional.
 
-All barks and woofs were recorded by me, so when you bark it really is me. :3
+All barks and woofs were recorded by me, so when you bark it really is me. :3 I'm searching for community barking too — I bet you guys can emit such cute sounds! *arf!*
 
 ### What it does
 
