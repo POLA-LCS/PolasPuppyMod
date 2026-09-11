@@ -42,11 +42,23 @@ public class PuppyPlayer : PolasBasePlayer
     public void Bark(SoundStyle sound, bool pitched = false)
     {
         var config = ModContent.GetInstance<PuppyModClientConfig>();
-        float targetPitch = config.BarkPitch + (pitched ? BarkPitchIncrease : 0f);
+        float targetPitch = PitchOf(config.BarkPitch) + (pitched ? BarkPitchIncrease : 0f);
         SoundStyle bark = sound with { Pitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax), Volume = sound.Volume * config.BarkVolume };
         if (Player.whoAmI == Main.myPlayer)
             SoundEngine.PlaySound(bark, Player.Center);
     }
+
+    public static float PitchOf(BarkPitchStyle style) => style switch
+    {
+        BarkPitchStyle.FloorShaker => -0.75f,
+        BarkPitchStyle.Protector => -0.50f,
+        BarkPitchStyle.BigPup => -0.25f,
+        BarkPitchStyle.GoodPuppy => 0.00f,
+        BarkPitchStyle.Wiggly => 0.25f,
+        BarkPitchStyle.AttentionSeeker => 0.50f,
+        BarkPitchStyle.Squeak => 0.75f,
+        _ => 0.00f
+    };
 
     public static readonly SoundPad Barks = SoundPad.LoadCategory("PuppySounds/woof").AppendSpecific("PuppySounds", ["growl_woof"]);
     public static readonly SoundPad Cries = SoundPad.LoadCategory("PuppySounds/cry");

@@ -184,7 +184,7 @@ Configs: {
 
 		BarkPitch: {
 			Label: Bark Pitch
-			Tooltip: ""
+			Tooltip: How you are going to hear your barking
 		}
 	}
 
@@ -192,7 +192,7 @@ Configs: {
 		Tooltip: ""
 
 		FloorShaker: {
-			Label: Floor Shaker
+			Label: Floor-Shaker
 			Tooltip: ""
 		}
 
@@ -217,7 +217,7 @@ Configs: {
 		}
 
 		AttentionSeeker: {
-			Label: Attention Seeker
+			Label: Attention Seaker
 			Tooltip: ""
 		}
 
