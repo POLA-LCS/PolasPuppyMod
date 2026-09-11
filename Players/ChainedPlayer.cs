@@ -13,7 +13,7 @@ namespace PuppyMod.Players;
 public class ChainedPlayer : ModPlayer
 {
     public int ActiveCollarItemType { get; private set; }
-    public bool hasCollar => ActiveCollarItemType != 0;
+    public bool HasCollar => ActiveCollarItemType != 0;
     public int? GrabberIndex { get; private set; }
     public int ActiveLeashItemType { get; private set; }
     private int _overstretchTicks;
@@ -133,7 +133,7 @@ public class ChainedPlayer : ModPlayer
 
     public override void PostUpdateEquips()
     {
-        if (hasCollar)
+        if (HasCollar)
         {
             Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f);
         }
@@ -227,7 +227,7 @@ public class ChainedPlayer : ModPlayer
     private bool IsChainValid()
     {
         if (!Player.GetModPlayer<PuppyPlayer>().IsPuppy) return false;
-        if (!hasCollar) return false;
+        if (!HasCollar) return false;
         Player owner = OwnerOf;
         if (owner == null || !owner.active || owner.dead) return false;
         if (owner.GetModPlayer<PuppyPlayer>().IsPuppy) return false;
