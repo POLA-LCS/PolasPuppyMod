@@ -4,16 +4,15 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Common.Data;
-using PuppyMod.Common.Enums;
+using PuppyMod.Common.Physics;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Projectiles;
 
 namespace PuppyMod.Content.Items.Leash;
 
-public class ChainLeashItem : BaseLeashItem
+public class ChainLeashItem : SummonLeashItem
 {
-    public override string Texture => AssetUtils.GetItemTexturePath(nameof(ChainLeashItem));
+    public override string Texture => AssetUtils.GetWeaponTexturePathWithFallback(nameof(ChainLeashItem));
 
     public override int RangeTiles => 10;
     protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
@@ -66,11 +65,10 @@ public class ChainLeashItem : BaseLeashItem
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        // sturdy chain *clink* walkies + protection! :3
         foreach (var line in base.GetTooltipLines(mod))
             yield return line;
         yield return new TooltipLine(mod, "ChainPoison", "May poison foes");
-        yield return new TooltipLine(mod, "LeashPenalty", "Weaker while leashing") { OverrideColor = Color.LightGray };
+        yield return new TooltipLine(mod, "LeashPenalty", "Weaker while leashing");
     }
 
     public override void AddRecipes()

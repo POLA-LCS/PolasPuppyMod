@@ -3,15 +3,14 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Common.Data;
-using PuppyMod.Common.Extensions;
 using PuppyMod.Common.Interfaces;
-using PuppyMod.Players;
+using PuppyMod.Common.Physics;
+using PuppyMod.Common.Tooltip;
 using PuppyMod.Services.Leash;
 
 namespace PuppyMod.Content.Items.Leash;
 
-public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
+public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvider
 {
     public const float PenaltyUseTimeMult = 1.25f;
     public const float PenaltyDamageMult = 0.65f;
@@ -19,7 +18,7 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 
     public abstract int RangeTiles { get; }
     public abstract string LeashTexturePath { get; }
-    public virtual LeashPhysicsProfile Physics => default;
+    public virtual LeashPhysicsProfile Physics => new();
     protected abstract DamageClass LeashDamageClass { get; }
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
@@ -50,9 +49,6 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 
     public override bool AltFunctionUse(Player player) => true;
 
-    /// <summary>
-    /// Caches the original item use properties if not already cached.
-    /// </summary>
     private void EnsureOriginalCached()
     {
         if (hasOriginal) return;
@@ -64,11 +60,10 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
 
     public override bool CanUseItem(Player player)
     {
-        if (player.GetModPlayer<PuppyPlayer>().IsPuppy)
+        if (player.GetModPlayer<Players.PuppyPlayer>().IsPuppy)
             return false;
 
-        if (player.altFunctionUse != 2)
-            EnsureOriginalCached();
+        EnsureOriginalCached();
 
         if (player.altFunctionUse == 2)
         {
@@ -104,41 +99,18 @@ public abstract class BaseLeashItem : ModItem, ILeashItem, ITooltipProvider
     {
         if (player.altFunctionUse == 2)
         {
-            var target = LeashService.FindPuppyUnderCursor(player, RangeTiles);
-            if (target == null) return false;
-            var chain = target.GetModPlayer<ChainedPlayer>();
-            bool ownedByMe = chain.GrabberIndex == player.whoAmI;
-            if (ownedByMe)
-            {
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                    ModContent.GetInstance<PuppyMod>().RequestLeashDetach(target.whoAmI);
-                else
-                    chain.SetGrabberAuthority(-1, 0);
-            }
-            else
-            {
-                if (chain.GrabberIndex.HasValue && chain.GrabberIndex != player.whoAmI)
-                    return false;
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                    ModContent.GetInstance<PuppyMod>().RequestLeashAttach(target.whoAmI, Type);
-                else
-                    chain.SetGrabberAuthority(player.whoAmI, Type);
-            }
-            return true;
+            bool toggled = LeashAttachService.TryToggleLeash(player, Type, RangeTiles);
+            return toggled;
         }
         return true;
     }
 
     public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        // gentle walkies! *wag wag* :3
-        yield return new TooltipLine(mod, "LeashRange", $"{RangeTiles} leash range") { OverrideColor = new Color(193, 154, 107) };
+        yield return new TooltipLine(mod, "LeashRange", $"{RangeTiles} leash range") { OverrideColor = new Color(165, 150, 135) };
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);
 
-    public virtual void AffectPuppy(Player player)
-    {
-        return;
-    }
+    public virtual void AffectPuppy(Player puppy) { }
 }

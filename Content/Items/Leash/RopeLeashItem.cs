@@ -4,16 +4,15 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Common.Data;
-using PuppyMod.Common.Enums;
+using PuppyMod.Common.Physics;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Projectiles;
 
 namespace PuppyMod.Content.Items.Leash;
 
-public class RopeLeashItem : BaseLeashItem
+public class RopeLeashItem : SummonLeashItem
 {
-    public override string Texture => AssetUtils.GetItemTexturePath(nameof(RopeLeashItem));
+    public override string Texture => AssetUtils.GetWeaponTexturePathWithFallback(nameof(RopeLeashItem));
 
     public override int RangeTiles => 12;
     protected override DamageClass LeashDamageClass => DamageClass.SummonMeleeSpeed;
@@ -55,6 +54,8 @@ public class RopeLeashItem : BaseLeashItem
     {
         foreach (var line in base.GetTooltipLines(mod))
             yield return line;
+        yield return new TooltipLine(mod, "AttachedLabel", "Attached:") { OverrideColor = new Color(165, 150, 135) };
+        yield return new TooltipLine(mod, "LeashPuppy", "Puppy: +15% movement speed");
     }
 
     public override void AddRecipes()
