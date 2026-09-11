@@ -7,8 +7,8 @@ using PuppyMod.Players;
 using PuppyMod.Services.Clicker;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using PuppyMod.Common.Extensions;
 using PuppyMod.Common.Interfaces;
+using PuppyMod.Common.Tooltip;
 
 namespace PuppyMod.Content.Items.Clicker;
 
