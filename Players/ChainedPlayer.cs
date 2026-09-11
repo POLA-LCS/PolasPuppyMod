@@ -4,18 +4,16 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Common.Data;
+using Terraria.ModLoader.IO;
 using PuppyMod.Common.Interfaces;
-using PuppyMod.Services.Leash;
+using PuppyMod.Common.Physics;
 
 namespace PuppyMod.Players;
 
-/// <summary>
-/// Tracks leash-related state for a player, including collar possession, grabber authority, and active leash type.
-/// </summary>
 public class ChainedPlayer : ModPlayer
 {
-    public bool hasCollar = false;
+    public int ActiveCollarItemType { get; private set; }
+    public bool hasCollar => ActiveCollarItemType != 0;
     public int? GrabberIndex { get; private set; }
     public int ActiveLeashItemType { get; private set; }
     private int _overstretchTicks;
@@ -40,6 +38,11 @@ public class ChainedPlayer : ModPlayer
         }
     }
 
+    internal void SetCollarActive(int collarItemType)
+    {
+        ActiveCollarItemType = collarItemType;
+    }
+
     internal void SetGrabberAuthority(int ownerWho, int leashItemType = 0)
     {
         if (Main.netMode == NetmodeID.MultiplayerClient) return;
@@ -49,17 +52,65 @@ public class ChainedPlayer : ModPlayer
         {
             var mod = ModContent.GetInstance<PuppyMod>();
             if (GrabberIndex.HasValue)
-                mod.BroadcastLeashState(GrabberIndex.Value, Player.whoAmI, ActiveLeashItemType);
+                mod.BroadcastLeashState(GrabberIndex.Value, Player.whoAmI, ActiveLeashItemType, ActiveCollarItemType);
             else
                 mod.BroadcastLeashDetached(Player.whoAmI);
         }
     }
 
-    internal void ApplyClientState(int ownerWho, int leashItemType = 0)
+    internal void ApplyClientState(int ownerWho, int leashItemType = 0, int collarItemType = 0)
     {
         if (Main.netMode == NetmodeID.Server) return;
         GrabberIndex = ownerWho == byte.MaxValue ? (int?)null : ownerWho;
         ActiveLeashItemType = GrabberIndex.HasValue ? leashItemType : 0;
+        ActiveCollarItemType = collarItemType;
+    }
+
+    public override void SaveData(TagCompound tag)
+    {
+        tag["ActiveCollarItemType"] = ActiveCollarItemType;
+        tag["GrabberIndex"] = GrabberIndex ?? -1;
+        tag["ActiveLeashItemType"] = ActiveLeashItemType;
+    }
+
+    public override void LoadData(TagCompound tag)
+    {
+        if (tag.ContainsKey("ActiveCollarItemType"))
+            ActiveCollarItemType = tag.GetInt("ActiveCollarItemType");
+        else
+            ActiveCollarItemType = 0;
+
+        GrabberIndex = null;
+        ActiveLeashItemType = 0;
+    }
+
+    public override void OnEnterWorld()
+    {
+        GrabberIndex = null;
+        ActiveLeashItemType = 0;
+    }
+
+    public override void CopyClientState(ModPlayer targetCopy)
+    {
+        var clone = (ChainedPlayer)targetCopy;
+        clone.ActiveCollarItemType = ActiveCollarItemType;
+        clone.GrabberIndex = GrabberIndex;
+        clone.ActiveLeashItemType = ActiveLeashItemType;
+    }
+
+    public override void SendClientChanges(ModPlayer clientPlayer)
+    {
+        var clone = (ChainedPlayer)clientPlayer;
+        if (clone.GrabberIndex != GrabberIndex || clone.ActiveLeashItemType != ActiveLeashItemType || clone.ActiveCollarItemType != ActiveCollarItemType)
+        {
+            ModPacket packet = Mod.GetPacket();
+            packet.Write(PuppyMod.LeashState);
+            packet.Write((byte)(GrabberIndex ?? byte.MaxValue));
+            packet.Write((byte)Player.whoAmI);
+            packet.Write(ActiveLeashItemType);
+            packet.Write(ActiveCollarItemType);
+            packet.Send();
+        }
     }
 
     public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
@@ -70,13 +121,14 @@ public class ChainedPlayer : ModPlayer
         packet.Write((byte)(GrabberIndex ?? byte.MaxValue));
         packet.Write((byte)Player.whoAmI);
         packet.Write(ActiveLeashItemType);
+        packet.Write(ActiveCollarItemType);
         if (toWho == -1) packet.Send();
         else packet.Send(toWho);
     }
 
     public override void ResetEffects()
     {
-        hasCollar = false;
+        ActiveCollarItemType = 0;
     }
 
     public override void PostUpdateEquips()
