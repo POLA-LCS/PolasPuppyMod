@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.Tooltip;
+using static PuppyMod.Common.Tooltip.TooltipExtensions;
 
 namespace PuppyMod.Content.Items.Clicker;
 
@@ -52,8 +53,7 @@ public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
 
     public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        // *clack clack* cute praises for good puppies! :3
-        yield return new TooltipLine(mod, "ClickerRange", $"{RangeTiles} tiles") { OverrideColor = new Color(193, 154, 107) };
+        yield return new TooltipLine(mod, "ClickerRange", LabelColor($"{RangeTiles} sound range", ColorLeashRange));
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);

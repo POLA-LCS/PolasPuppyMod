@@ -10,14 +10,12 @@ namespace PuppyMod.Content.GlobalItems
 
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)
         {
-            var puppy = player.GetModPlayer<PuppyPlayer>();
-            puppy.HasDogEarsAccessory = true;
+            player.GetModPlayer<PuppyPlayer>().DogEarsAccessoryType = ItemID.DogEars;
         }
 
         public override void UpdateVanity(Item item, Player player)
         {
-            var puppy = player.GetModPlayer<PuppyPlayer>();
-            puppy.HasDogEarsVanity = true;
+            player.GetModPlayer<PuppyPlayer>().DogEarsVanityType = ItemID.DogEars;
         }
 
         public override string EarOrTailName => "Ears";

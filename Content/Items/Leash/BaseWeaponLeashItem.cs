@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -6,6 +7,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.Physics;
 using PuppyMod.Common.Tooltip;
+using static PuppyMod.Common.Tooltip.TooltipExtensions;
 using PuppyMod.Services.Leash;
 
 namespace PuppyMod.Content.Items.Leash;
@@ -105,12 +107,16 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
         return true;
     }
 
-    public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
-    {
-        yield return new TooltipLine(mod, "LeashRange", $"{RangeTiles} leash range") { OverrideColor = new Color(165, 150, 135) };
-    }
+    public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod) => Enumerable.Empty<TooltipLine>();
 
-    public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);
+    public override void ModifyTooltips(List<TooltipLine> tooltips)
+    {
+        int dmgIdx = tooltips.FindIndex(l => l.Name == "Damage" && l.Mod == "Terraria");
+        if (dmgIdx >= 0)
+            tooltips.Insert(dmgIdx + 1, new TooltipLine(Mod, "LeashRange", LabelColor($"{RangeTiles} leash range", ColorLeashRange)));
+        else
+            tooltips.ApplyTooltips(Mod, this);
+    }
 
     public virtual void AffectPuppy(Player puppy) { }
 }

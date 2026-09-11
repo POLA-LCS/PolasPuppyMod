@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs.GoodPuppy;
 using System.Collections.Generic;
@@ -12,9 +13,6 @@ namespace PuppyMod.Players;
 public class PuppyPlayer : PolasBasePlayer
 {
     public const int BarkCooldownTicks = 25;
-    public const int DoubleTapWindow = 18;
-    public const float EarsPickAccessory = 0.10f;
-    public const float EarsPickVanity = 0.05f;
     public const float TailMoveAccessory = 0.30f;
     public const float TailAccRunAccessory = 0.45f;
     public const float TailMaxRunAccessory = 0.30f;
@@ -31,10 +29,16 @@ public class PuppyPlayer : PolasBasePlayer
 
     private int barkCooldown = 0;
 
-    public bool HasDogEarsAccessory;
-    public bool HasDogEarsVanity;
-    public bool HasDogTailAccessory;
-    public bool HasDogTailVanity;
+    // 0 = no item in that slot
+    public int DogEarsAccessoryType;
+    public int DogEarsVanityType;
+    public int DogTailAccessoryType;
+    public int DogTailVanityType;
+
+    public bool HasDogEarsAccessory => DogEarsAccessoryType != 0;
+    public bool HasDogEarsVanity => DogEarsVanityType != 0;
+    public bool HasDogTailAccessory => DogTailAccessoryType != 0;
+    public bool HasDogTailVanity => DogTailVanityType != 0;
     public bool HasDogEars => HasDogEarsAccessory || HasDogEarsVanity;
     public bool HasDogTail => HasDogTailAccessory || HasDogTailVanity;
     public bool IsPuppy => HasDogEars && HasDogTail;
@@ -73,7 +77,15 @@ public class PuppyPlayer : PolasBasePlayer
         else
             Bark(bark);
 
-        TryShowBarkDebug();
+        NotifyEarsBark();
+    }
+
+    private void NotifyEarsBark()
+    {
+        if (DogEarsAccessoryType != 0)
+            PuppySetUtils.GetEarsProvider(DogEarsAccessoryType)?.OnBark(Player);
+        if (DogEarsVanityType != 0 && DogEarsVanityType != DogEarsAccessoryType)
+            PuppySetUtils.GetEarsProvider(DogEarsVanityType)?.OnBark(Player);
     }
 
     public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
@@ -95,14 +107,10 @@ public class PuppyPlayer : PolasBasePlayer
 
     public override void ResetEffects()
     {
-        HasDogEarsAccessory = false;
-        HasDogEarsVanity = false;
-        HasDogTailAccessory = false;
-        HasDogTailVanity = false;
-    }
-
-    public override void PreUpdate()
-    {
+        DogEarsAccessoryType = 0;
+        DogEarsVanityType = 0;
+        DogTailAccessoryType = 0;
+        DogTailVanityType = 0;
     }
 
     public override void PostUpdate()
@@ -155,12 +163,11 @@ public class PuppyPlayer : PolasBasePlayer
 
     private void UpdatePuppySetFlags()
     {
-        bool ea = HasDogEarsAccessory, ev = HasDogEarsVanity, ta = HasDogTailAccessory, tv = HasDogTailVanity;
-        GetDogSetLocationFlags(out bool earsAcc, out bool earsVan, out bool tailAcc, out bool tailVan);
-        HasDogEarsAccessory = ea || earsAcc;
-        HasDogEarsVanity = ev || earsVan;
-        HasDogTailAccessory = ta || tailAcc;
-        HasDogTailVanity = tv || tailVan;
+        GetDogSetLocationTypes(out int earsAcc, out int earsVan, out int tailAcc, out int tailVan);
+        if (DogEarsAccessoryType == 0) DogEarsAccessoryType = earsAcc;
+        if (DogEarsVanityType == 0) DogEarsVanityType = earsVan;
+        if (DogTailAccessoryType == 0) DogTailAccessoryType = tailAcc;
+        if (DogTailVanityType == 0) DogTailVanityType = tailVan;
     }
 
     public override void PostUpdateEquips()
@@ -175,10 +182,7 @@ public class PuppyPlayer : PolasBasePlayer
 
     public override void PostUpdateMiscEffects()
     {
-        float earPick = 0f;
-        if (HasDogEarsAccessory) earPick = EarsPickAccessory;
-        else if (HasDogEarsVanity) earPick = EarsPickVanity;
-        Player.pickSpeed -= earPick;
+        Player.pickSpeed -= GetCurrentEarsPickSpeed();
 
         float move = 0f, accRun = 0f, maxRun = 0f, jump = 0f;
         if (HasDogTailAccessory)
@@ -203,6 +207,15 @@ public class PuppyPlayer : PolasBasePlayer
         HappyIfClicker();
     }
 
+    private float GetCurrentEarsPickSpeed()
+    {
+        if (DogEarsAccessoryType != 0)
+            return PuppySetUtils.GetEarsProvider(DogEarsAccessoryType)?.PickSpeedAccessory ?? 0f;
+        if (DogEarsVanityType != 0)
+            return PuppySetUtils.GetEarsProvider(DogEarsVanityType)?.PickSpeedVanity ?? 0f;
+        return 0f;
+    }
+
     private void HappyIfClicker()
     {
         for (int i = 0; i < Main.player.Length; i++)
@@ -220,20 +233,4 @@ public class PuppyPlayer : PolasBasePlayer
         }
     }
 
-    private void TryShowBarkDebug()
-    {
-        if (!ModContent.GetInstance<PuppyModClientConfig>().BarkDebug)
-            return;
-        if (Player.whoAmI != Main.myPlayer)
-            return;
-        if (Main.netMode == Terraria.ID.NetmodeID.Server)
-            return;
-
-        // *arf!* cute debug for zoomy pups :3
-        string earsSrc = HasDogEarsAccessory ? "Acc" : HasDogEarsVanity ? "Van" : "None";
-        string tailSrc = HasDogTailAccessory ? "Acc" : HasDogTailVanity ? "Van" : "None";
-
-        string msg = $"*arf!* You're feeling zoomy! Ears:{earsSrc} Tail:{tailSrc} *wag*";
-        Main.NewText(msg, Color.Cyan);
-    }
 }

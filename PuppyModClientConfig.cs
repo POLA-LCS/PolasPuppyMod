@@ -11,10 +11,6 @@ public class PuppyModClientConfig : ModConfig
     [DefaultValue(true)]
     public bool StartAsPuppy;
 
-    [Header("Debug")]
-    [DefaultValue(false)]
-    public bool BarkDebug;
-
     [Header("Audio")]
     [Range(0f, 1f)]
     [DefaultValue(0.5f)]

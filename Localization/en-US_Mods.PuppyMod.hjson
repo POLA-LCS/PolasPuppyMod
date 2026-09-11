@@ -133,6 +133,11 @@ Items: {
 		DisplayName: Golden Clicker
 		Tooltip: puppy deserves expensive clicks
 	}
+
+	ShinyEarsItem: {
+		DisplayName: Shiny Ears
+		Tooltip: ""
+	}
 }
 
 Buffs: {
@@ -163,18 +168,12 @@ Configs: {
 
 		Headers: {
 			PuppySet: Puppy Set
-			Debug: Debug Header
 			Audio: Audio Header
 		}
 
 		StartAsPuppy: {
 			Label: Start as a puppy :3
 			Tooltip: Begin your adventure with floppy ears & waggly tail! *arf!* :3
-		}
-
-		BarkDebug: {
-			Label: Show bark stats :3
-			Tooltip: Shows a cute *arf!* when you bark - just for fun! *wag* :3
 		}
 
 		BarkVolume: {

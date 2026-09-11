@@ -5,6 +5,8 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Physics;
+using PuppyMod.Common.Tooltip;
+using static PuppyMod.Common.Tooltip.TooltipExtensions;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Projectiles;
 
@@ -52,10 +54,16 @@ public class RopeLeashItem : SummonLeashItem
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        foreach (var line in base.GetTooltipLines(mod))
-            yield return line;
-        yield return new TooltipLine(mod, "AttachedLabel", "Attached:") { OverrideColor = new Color(200, 150, 115) };
-        yield return new TooltipLine(mod, "LeashPuppy", "Puppy: +15% movement speed");
+        yield return new TooltipLine(mod, "AttachedLabel", LabelColor("Attached:", ColorAttachedLabel));
+        yield return new TooltipLine(mod, "LeashPuppy", $"{LabelColor("Puppy:", ColorPuppyLabel)} +15% movement speed");
+    }
+
+    public override void ModifyTooltips(List<TooltipLine> tooltips)
+    {
+        base.ModifyTooltips(tooltips);
+        tooltips.StripVanity();
+        tooltips.ApplyTooltips(Mod, this);
+        tooltips.MovePriceToBottom();
     }
 
     public override void AddRecipes()

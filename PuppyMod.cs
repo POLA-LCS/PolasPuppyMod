@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
+using PuppyMod.Common.Utils;
 
 namespace PuppyMod
 {
@@ -21,6 +22,17 @@ namespace PuppyMod
         public const byte LeashState = (byte)LeashPacketType.State;
 
         public override uint ExtraPlayerBuffSlots => 1;
+
+        public override void Load()
+        {
+            PuppySetUtils.RegisterShinyEars();
+        }
+
+        public override void Unload()
+        {
+            PuppySetUtils.EarsItemIDs = [ItemID.DogEars];
+            PuppySetUtils.TailItemIDs = [ItemID.DogTail];
+        }
 
         public void RequestLeashAttach(int targetWho, int leashItemType)
         {
