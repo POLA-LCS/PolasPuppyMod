@@ -11,7 +11,7 @@ namespace PuppyMod.Content.Projectiles;
 
 public class ChainLeashProjectile : ModProjectile
 {
-    public override string Texture => AssetUtils.GetItemTexturePath(nameof(ChainLeashProjectile));
+    public override string Texture => AssetUtils.GetProjectileTexturePathWithFallback(nameof(ChainLeashProjectile));
 
     public override void SetStaticDefaults()
     {
