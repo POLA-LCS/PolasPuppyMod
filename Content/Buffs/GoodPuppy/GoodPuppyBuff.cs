@@ -6,7 +6,7 @@ namespace PuppyMod.Content.Buffs.GoodPuppy;
 
 public class GoodPuppyBuff : ModBuff
 {
-    public override string Texture => AssetUtils.GetItemTexturePath(nameof(GoodPuppyBuff));
+    public override string Texture => AssetUtils.GetBuffTexturePathWithFallback(nameof(GoodPuppyBuff));
 
     public const int LifeRegen = 14;
     public const float MoveSpeed = 0.6f;

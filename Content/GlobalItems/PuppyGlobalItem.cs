@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using PuppyMod.Common.Interfaces;
+using PuppyMod.Common.Tooltip;
 using PuppyMod.Players;
 using Terraria;
 using Terraria.ModLoader;
