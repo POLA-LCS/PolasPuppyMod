@@ -1,30 +1,34 @@
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Common.Utils;
-using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Collar;
 
-public class CollarItem : ModItem
+public class CollarItem : BaseCollarItem
 {
-    public override string Texture => AssetUtils.GetItemTexturePath(nameof(CollarItem));
-
     public override void SetDefaults()
     {
-        Item.width = 32;
-        Item.height = 32;
-        Item.accessory = true;
+        base.SetDefaults();
         Item.defense = 2;
-        Item.maxStack = 1;
         Item.rare = ItemRarityID.Pink;
         Item.value = Item.sellPrice(silver: 27, copper: 1);
     }
 
-    public override void UpdateAccessory(Player player, bool hideVisual)
+    protected override void AffectWearer(Player player)
     {
-        // good puppy deserves a shiny collar :3
-        player.GetModPlayer<ChainedPlayer>().hasCollar = true;
+        player.statDefense += 1;
+    }
+
+    public override void AffectOwner(Player owner)
+    {
+        owner.statDefense += 2;
+    }
+
+    public override IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
+    {
+        yield break;
     }
 
     public override void AddRecipes()
