@@ -67,6 +67,9 @@ public class ChainLeashItem : SummonLeashItem
     {
         foreach (var line in base.GetTooltipLines(mod))
             yield return line;
+        yield return new TooltipLine(mod, "AttachedLabel", "Attached:") { OverrideColor = new Color(200, 150, 115) };
+        yield return new TooltipLine(mod, "LeashPuppyDefense", "Puppy: +4 defense");
+        yield return new TooltipLine(mod, "LeashPuppySlow", "Puppy: -5% movement speed");
         yield return new TooltipLine(mod, "ChainPoison", "May poison foes");
         yield return new TooltipLine(mod, "LeashPenalty", "Weaker while leashing");
     }
@@ -83,6 +86,7 @@ public class ChainLeashItem : SummonLeashItem
 
     public override void AffectPuppy(Player player)
     {
-        player.statDefense += 5;
+        player.statDefense += 4;
+        player.moveSpeed -= 0.05f;
     }
 }
