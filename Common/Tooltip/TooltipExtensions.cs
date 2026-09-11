@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
-using PuppyMod.Common.Interfaces;
 
-namespace PuppyMod.Common.Extensions;
+namespace PuppyMod.Common.Tooltip;
 
 public static class TooltipExtensions
 {
     public static void InsertLines(this List<TooltipLine> tooltips, IEnumerable<TooltipLine> lines)
     {
-        var list = lines as ICollection<TooltipLine> ?? new List<TooltipLine>(lines);
+        var list = lines as ICollection<TooltipLine> ?? [.. lines];
         if (list.Count == 0)
             return;
         int priceIdx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");

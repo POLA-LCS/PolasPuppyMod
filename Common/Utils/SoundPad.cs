@@ -13,7 +13,7 @@ public sealed class SoundPad
 
     private SoundPad()
     {
-        _sounds = new List<SoundStyle>();
+        _sounds = [];
     }
 
     private SoundPad(string category, string[] names, float pitch, float variance, float volume) : this()
@@ -27,11 +27,11 @@ public sealed class SoundPad
     private static string[] ScanCategory(string category)
     {
         var assemblyPath = Path.GetDirectoryName(typeof(SoundPad).Assembly.Location) ?? "";
-        var modPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games", "Terraria", "tModLoader", "ModSources", "PuppyMod", "Assets", "Sounds", category);
+        var relativePath = Path.Combine("Assets", "Sounds", category);
         var candidates = new[]
         {
             Path.Combine(assemblyPath, "Assets", "Sounds", category),
-            modPath
+            relativePath
         };
         foreach (var c in candidates)
         {
@@ -44,7 +44,7 @@ public sealed class SoundPad
                 if (files.Length > 0) return files;
             }
         }
-        return Array.Empty<string>();
+        return [];
     }
 
     public static SoundPad LoadCategory(string category, float pitch = 0.5f, float variance = 0.5f, float volume = 1f)

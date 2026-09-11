@@ -1,4 +1,4 @@
-namespace PuppyMod.Common.Enums;
+namespace PuppyMod.Common.Physics;
 
 public enum LeashElasticityCurve
 {

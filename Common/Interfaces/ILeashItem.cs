@@ -1,12 +1,13 @@
-using PuppyMod.Common.Data;
+using PuppyMod.Common.Physics;
+using Terraria;
 
 namespace PuppyMod.Common.Interfaces;
 
 public interface ILeashItem : IWithRange
 {
-    void AffectPuppy(Terraria.Player puppy);
+    void AffectPuppy(Player puppy);
 
     string LeashTexturePath { get; }
 
-    LeashPhysicsProfile Physics => default;
+    LeashPhysicsProfile Physics => new();
 }

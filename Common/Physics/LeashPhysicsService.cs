@@ -1,9 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
-using PuppyMod.Common.Data;
-using PuppyMod.Common.Enums;
 
-namespace PuppyMod.Services.Leash;
+namespace PuppyMod.Common.Physics;
 
 public readonly record struct LeashForceResult(Vector2 PuppyImpulse, Vector2 OwnerImpulse, float Tension01, bool IsTaut, bool Overstretched);
 

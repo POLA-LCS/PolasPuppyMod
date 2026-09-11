@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Terraria.ModLoader;
 
-namespace PuppyMod.Common.Interfaces;
+namespace PuppyMod.Common.Tooltip;
 
 public interface ITooltipProvider
 {

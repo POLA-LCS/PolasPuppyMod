@@ -1,8 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
-using PuppyMod.Common.Enums;
 
-namespace PuppyMod.Common.Data;
+namespace PuppyMod.Common.Physics;
 
 public readonly record struct LeashPhysicsProfile(
     float SlackRatio = 0.80f,
