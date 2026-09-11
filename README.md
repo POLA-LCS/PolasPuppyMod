@@ -1,6 +1,6 @@
 # Puppy Mod - arf arf! ૮⸝⸝> ﻌ <⸝⸝ა
 
-v1.5.18 - Terraria 1.4.4+
+v1.5.20 - Terraria 1.4.4+
 
 Become a puppy with Dog Ears + Dog Tail (vanity too). Double-tap to bark!
 
