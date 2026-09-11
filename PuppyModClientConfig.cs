@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
@@ -20,18 +21,13 @@ public class PuppyModClientConfig : ModConfig
     [DefaultValue(0.5f)]
     public float BarkVolume { get; set; } = 0.5f;
 
-    public enum BarkPitchStyle
+    [Range(-0.75f, 0.75f)]
+    [DefaultValue(0.25f)]
+    public float BarkPitch
     {
-        FloorShaker = 0,
-        Protector = 1,
-        BigPup = 2,
-        GoodPuppy = 3,
-        Wiggly = 4,
-        AttentionSeeker = 5,
-        Squeak = 6
+        get => _barkPitch;
+        set => _barkPitch = (float)Math.Round(value * 4f) / 4f;
     }
 
-    [Header("Audio")]
-    [DefaultValue(BarkPitchStyle.Wiggly)]
-    public BarkPitchStyle BarkPitch { get; set; } = BarkPitchStyle.Wiggly;
+    private float _barkPitch = 0.25f;
 }

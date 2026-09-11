@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ModLoader;
 
 namespace PuppyMod.Common.Utils;
 
@@ -26,6 +27,15 @@ public sealed class SoundPad
 
     private static string[] ScanCategory(string category)
     {
+        var mod = ModContent.GetInstance<PuppyMod>();
+        string prefix = $"Assets/Sounds/{category}/";
+        var packed = mod.GetFileNames()
+            .Where(f => f.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            .Select(Path.GetFileNameWithoutExtension)
+            .Where(n => !string.IsNullOrEmpty(n))
+            .ToArray();
+        if (packed.Length > 0) return packed;
+
         var assemblyPath = Path.GetDirectoryName(typeof(SoundPad).Assembly.Location) ?? "";
         var relativePath = Path.Combine("Assets", "Sounds", category);
         var candidates = new[]

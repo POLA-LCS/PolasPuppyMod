@@ -39,24 +39,11 @@ public class PuppyPlayer : PolasBasePlayer
     public bool HasDogTail => HasDogTailAccessory || HasDogTailVanity;
     public bool IsPuppy => HasDogEars && HasDogTail;
 
-    private static readonly float[] BarkPitchOffsets = 
-    {
-        -0.75f, // FloorShaker
-        -0.50f, // Protector
-        -0.25f, // BigPup
-        0.00f,  // GoodPuppy
-        0.25f,  // Wiggly
-        0.50f,  // AttentionSeeker
-        0.75f   // Squeak
-    };
-
     public void Bark(SoundStyle sound, bool pitched = false)
     {
         var config = ModContent.GetInstance<PuppyModClientConfig>();
-        float pitchOffset = BarkPitchOffsets[(int)config.BarkPitch];
-        float targetPitch = pitchOffset + (pitched ? BarkPitchIncrease : 0f);
-        float volume = config.BarkVolume;
-        SoundStyle bark = sound with { Pitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax), Volume = sound.Volume * volume };
+        float targetPitch = config.BarkPitch + (pitched ? BarkPitchIncrease : 0f);
+        SoundStyle bark = sound with { Pitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax), Volume = sound.Volume * config.BarkVolume };
         if (Player.whoAmI == Main.myPlayer)
             SoundEngine.PlaySound(bark, Player.Center);
     }
