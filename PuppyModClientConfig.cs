@@ -32,6 +32,6 @@ public class PuppyModClientConfig : ModConfig
     }
 
     [Header("Audio")]
-    [DefaultValue(BarkPitchStyle.GoodPuppy)]
-    public BarkPitchStyle BarkPitch { get; set; } = BarkPitchStyle.GoodPuppy;
+    [DefaultValue(BarkPitchStyle.Wiggly)]
+    public BarkPitchStyle BarkPitch { get; set; } = BarkPitchStyle.Wiggly;
 }
