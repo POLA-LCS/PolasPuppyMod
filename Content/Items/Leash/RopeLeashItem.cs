@@ -54,7 +54,7 @@ public class RopeLeashItem : SummonLeashItem
     {
         foreach (var line in base.GetTooltipLines(mod))
             yield return line;
-        yield return new TooltipLine(mod, "AttachedLabel", "Attached:") { OverrideColor = new Color(165, 150, 135) };
+        yield return new TooltipLine(mod, "AttachedLabel", "Attached:") { OverrideColor = new Color(200, 150, 115) };
         yield return new TooltipLine(mod, "LeashPuppy", "Puppy: +15% movement speed");
     }
 
