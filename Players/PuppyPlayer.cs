@@ -9,75 +9,24 @@ using System.Collections.Generic;
 
 namespace PuppyMod.Players;
 
-/// <summary>
-/// Provides puppy-specific behavior including ear/tail accessories, barking mechanics, and clicker detection.
-/// </summary>
 public class PuppyPlayer : PolasBasePlayer
 {
-    /// <summary>
-    /// The number of ticks between when a puppy can bark again after barking.
-    /// </summary>
     public const int BarkCooldownTicks = 25;
-    /// <summary>
-    /// The window of ticks for double-tap detection to trigger barking.
-    /// </summary>
     public const int DoubleTapWindow = 18;
-    /// <summary>
-    /// The pick speed increase from dog ears when used as an accessory.
-    /// </summary>
     public const float EarsPickAccessory = 0.10f;
-    /// <summary>
-    /// The pick speed increase from dog ears when used as a vanity item.
-    /// </summary>
     public const float EarsPickVanity = 0.05f;
-    /// <summary>
-    /// The move speed increase from a dog tail when used as an accessory.
-    /// </summary>
     public const float TailMoveAccessory = 0.30f;
-    /// <summary>
-    /// The acceleration run speed increase from a dog tail when used as an accessory.
-    /// </summary>
     public const float TailAccRunAccessory = 0.45f;
-    /// <summary>
-    /// The maximum run speed increase from a dog tail when used as an accessory.
-    /// </summary>
     public const float TailMaxRunAccessory = 0.30f;
-    /// <summary>
-    /// The jump speed boost from a dog tail when used as an accessory.
-    /// </summary>
     public const float TailJumpAccessory = 1.0f;
-    /// <summary>
-    /// The move speed increase from dog ears when used as a vanity item.
-    /// </summary>
     public const float TailMoveVanity = 0.15f;
-    /// <summary>
-    /// The acceleration run speed increase from a dog tail when used as a vanity item.
-    /// </summary>
     public const float TailAccRunVanity = 0.22f;
-    /// <summary>
-    /// The maximum run speed increase from a dog tail when used as a vanity item.
-    /// </summary>
     public const float TailMaxRunVanity = 0.15f;
-    /// <summary>
-    /// The jump speed boost from a dog tail when used as a vanity item.
-    /// </summary>
     public const float TailJumpVanity = 0.5f;
     private const float BarkPitchIncrease = 0.3f;
-    /// <summary>
-    /// The maximum value for random chance comparisons.
-    /// </summary>
     private const int RandomChanceMax = 100;
-    /// <summary>
-    /// The chance threshold (out of <see cref="RandomChanceMax"/>) for triggering a growl bark.
-    /// </summary>
     private const int GrowlChanceThreshold = 75;
-    /// <summary>
-    /// The minimum pitch clamp value for sound pitch adjustment.
-    /// </summary>
     private const float PitchClampMin = -1f;
-    /// <summary>
-    /// The maximum pitch clamp value for sound pitch adjustment.
-    /// </summary>
     private const float PitchClampMax = 1f;
 
     private int barkCooldown = 0;
@@ -90,11 +39,22 @@ public class PuppyPlayer : PolasBasePlayer
     public bool HasDogTail => HasDogTailAccessory || HasDogTailVanity;
     public bool IsPuppy => HasDogEars && HasDogTail;
 
+    private static readonly float[] BarkPitchOffsets = 
+    {
+        -0.75f, // FloorShaker
+        -0.50f, // Protector
+        -0.25f, // BigPup
+        0.00f,  // GoodPuppy
+        0.25f,  // Wiggly
+        0.50f,  // AttentionSeeker
+        0.75f   // Squeak
+    };
+
     public void Bark(SoundStyle sound, bool pitched = false)
     {
-        float genderBase = Player.Male ? 0.2f : 0.5f;
-        float targetPitch = genderBase + (pitched ? BarkPitchIncrease : 0f);
         var config = ModContent.GetInstance<PuppyModClientConfig>();
+        float pitchOffset = BarkPitchOffsets[(int)config.BarkPitch];
+        float targetPitch = pitchOffset + (pitched ? BarkPitchIncrease : 0f);
         float volume = config.BarkVolume;
         SoundStyle bark = sound with { Pitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax), Volume = sound.Volume * volume };
         if (Player.whoAmI == Main.myPlayer)
