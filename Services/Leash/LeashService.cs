@@ -40,7 +40,7 @@ public static class LeashService
             if (target == null || !target.active || target.dead) continue;
             if (target.whoAmI == owner.whoAmI) continue;
             if (!target.GetModPlayer<PuppyPlayer>().IsPuppy) continue;
-            if (!target.GetModPlayer<ChainedPlayer>().hasCollar) continue;
+            if (!target.GetModPlayer<ChainedPlayer>().HasCollar) continue;
             if (!target.Hitbox.Contains(Main.MouseWorld.ToPoint())) continue;
             if (!DistanceUtils.WithinPixels(owner.Center, target.Center, rangePx)) continue;
             return target;
@@ -52,7 +52,7 @@ public static class LeashService
     {
         if (owner.GetModPlayer<PuppyPlayer>().IsPuppy) return false;
         if (!target.GetModPlayer<PuppyPlayer>().IsPuppy) return false;
-        if (!target.GetModPlayer<ChainedPlayer>().hasCollar) return false;
+        if (!target.GetModPlayer<ChainedPlayer>().HasCollar) return false;
         if (ModContent.GetModItem(leashType) is not ILeashItem leash) return false;
         if (owner.HeldItem.type != leashType) return false;
         if (!DistanceUtils.WithinTiles(owner, target, leash.RangeTiles)) return false;
