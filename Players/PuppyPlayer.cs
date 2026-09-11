@@ -25,7 +25,7 @@ public class PuppyPlayer : PolasBasePlayer
     public const float TailJumpVanity = 0.5f;
     private const float BarkPitchIncrease = 0.3f;
     private const int RandomChanceMax = 100;
-    private const int GrowlChanceThreshold = 75;
+    private const int GrowlChanceThreshold = 25;
     private const float PitchClampMin = -1f;
     private const float PitchClampMax = 1f;
 
