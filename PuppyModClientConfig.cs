@@ -14,4 +14,9 @@ public class PuppyModClientConfig : ModConfig
     [Header("Debug")]
     [DefaultValue(false)]
     public bool BarkDebug;
+
+    [Header("Audio")]
+    [Range(0f, 1f)]
+    [DefaultValue(0.5f)]
+    public float BarkVolume { get; set; } = 0.5f;
 }

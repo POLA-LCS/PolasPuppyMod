@@ -62,10 +62,7 @@ public class PuppyPlayer : PolasBasePlayer
     /// The jump speed boost from a dog tail when used as a vanity item.
     /// </summary>
     public const float TailJumpVanity = 0.5f;
-    /// <summary>
-    /// The pitch increase applied when barking is pitched up.
-    /// </summary>
-    private const float BarkPitchIncrease = 0.4f;
+    private const float BarkPitchIncrease = 0.3f;
     /// <summary>
     /// The maximum value for random chance comparisons.
     /// </summary>
@@ -95,7 +92,11 @@ public class PuppyPlayer : PolasBasePlayer
 
     public void Bark(SoundStyle sound, bool pitched = false)
     {
-        SoundStyle bark = pitched ? sound with { Pitch = MathHelper.Clamp(sound.Pitch + BarkPitchIncrease, PitchClampMin, PitchClampMax) } : sound;
+        float genderBase = Player.Male ? 0.2f : 0.5f;
+        float targetPitch = genderBase + (pitched ? BarkPitchIncrease : 0f);
+        var config = ModContent.GetInstance<PuppyModClientConfig>();
+        float volume = config.BarkVolume;
+        SoundStyle bark = sound with { Pitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax), Volume = sound.Volume * volume };
         if (Player.whoAmI == Main.myPlayer)
             SoundEngine.PlaySound(bark, Player.Center);
     }
