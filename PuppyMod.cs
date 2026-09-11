@@ -41,7 +41,7 @@ namespace PuppyMod
             packet.Send();
         }
 
-        public void BroadcastLeashState(int ownerWho, int targetWho, int leashItemType)
+        public void BroadcastLeashState(int ownerWho, int targetWho, int leashItemType, int collarItemType = 0)
         {
             if (Main.netMode != NetmodeID.Server) return;
             var packet = GetPacket();
@@ -49,6 +49,7 @@ namespace PuppyMod
             packet.Write((byte)ownerWho);
             packet.Write((byte)targetWho);
             packet.Write(leashItemType);
+            packet.Write(collarItemType);
             packet.Send();
         }
 
@@ -59,6 +60,7 @@ namespace PuppyMod
             packet.Write(LeashState);
             packet.Write(byte.MaxValue);
             packet.Write((byte)targetWho);
+            packet.Write(0);
             packet.Write(0);
             packet.Send();
         }
@@ -72,7 +74,7 @@ namespace PuppyMod
             if (!LeashService.CanAttach(owner, target, leashItemType)) return;
             var chain = target.GetModPlayer<ChainedPlayer>();
             chain.SetGrabberAuthority(ownerWho, leashItemType);
-            BroadcastLeashState(ownerWho, targetWho, leashItemType);
+            BroadcastLeashState(ownerWho, targetWho, leashItemType, chain.ActiveCollarItemType);
         }
 
         private void HandleServerDetach(int ownerWho, int targetWho)
@@ -104,7 +106,18 @@ namespace PuppyMod
                         int ownerWho = reader.ReadByte();
                         int targetWho = reader.ReadByte();
                         int leashType = reader.ReadInt32();
-                        Main.player[targetWho].GetModPlayer<ChainedPlayer>().ApplyClientState(ownerWho, leashType);
+                        int collarType = 0;
+                        bool hasCollar = false;
+                        if (reader.BaseStream.Position + 4 <= reader.BaseStream.Length)
+                        {
+                            collarType = reader.ReadInt32();
+                            hasCollar = true;
+                        }
+                        var chained = Main.player[targetWho].GetModPlayer<ChainedPlayer>();
+                        if (hasCollar)
+                            chained.ApplyClientState(ownerWho, leashType, collarType);
+                        else
+                            chained.ApplyClientState(ownerWho, leashType);
                     }
                     break;
             }
