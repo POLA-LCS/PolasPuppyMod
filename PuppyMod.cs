@@ -26,11 +26,13 @@ namespace PuppyMod
         public override void Load()
         {
             PuppyEquipmentRegistry.RegisterDefaults();
+            PuppyPairBonusRegistry.RegisterDefaults();
         }
 
         public override void Unload()
         {
             PuppyEquipmentRegistry.Clear();
+            PuppyPairBonusRegistry.Clear();
         }
 
         public void RequestLeashAttach(int targetWho, int leashItemType)

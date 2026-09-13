@@ -3,10 +3,12 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs.GoodPuppy;
+using PuppyMod.Services.Leash;
 using System.Collections.Generic;
 
 namespace PuppyMod.Players;
@@ -118,6 +120,9 @@ public class PuppyPlayer : ModPlayer
 
     public override void ModifyHurt(ref Player.HurtModifiers modifiers)
     {
+        if (PuppyLeashBonusService.TryGetKnockbackMultiplier(Player, out float knockbackMultiplier))
+            modifiers.Knockback *= knockbackMultiplier;
+
         if (!IsPuppy)
             return;
         if (Player.dead)
@@ -157,8 +162,25 @@ public class PuppyPlayer : ModPlayer
         if (IsPuppy)
         {
             string dir = Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
-            Player.setBonus = $"Puppy bonus: Double tap {dir} to bark, arf!";
+            string barkBonus = $"Puppy bonus: Double tap {dir} to bark, arf!";
+            Player.setBonus = AppendSetBonusLine(Player.setBonus, barkBonus);
+
+            if (equipmentResolution.TryGetPairBonus(out PuppyPairBonusDefinition pairBonus)
+                && !string.IsNullOrEmpty(pairBonus.SetBonusLocalizationKey))
+            {
+                string pairBonusText = Language.GetTextValue(pairBonus.SetBonusLocalizationKey);
+                Player.setBonus = AppendSetBonusLine(Player.setBonus, pairBonusText);
+            }
         }
+    }
+
+    private static string AppendSetBonusLine(string existing, string line)
+    {
+        if (string.IsNullOrEmpty(line) || existing != null && existing.Contains(line, StringComparison.Ordinal))
+            return existing;
+        if (string.IsNullOrWhiteSpace(existing))
+            return line;
+        return existing + "\n" + line;
     }
 
     public override void PostUpdateMiscEffects()

@@ -150,6 +150,10 @@ Items: {
 	}
 }
 
+SetBonuses: {
+	ReinforcedPair: "Puppy bonus: 2 defense and reduced knockback when leashed/attached"
+}
+
 Buffs: {
 	GoodPuppyBuff: {
 		DisplayName: Good Puppy!

@@ -18,6 +18,9 @@ public class ChainedPlayer : ModPlayer
     public int ActiveLeashItemType { get; private set; }
     private int _overstretchTicks;
 
+    public Player AttachedOwner => OwnerOf;
+    public bool HasValidAttachment => GrabberIndex.HasValue && IsChainValid();
+
     private float ActiveLeashRange
     {
         get

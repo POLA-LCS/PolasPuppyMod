@@ -49,6 +49,17 @@ public sealed class PuppyEquipmentResolution
     public bool HasVanityTail => Tails.Any(entry => !entry.IsFunctional);
     public bool HasPair => SelectedEars != null && SelectedTail != null;
 
+    public bool TryGetPairBonus(out PuppyPairBonusDefinition pairBonus)
+    {
+        if (!HasPair || SelectedEars.Family != SelectedTail.Family)
+        {
+            pairBonus = null;
+            return false;
+        }
+
+        return PuppyPairBonusRegistry.TryGet(SelectedFamily, out pairBonus);
+    }
+
     /// <summary>Canonical set state: any recognized Ears and any valid accessory Tail.</summary>
     public bool IsPuppy => HasEars && HasTail;
 

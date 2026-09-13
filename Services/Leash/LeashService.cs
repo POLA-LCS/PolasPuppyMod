@@ -32,6 +32,20 @@ public static class LeashService
         return false;
     }
 
+    public static bool TryGetAttachedOwner(Player puppy, out Player owner)
+    {
+        owner = null;
+        if (puppy == null)
+            return false;
+
+        var chained = puppy.GetModPlayer<ChainedPlayer>();
+        if (!chained.HasValidAttachment)
+            return false;
+
+        owner = chained.AttachedOwner;
+        return owner != null && owner.active && !owner.dead;
+    }
+
     public static Player FindPuppyUnderCursor(Player owner, int rangeTiles)
     {
         float rangePx = rangeTiles * 16f;
