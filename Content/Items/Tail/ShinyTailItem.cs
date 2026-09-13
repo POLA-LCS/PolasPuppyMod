@@ -16,11 +16,19 @@ public class ShinyTailItem : ModItem, IPuppyTail
 
     public PuppyEquipmentStats Stats => new(Defense: 0f);
 
-    public override string Texture => "Terraria/Images/Item_" + ItemID.DogTail;
+    public override string Texture => "PuppyMod/Assets/Armor/ShinyDogTailArmor";
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
+        // CloneDefaults resets backSlot to vanilla DogTail (25); restore the animated equip slot.
+        Item.backSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ShinyTailBack, EquipType.Back);
+    }
+
+    public override void SetStaticDefaults()
+    {
+        // Draw the tail in the player's tail layer instead of the backpack layer.
+        ArmorIDs.Back.Sets.DrawInTailLayer[Item.backSlot] = true;
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)

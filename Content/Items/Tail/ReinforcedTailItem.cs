@@ -17,14 +17,22 @@ public class ReinforcedTailItem : ModItem, IPuppyTail
         MaxRunSpeed: 0.20f,
         JumpSpeedBoost: 0.6666667f);
 
-    public override string Texture => "Terraria/Images/Item_" + ItemID.DogTail;
+    public override string Texture => "PuppyMod/Assets/Armor/ReinforcedDogTailArmor";
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
+        // CloneDefaults resets backSlot to vanilla DogTail (25); restore the animated equip slot.
+        Item.backSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ReinforcedTailBack, EquipType.Back);
         // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
         Item.accessory = true;
+    }
+
+    public override void SetStaticDefaults()
+    {
+        // Draw the tail in the player's tail layer instead of the backpack layer.
+        ArmorIDs.Back.Sets.DrawInTailLayer[Item.backSlot] = true;
     }
 
     public override void AddRecipes()

@@ -28,13 +28,21 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     private const float TileSizePixels = 16f;
     private const float HalfTilePixels = 8f;
 
-    public override string Texture => "Terraria/Images/Item_" + ItemID.DogEars;
+    public override string Texture => "PuppyMod/Assets/Armor/ShinyDogEarsArmor";
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogEars);
+        // CloneDefaults resets headSlot to vanilla DogEars (242); restore the animated equip slot.
+        Item.headSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ShinyEarsHead, EquipType.Head);
         Item.rare = ItemRarityID.Blue;
         Item.value = Item.sellPrice(gold: 1, silver: 50);
+    }
+
+    public override void SetStaticDefaults()
+    {
+        // Keep the player's hair visible under the ears.
+        ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
     }
 
     public override void UpdateAccessory(Player player, bool hideVisual)

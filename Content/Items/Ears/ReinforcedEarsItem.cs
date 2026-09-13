@@ -15,13 +15,21 @@ public class ReinforcedEarsItem : ModItem, IPuppyEars
         MeleeKnockbackAdditive: 0.25f,
         SummonKnockbackFlat: 0.25f);
 
-    public override string Texture => "Terraria/Images/Item_" + ItemID.DogEars;
+    public override string Texture => "PuppyMod/Assets/Armor/ReinforcedDogEarsArmor";
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogEars);
+        // CloneDefaults resets headSlot to vanilla DogEars (242); restore the animated equip slot.
+        Item.headSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ReinforcedEarsHead, EquipType.Head);
         // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
+    }
+
+    public override void SetStaticDefaults()
+    {
+        // Keep the player's hair visible under the ears.
+        ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
     }
 
     public override void AddRecipes()

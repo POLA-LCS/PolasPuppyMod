@@ -24,6 +24,12 @@ public class PuppyMod : Mod
     {
         PuppyEquipmentRegistry.RegisterDefaults();
         PuppyPairBonusRegistry.RegisterDefaults();
+
+        // Animated vanity sheets: 40x1120 equip sheets (20 frames of 40x56) animated by the player's body frame.
+        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ShinyEarsSheet, EquipType.Head, name: PuppyEquipmentTextures.ShinyEarsHead);
+        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ReinforcedEarsSheet, EquipType.Head, name: PuppyEquipmentTextures.ReinforcedEarsHead);
+        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ShinyTailSheet, EquipType.Back, name: PuppyEquipmentTextures.ShinyTailBack);
+        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ReinforcedTailSheet, EquipType.Back, name: PuppyEquipmentTextures.ReinforcedTailBack);
     }
 
     public override void Unload()
