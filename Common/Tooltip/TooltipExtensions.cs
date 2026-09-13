@@ -27,7 +27,7 @@ public static class TooltipExtensions
     public static readonly Color ColorPuppyBonus = new(255, 190, 125);
     public static readonly Color ColorHalved = new(200, 200, 100);
 
-    public static string LabelColor(string text, Color color)
+    public static string ColorizeLabel(string text, Color color)
     {
         int rgb = (color.R << 16) | (color.G << 8) | color.B;
         return $"[c/{rgb:X6}:{text}]";

@@ -93,9 +93,9 @@ public class PuppyMod : Mod
     /// Player-array guard for packet-supplied indices. <see cref="Main.player"/> must never be indexed
     /// with a wire value before checking bounds and active state (255 is also the detach sentinel).
     /// </summary>
-    private static bool IsValidPlayer(int who)
+    private static bool IsValidPlayer(int playerIndex)
     {
-        return who >= 0 && who < Main.player.Length && Main.player[who] != null && Main.player[who].active;
+        return playerIndex >= 0 && playerIndex < Main.player.Length && Main.player[playerIndex] != null && Main.player[playerIndex].active;
     }
 
     private void HandleServerAttach(int ownerWho, int targetWho, int leashItemType)

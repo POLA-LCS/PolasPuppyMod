@@ -72,9 +72,9 @@ public class ChainLeashItem : SummonLeashItem
         // H3: Returns only effect+Attached+Puppy without re-adding range to avoid duplicate range insertion.
         yield return new TooltipLine(mod, "ChainPoison", "May poison foes");
         yield return new TooltipLine(mod, "LeashPenalty", "Weaker while leashing");
-        yield return new TooltipLine(mod, "AttachedLabel", LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Attached"), ColorAttachedLabel));
-        yield return new TooltipLine(mod, "LeashPuppyDefense", $"{LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Puppy"), ColorPuppyLabel)} +5 defense");
-        yield return new TooltipLine(mod, "LeashPuppySlow", $"{LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Puppy"), ColorPuppyLabel)} -5% movement speed");
+        yield return new TooltipLine(mod, "AttachedLabel", ColorizeLabel(Language.GetTextValue("Mods.PuppyMod.Tooltips.Attached"), ColorAttachedLabel));
+        yield return new TooltipLine(mod, "LeashPuppyDefense", $"{ColorizeLabel(Language.GetTextValue("Mods.PuppyMod.Tooltips.Puppy"), ColorPuppyLabel)} +5 defense");
+        yield return new TooltipLine(mod, "LeashPuppySlow", $"{ColorizeLabel(Language.GetTextValue("Mods.PuppyMod.Tooltips.Puppy"), ColorPuppyLabel)} -5% movement speed");
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -84,7 +84,7 @@ public class ChainLeashItem : SummonLeashItem
         tooltips.StripVanity();
         int dmgIdx = tooltips.FindIndex(l => l.Name == "Damage" && l.Mod == "Terraria");
         if (dmgIdx >= 0 && !tooltips.Any(l => l.Mod == Mod.Name && l.Name == "LeashRange"))
-            tooltips.Insert(dmgIdx + 1, new TooltipLine(Mod, "LeashRange", LabelColor($"{RangeTiles} leash range", ColorLeashRange)));
+            tooltips.Insert(dmgIdx + 1, new TooltipLine(Mod, "LeashRange", ColorizeLabel($"{RangeTiles} leash range", ColorLeashRange)));
         // Apply effect+Attached+Puppy lines exactly once; setBonus vs tooltip dedup already via lineName check – hjson lines intentional.
         bool hasAttached = tooltips.Any(l => l.Mod == Mod.Name && l.Name == "AttachedLabel");
         if (!hasAttached)
@@ -93,7 +93,7 @@ public class ChainLeashItem : SummonLeashItem
         if (!tooltips.Any(l => l.Mod == Mod.Name && l.Name == "LeashRange"))
         {
             int priceIdx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");
-            var rangeLine = new TooltipLine(Mod, "LeashRange", LabelColor($"{RangeTiles} leash range", ColorLeashRange));
+            var rangeLine = new TooltipLine(Mod, "LeashRange", ColorizeLabel($"{RangeTiles} leash range", ColorLeashRange));
             if (priceIdx >= 0) tooltips.Insert(priceIdx, rangeLine);
             else tooltips.Add(rangeLine);
         }

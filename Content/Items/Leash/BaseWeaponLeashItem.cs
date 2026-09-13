@@ -112,7 +112,7 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
     {
         int dmgIdx = tooltips.FindIndex(l => l.Name == "Damage" && l.Mod == "Terraria");
         if (dmgIdx >= 0)
-            tooltips.Insert(dmgIdx + 1, new TooltipLine(Mod, "LeashRange", LabelColor($"{RangeTiles} leash range", ColorLeashRange)));
+            tooltips.Insert(dmgIdx + 1, new TooltipLine(Mod, "LeashRange", ColorizeLabel($"{RangeTiles} leash range", ColorLeashRange)));
         else
             tooltips.ApplyTooltips(Mod, this);
     }

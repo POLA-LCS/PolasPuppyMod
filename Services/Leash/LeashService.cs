@@ -20,7 +20,7 @@ public static class LeashService
         return false;
     }
 
-    public static bool IsLeashingAny(Player owner)
+    public static bool IsLeashingAnyPlayer(Player owner)
     {
         foreach (Player target in Main.player)
         {

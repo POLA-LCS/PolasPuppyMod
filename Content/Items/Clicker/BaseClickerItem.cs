@@ -54,7 +54,7 @@ public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
 
     public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
-        yield return new TooltipLine(mod, "ClickerRange", LabelColor($"{RangeTiles} sound range", ColorLeashRange));
+        yield return new TooltipLine(mod, "ClickerRange", ColorizeLabel($"{RangeTiles} sound range", ColorLeashRange));
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.ApplyTooltips(Mod, this);

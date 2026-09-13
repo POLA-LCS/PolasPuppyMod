@@ -50,16 +50,16 @@ public static class PuppyEquipmentRegistry
             new VanillaDogEarsProvider(),
             CreateTooltip(
                 "DogEars",
-                Line("PuppyEarsStat", "PuppyStat", halveInVanity: true),
-                Line("PuppyEarsFlavor", "PuppyFlavor", halveInVanity: false)));
+                CreateTooltipLine("PuppyEarsStat", "PuppyStat", halveInVanity: true),
+                CreateTooltipLine("PuppyEarsFlavor", "PuppyFlavor", halveInVanity: false)));
         RegisterTail(
             ItemID.DogTail,
             PuppyFamily.Vanilla,
             new VanillaDogTailProvider(),
             CreateTooltip(
                 "DogTail",
-                Line("PuppyTailStat", "PuppyStat", halveInVanity: true),
-                Line("PuppyTailFlavor", "PuppyFlavor", halveInVanity: false)));
+                CreateTooltipLine("PuppyTailStat", "PuppyStat", halveInVanity: true),
+                CreateTooltipLine("PuppyTailFlavor", "PuppyFlavor", halveInVanity: false)));
 
         int reinforcedEarsType = ModContent.ItemType<ReinforcedEarsItem>();
         RegisterEars(
@@ -68,9 +68,9 @@ public static class PuppyEquipmentRegistry
             ModContent.GetInstance<ReinforcedEarsItem>(),
             CreateTooltip(
                 "ReinforcedEarsItem",
-                Line("PuppyReinforcedEarsDefense", "PuppyStat", halveInVanity: true),
-                Line("PuppyReinforcedEarsKnockback", "PuppyEffect", halveInVanity: true),
-                Line("PuppyReinforcedEarsFlavor", "PuppyFlavor", halveInVanity: false)));
+                CreateTooltipLine("PuppyReinforcedEarsDefense", "PuppyStat", halveInVanity: true),
+                CreateTooltipLine("PuppyReinforcedEarsKnockback", "PuppyEffect", halveInVanity: true),
+                CreateTooltipLine("PuppyReinforcedEarsFlavor", "PuppyFlavor", halveInVanity: false)));
 
         int reinforcedTailType = ModContent.ItemType<ReinforcedTailItem>();
         RegisterTail(
@@ -79,9 +79,9 @@ public static class PuppyEquipmentRegistry
             ModContent.GetInstance<ReinforcedTailItem>(),
             CreateTooltip(
                 "ReinforcedTailItem",
-                Line("PuppyReinforcedTailDefense", "PuppyDefense", halveInVanity: true),
-                Line("PuppyReinforcedTailStat", "PuppyStat", halveInVanity: true),
-                Line("PuppyReinforcedTailFlavor", "PuppyFlavor", halveInVanity: false)));
+                CreateTooltipLine("PuppyReinforcedTailDefense", "PuppyDefense", halveInVanity: true),
+                CreateTooltipLine("PuppyReinforcedTailStat", "PuppyStat", halveInVanity: true),
+                CreateTooltipLine("PuppyReinforcedTailFlavor", "PuppyFlavor", halveInVanity: false)));
 
         int shinyEarsType = ModContent.ItemType<ShinyEarsItem>();
         RegisterEars(
@@ -90,9 +90,9 @@ public static class PuppyEquipmentRegistry
             ModContent.GetInstance<ShinyEarsItem>(),
             CreateTooltip(
                 "ShinyEarsItem",
-                Line("ShinyEarsStat", "PuppyStat", halveInVanity: true),
-                Line("ShinyEarsEffect", "PuppyEffect", halveInVanity: true),
-                Line("ShinyEarsFlavor", "PuppyFlavor", halveInVanity: false)));
+                CreateTooltipLine("ShinyEarsStat", "PuppyStat", halveInVanity: true),
+                CreateTooltipLine("ShinyEarsEffect", "PuppyEffect", halveInVanity: true),
+                CreateTooltipLine("ShinyEarsFlavor", "PuppyFlavor", halveInVanity: false)));
 
         int shinyTailType = ModContent.ItemType<ShinyTailItem>();
         RegisterTail(
@@ -101,8 +101,8 @@ public static class PuppyEquipmentRegistry
             ModContent.GetInstance<ShinyTailItem>(),
             CreateTooltip(
                 "ShinyTailItem",
-                Line("ShinyTailStat", "PuppyStat", halveInVanity: true),
-                Line("ShinyTailFlavor", "PuppyFlavor", halveInVanity: false)));
+                CreateTooltipLine("ShinyTailStat", "PuppyStat", halveInVanity: true),
+                CreateTooltipLine("ShinyTailFlavor", "PuppyFlavor", halveInVanity: false)));
     }
 
     public static void Clear()
@@ -143,7 +143,7 @@ public static class PuppyEquipmentRegistry
         return new PuppyTooltipDefinition(lines);
     }
 
-    private static PuppyTooltipLineDefinition Line(
+    private static PuppyTooltipLineDefinition CreateTooltipLine(
         string lineName,
         string localizationName,
         bool halveInVanity)

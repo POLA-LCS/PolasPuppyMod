@@ -115,12 +115,12 @@ public sealed class SoundPad
 
     public int Count => _sounds.Count;
 
-    public SoundStyle GetRandom(int offset = 0)
+    public SoundStyle GetRandom(int minIndex = 0)
     {
         if (_sounds.Count == 0)
             return default;
-        if ((uint)offset >= (uint)_sounds.Count)
-            throw new ArgumentOutOfRangeException(nameof(offset));
-        return _sounds[Main.rand.Next(offset, _sounds.Count)];
+        if ((uint)minIndex >= (uint)_sounds.Count)
+            throw new ArgumentOutOfRangeException(nameof(minIndex));
+        return _sounds[Main.rand.Next(minIndex, _sounds.Count)];
     }
 }

@@ -25,10 +25,10 @@ public static class PuppySpelunkerService
         if (!resolution.TryGetPairBonus(out PuppyPairBonusDefinition pairBonus) || !pairBonus.Spelunker.HasValue)
             return;
 
-        ShineTreasure(player, pairBonus.Spelunker.Value.GetRadius(resolution.SelectedPlacement));
+        HighlightSpelunkerTiles(player, pairBonus.Spelunker.Value.GetRadius(resolution.SelectedPlacement));
     }
 
-    private static void ShineTreasure(Player player, int radius)
+    private static void HighlightSpelunkerTiles(Player player, int radius)
     {
         Vector3 color = new(LightIntensity, LightIntensity * 0.85f, LightIntensity * 0.35f);
         Point center = player.Center.ToTileCoordinates();

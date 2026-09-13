@@ -60,13 +60,13 @@ public class PuppyPlayer : ModPlayer
     {
         var config = ModContent.GetInstance<PuppyModClientConfig>();
         // Apply client-chosen volume/pitch; GoodPuppy buff +0.3 pitch
-        float targetPitch = PitchOf(config.BarkPitch) + (pitched ? BarkPitchIncrease : 0f);
+        float targetPitch = GetPitch(config.BarkPitch) + (pitched ? BarkPitchIncrease : 0f);
         SoundStyle bark = sound with { Pitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax), Volume = sound.Volume * config.BarkVolume };
         if (Player.whoAmI == Main.myPlayer)
             SoundEngine.PlaySound(bark, Player.Center);
     }
 
-    public static float PitchOf(BarkPitchStyle style) => style switch
+    public static float GetPitch(BarkPitchStyle style) => style switch
     {
         BarkPitchStyle.FloorShaker => -0.75f,
         BarkPitchStyle.Protector => -0.50f,
@@ -274,7 +274,7 @@ public class PuppyPlayer : ModPlayer
         Player.pickSpeed -= stats.PickSpeed;
         Player.jumpSpeedBoost += stats.JumpSpeedBoost;
 
-        HappyIfClicker();
+        ApplyClickerPraise();
     }
 
     public override void PostUpdateRunSpeeds()
@@ -305,7 +305,7 @@ public class PuppyPlayer : ModPlayer
         Player.GetKnockback(DamageClass.Summon).Flat += stats.SummonKnockbackFlat;
     }
 
-    private void HappyIfClicker()
+    private void ApplyClickerPraise()
     {
         if (!IsPuppy)
             return;
