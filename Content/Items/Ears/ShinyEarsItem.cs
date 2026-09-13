@@ -15,6 +15,8 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     private const float BasePickSpeed = 0.12f;
     public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: BasePickSpeed);
 
+    // Treasure shine / ore detection: functional 12 tiles half-box, vanity 6 tiles (halved). Light intensity also halved in vanity.
+    // Vanity halving is handled locally via isVanity (UpdateAccessory/UpdateVanity/UpdateEquip); central PuppyEquipment stats only halves PickSpeed – no duplicate range handling.
     private const int ShineBoxHalf = 12;
 
     private const float BaseLightIntensity = 0.25f;
@@ -73,6 +75,7 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     private static void EmitLight(Player player, bool isVanity)
     {
         if (Main.dedServ) return;
+        // Halved light intensity in vanity (0.125 vs 0.25) – matches treasure shine halving; no central double-apply.
         float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
         Lighting.AddLight(player.Center, new Vector3(i, i * 0.85f, i * 0.35f));
     }
@@ -81,7 +84,7 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     {
         if (Main.dedServ) return;
         float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
-        int range = isVanity ? ShineBoxHalf / 2 : ShineBoxHalf;
+        int range = isVanity ? ShineBoxHalf / 2 : ShineBoxHalf; // functional 12 / vanity 6 – vanity exactly half, no duplicate central handling
         Vector3 color = new(i, i * 0.85f, i * 0.35f);
         Point center = player.Center.ToTileCoordinates();
         for (int x = center.X - range; x <= center.X + range; x++)
