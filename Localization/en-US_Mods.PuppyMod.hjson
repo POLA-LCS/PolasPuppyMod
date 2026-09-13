@@ -47,7 +47,7 @@ Items: {
 	ReinforcedEarsItem: {
 		DisplayName: Reinforced Ears
 		Tooltip: ""
-		PuppyStat: 2 defense
+		PuppyDefense: 2 defense
 		PuppyEffect: Reduced knockback
 		PuppyFlavor: "'Tough enough for any adventure! :3'"
 	}
@@ -164,7 +164,7 @@ Configs: {
 		}
 
 		AttentionSeeker: {
-			Label: Attention Seaker
+			Label: Attention Seeker
 			Tooltip: ""
 		}
 
