@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Terraria;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Players;
@@ -7,25 +6,8 @@ namespace PuppyMod.Services.Leash;
 
 public static class PuppyLeashBonusService
 {
-    // H2 fix: Defense timing split – all defense aggregated in PostUpdateEquips (PuppyPlayer/ChainedPlayer), not ModSystem.PostUpdatePlayers late.
-    // Order: ResetEffects → PostUpdateEquips aggregation (equipment stats + leash AffectPuppy + pair bonus) → no late flicker.
-    // Stacking: individual PuppyEquipmentStats stack additively; attached pair bonus uses strongest per player (individual stack, pair strongest).
-    // Keep ApplyAttachedEffects for backwards compat but deprecated – now per-player via ApplyDefenseForPlayer called in PostUpdateEquips.
-    [System.Obsolete("H2: Use ApplyDefenseForPlayer in PostUpdateEquips to aggregate with equipment stats; global late sweep causes flicker.")]
-    public static void ApplyAttachedEffects()
-    {
-        Dictionary<int, PuppyLeashBonusEffect> strongestEffects = CollectStrongestEffects();
-        foreach (KeyValuePair<int, PuppyLeashBonusEffect> entry in strongestEffects)
-        {
-            Player player = GetPlayer(entry.Key);
-            if (player == null || !player.active || player.dead)
-                continue;
-
-            player.statDefense += entry.Value.DefenseBonus;
-        }
-    }
-
-    /// <summary>H2: Per-player pair bonus aggregated in PostUpdateEquips with equipment stats – no late flicker, strongest wins.</summary>
+    // Defense aggregation happens in PostUpdateEquips (equipment stats + pair bonus) to avoid late-sweep flicker.
+    // Individual stats stack additively; the attached pair bonus uses the strongest applicable effect per player.
     public static void ApplyDefenseForPlayer(Player player)
     {
         if (player == null || !player.active || player.dead) return;
@@ -67,36 +49,6 @@ public static class PuppyLeashBonusService
         return false;
     }
 
-    private static Dictionary<int, PuppyLeashBonusEffect> CollectStrongestEffects()
-    {
-        var strongestEffects = new Dictionary<int, PuppyLeashBonusEffect>();
-        foreach (Player puppy in Main.player)
-        {
-            if (!TryGetAttachedPairEffect(puppy, out Player owner, out PuppyLeashBonusEffect effect))
-                continue;
-
-            AddStrongest(strongestEffects, puppy, effect);
-            AddStrongest(strongestEffects, owner, effect);
-        }
-
-        return strongestEffects;
-    }
-
-    private static void AddStrongest(
-        Dictionary<int, PuppyLeashBonusEffect> effects,
-        Player player,
-        PuppyLeashBonusEffect candidate)
-    {
-        if (player == null || !player.active || player.dead || !candidate.HasEffect)
-            return;
-
-        if (!effects.TryGetValue(player.whoAmI, out PuppyLeashBonusEffect current)
-            || candidate.IsStrongerThan(current))
-        {
-            effects[player.whoAmI] = candidate;
-        }
-    }
-
     private static bool TryGetAttachedPairEffect(
         Player puppy,
         out Player owner,
@@ -116,12 +68,5 @@ public static class PuppyLeashBonusService
 
         effect = pairBonus.GetEffect(resolution.SelectedEars, resolution.SelectedTail);
         return effect.HasEffect;
-    }
-
-    private static Player GetPlayer(int whoAmI)
-    {
-        if (whoAmI < 0 || whoAmI >= Main.player.Length)
-            return null;
-        return Main.player[whoAmI];
     }
 }

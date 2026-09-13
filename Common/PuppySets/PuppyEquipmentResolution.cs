@@ -49,6 +49,23 @@ public sealed class PuppyEquipmentResolution
     public bool HasVanityTail => Tails.Any(entry => !entry.IsFunctional);
     public bool HasPair => SelectedEars != null && SelectedTail != null;
 
+    /// <summary>
+    /// Placement of the selected pair: both functional → Therian, exactly one functional → Furry,
+    /// both vanity → Costume. Based on the selected pair only; duplicate copies don't change it.
+    /// </summary>
+    public PuppySetPlacement SelectedPlacement => GetPlacement(SelectedEars, SelectedTail);
+
+    public static PuppySetPlacement GetPlacement(PuppyEquipmentEntry ears, PuppyEquipmentEntry tail)
+    {
+        int functional = (ears?.IsFunctional == true ? 1 : 0) + (tail?.IsFunctional == true ? 1 : 0);
+        return functional switch
+        {
+            2 => PuppySetPlacement.Therian,
+            1 => PuppySetPlacement.Furry,
+            _ => PuppySetPlacement.Costume
+        };
+    }
+
     public bool TryGetPairBonus(out PuppyPairBonusDefinition pairBonus)
     {
         if (!HasPair || SelectedEars.Family != SelectedTail.Family)

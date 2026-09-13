@@ -28,6 +28,17 @@ public enum PuppyEquipmentSlotLocation
 }
 
 /// <summary>
+/// Placement state of the selected Puppy set pair.
+/// Costume = all pieces vanity, Furry = exactly one piece functional, Therian = all pieces functional.
+/// </summary>
+public enum PuppySetPlacement
+{
+    Costume,
+    Furry,
+    Therian
+}
+
+/// <summary>
 /// Immutable additive contribution from one equipped Puppy item, or the aggregate of all
 /// recognized entries in a snapshot. Values are full-strength functional-slot values;
 /// <see cref="PuppyEquipmentEntry.ValueMultiplier"/> applies vanity scaling (0.5).
