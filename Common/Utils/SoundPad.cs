@@ -55,30 +55,30 @@ public sealed class SoundPad
             Path.Combine(assemblyPath, "Assets", "Sounds", category),
             relativePath
         };
-        foreach (var c in candidates)
+        foreach (var candidate in candidates)
         {
             try
             {
-                if (!Directory.Exists(c))
+                if (!Directory.Exists(candidate))
                     continue;
                 string[] files;
                 try
                 {
-                    files = Directory.EnumerateFiles(c, "*", SearchOption.TopDirectoryOnly)
+                    files = Directory.EnumerateFiles(candidate, "*", SearchOption.TopDirectoryOnly)
                         .Select(Path.GetFileNameWithoutExtension)
-                        .Where(n => !string.IsNullOrEmpty(n))
+                        .Where(name => !string.IsNullOrEmpty(name))
                         .ToArray();
                 }
                 catch (Exception ex)
                 {
-                    try { mod.Logger.Warn($"ScanCategory EnumerateFiles failed for {c}: {ex.Message}"); } catch { }
+                    try { mod.Logger.Warn($"ScanCategory EnumerateFiles failed for {candidate}: {ex.Message}"); } catch { }
                     continue;
                 }
                 if (files.Length > 0) return files;
             }
             catch (Exception ex)
             {
-                try { mod.Logger.Warn($"ScanCategory candidate failed for {c}: {ex.Message}"); } catch { }
+                try { mod.Logger.Warn($"ScanCategory candidate failed for {candidate}: {ex.Message}"); } catch { }
             }
         }
         return [];
@@ -104,9 +104,9 @@ public sealed class SoundPad
     public SoundPad AppendSpecific(string category, string[] names, float pitch = 0.5f, float variance = 0.5f, float volume = 1f)
     {
         if (names == null || names.Length == 0) return this;
-        foreach (var n in names)
+        foreach (var name in names)
         {
-            var trimmed = n?.Trim();
+            var trimmed = name?.Trim();
             if (string.IsNullOrEmpty(trimmed)) continue;
             _sounds.Add(LoadSound(category, trimmed, pitch, variance, volume));
         }

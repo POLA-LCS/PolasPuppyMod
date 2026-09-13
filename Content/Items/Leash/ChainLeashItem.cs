@@ -34,8 +34,8 @@ public class ChainLeashItem : SummonLeashItem
         OwnerInertia: 0.12f
     );
 
-    private static float PoisonChance => 0.20f;
-    private static int PoisonDuration => 300;
+    private const float PoisonChance = 0.20f;
+    private const int PoisonDuration = 300;
     public override void SetDefaults()
     {
         Item.DefaultToWhip(ModContent.ProjectileType<ChainLeashProjectile>(), 17, 5f, 4);

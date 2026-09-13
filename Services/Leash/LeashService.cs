@@ -10,11 +10,11 @@ public static class LeashService
 {
     public static bool IsLeashing(Player owner, int leashType)
     {
-        foreach (Player t in Main.player)
+        foreach (Player target in Main.player)
         {
-            if (t == null || !t.active) continue;
-            var c = t.GetModPlayer<ChainedPlayer>();
-            if (c.GrabberIndex == owner.whoAmI && c.ActiveLeashItemType == leashType)
+            if (target == null || !target.active) continue;
+            var chained = target.GetModPlayer<ChainedPlayer>();
+            if (chained.GrabberIndex == owner.whoAmI && chained.ActiveLeashItemType == leashType)
                 return true;
         }
         return false;
@@ -22,11 +22,11 @@ public static class LeashService
 
     public static bool IsLeashingAny(Player owner)
     {
-        foreach (Player t in Main.player)
+        foreach (Player target in Main.player)
         {
-            if (t == null || !t.active) continue;
-            var c = t.GetModPlayer<ChainedPlayer>();
-            if (c.GrabberIndex == owner.whoAmI)
+            if (target == null || !target.active) continue;
+            var chained = target.GetModPlayer<ChainedPlayer>();
+            if (chained.GrabberIndex == owner.whoAmI)
                 return true;
         }
         return false;

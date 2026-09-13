@@ -9,7 +9,7 @@ public class PuppyModClientConfig : ModConfig
 
     [Header("PuppySet")]
     [DefaultValue(true)]
-    public bool StartAsPuppy;
+    public bool StartAsPuppy { get; set; } = true;
 
     [Header("Audio")]
     [Range(0f, 1f)]

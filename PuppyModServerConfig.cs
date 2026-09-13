@@ -9,5 +9,5 @@ public class PuppyModServerConfig : ModConfig
 
     [Header("PuppySet")]
     [DefaultValue(true)]
-    public bool EnableStartingPuppies;
+    public bool EnableStartingPuppies { get; set; } = true;
 }

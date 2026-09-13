@@ -27,33 +27,33 @@ public class PuppyPlayer : ModPlayer
     private const float PitchClampMin = -1f;
     private const float PitchClampMax = 1f;
 
-    private int barkCooldown = 0;
-    private PuppyEquipmentSnapshot equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
-    private PuppyEquipmentResolution equipmentResolution = PuppyEquipmentResolution.Empty;
-    private bool shinyTailFunctional;
-    private bool shinyTailVanity;
+    private int _barkCooldown = 0;
+    private PuppyEquipmentSnapshot _equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
+    private PuppyEquipmentResolution _equipmentResolution = PuppyEquipmentResolution.Empty;
+    private bool _shinyTailFunctional;
+    private bool _shinyTailVanity;
     // H4: Centralized ShinyEars light/treasure dedup like ShinyTail – functional present skips vanity to avoid double light/tile scan (~625*2).
-    private bool shinyEarsFunctional;
-    private bool shinyEarsVanity;
+    private bool _shinyEarsFunctional;
+    private bool _shinyEarsVanity;
 
-    public PuppyEquipmentSnapshot EquipmentSnapshot => equipmentSnapshot;
-    public PuppyEquipmentResolution EquipmentResolution => equipmentResolution;
-    public bool IsPuppy => equipmentResolution.IsPuppy;
+    public PuppyEquipmentSnapshot EquipmentSnapshot => _equipmentSnapshot;
+    public PuppyEquipmentResolution EquipmentResolution => _equipmentResolution;
+    public bool IsPuppy => _equipmentResolution.IsPuppy;
 
     internal void EnableShinyTail(bool isVanity)
     {
         if (isVanity)
-            shinyTailVanity = true;
+            _shinyTailVanity = true;
         else
-            shinyTailFunctional = true;
+            _shinyTailFunctional = true;
     }
 
     internal void EnableShinyEars(bool isVanity)
     {
         if (isVanity)
-            shinyEarsVanity = true;
+            _shinyEarsVanity = true;
         else
-            shinyEarsFunctional = true;
+            _shinyEarsFunctional = true;
     }
 
     public void Bark(SoundStyle sound, bool pitched = false)
@@ -99,7 +99,7 @@ public class PuppyPlayer : ModPlayer
     private void NotifyEarsBark()
     {
         var notifiedTypes = new HashSet<int>();
-        foreach (PuppyEquipmentEntry entry in equipmentResolution.Ears)
+        foreach (PuppyEquipmentEntry entry in _equipmentResolution.Ears)
         {
             if (!notifiedTypes.Add(entry.ItemType))
                 continue;
@@ -118,29 +118,29 @@ public class PuppyPlayer : ModPlayer
         if (!client.StartAsPuppy)
             return [];
 
-        Item dog_ears = new();
-        dog_ears.SetDefaults(ItemID.DogEars);
-        Item dog_tail = new();
-        dog_tail.SetDefaults(ItemID.DogTail);
-        return [dog_ears, dog_tail];
+        Item dogEars = new();
+        dogEars.SetDefaults(ItemID.DogEars);
+        Item dogTail = new();
+        dogTail.SetDefaults(ItemID.DogTail);
+        return [dogEars, dogTail];
     }
 
     public override void ResetEffects()
     {
-        equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
-        equipmentResolution = PuppyEquipmentResolution.Empty;
-        shinyTailFunctional = false;
-        shinyTailVanity = false;
-        shinyEarsFunctional = false;
-        shinyEarsVanity = false;
+        _equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
+        _equipmentResolution = PuppyEquipmentResolution.Empty;
+        _shinyTailFunctional = false;
+        _shinyTailVanity = false;
+        _shinyEarsFunctional = false;
+        _shinyEarsVanity = false;
     }
 
     public override void PreUpdateMovement()
     {
-        if (!shinyTailFunctional && !shinyTailVanity)
+        if (!_shinyTailFunctional && !_shinyTailVanity)
             return;
 
-        int hoverDuration = shinyTailFunctional
+        int hoverDuration = _shinyTailFunctional
             ? ShinyTailItem.FunctionalHoverDuration
             : ShinyTailItem.VanityHoverDuration;
 
@@ -158,12 +158,12 @@ public class PuppyPlayer : ModPlayer
 
     public override void PostUpdate()
     {
-        if (barkCooldown > 0)
-            barkCooldown--;
+        if (_barkCooldown > 0)
+            _barkCooldown--;
         // ShinyEars light stays an individual effect: full functional, half vanity.
-        if (shinyEarsFunctional || shinyEarsVanity)
+        if (_shinyEarsFunctional || _shinyEarsVanity)
         {
-            bool isVanity = !shinyEarsFunctional && shinyEarsVanity;
+            bool isVanity = !_shinyEarsFunctional && _shinyEarsVanity;
             ShinyEarsItem.EmitLightForPlayer(Player, isVanity);
         }
 
@@ -175,10 +175,10 @@ public class PuppyPlayer : ModPlayer
     {
         if (!IsPuppy)
             return;
-        if (barkCooldown > 0)
+        if (_barkCooldown > 0)
             return;
         PlayRandomBark();
-        barkCooldown = BarkCooldownTicks;
+        _barkCooldown = BarkCooldownTicks;
     }
 
     public override void ModifyHurt(ref Player.HurtModifiers modifiers)
@@ -193,16 +193,16 @@ public class PuppyPlayer : ModPlayer
         modifiers.DisableSound();
         modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) =>
         {
-            // H5: Hurt cry respects barkCooldown to avoid overlapping set-bonus bark same tick (previously bypassed 25-tick cooldown).
+            // H5: Hurt cry respects _barkCooldown to avoid overlapping set-bonus bark same tick (previously bypassed 25-tick cooldown).
             // Small cooldown check before Bark(Cries/Growls); separate hurtSoundCooldown not needed – same BarkCooldownTicks prevents overlap.
-            if (barkCooldown > 0)
+            if (_barkCooldown > 0)
                 return;
             if (Player.statLife - info.Damage <= 0)
             {
                 if (Cries.Count != 0)
                 {
                     Bark(Cries.GetRandom());
-                    barkCooldown = BarkCooldownTicks;
+                    _barkCooldown = BarkCooldownTicks;
                 }
                 return;
             }
@@ -211,7 +211,7 @@ public class PuppyPlayer : ModPlayer
                 if (Growls.Count != 0)
                 {
                     Bark(Growls.GetRandom());
-                    barkCooldown = BarkCooldownTicks;
+                    _barkCooldown = BarkCooldownTicks;
                 }
             }
             else
@@ -219,7 +219,7 @@ public class PuppyPlayer : ModPlayer
                 if (Cries.Count != 0)
                 {
                     Bark(Cries.GetRandom());
-                    barkCooldown = BarkCooldownTicks;
+                    _barkCooldown = BarkCooldownTicks;
                 }
             }
         };
@@ -238,8 +238,8 @@ public class PuppyPlayer : ModPlayer
 
     public override void PostUpdateEquips()
     {
-        equipmentSnapshot = PuppyEquipmentScanner.Scan(Player);
-        equipmentResolution = PuppyEquipmentResolver.Resolve(equipmentSnapshot);
+        _equipmentSnapshot = PuppyEquipmentScanner.Scan(Player);
+        _equipmentResolution = PuppyEquipmentResolver.Resolve(_equipmentSnapshot);
         ApplyEquipmentDefense();
         ApplyEquipmentKnockback();
         // H2: Aggregate attached pair defense together with equipment stats in PostUpdateEquips (no late ModSystem sweep).
@@ -249,7 +249,7 @@ public class PuppyPlayer : ModPlayer
         Player.setBonus = string.Empty;
         if (IsPuppy)
         {
-            foreach (string bonusText in PuppySetBonusText.GetActiveLines(equipmentResolution, forTooltip: false))
+            foreach (string bonusText in PuppySetBonusText.GetActiveLines(_equipmentResolution, forTooltip: false))
             {
                 Player.setBonus = AppendSetBonusLine(Player.setBonus, bonusText);
             }
@@ -270,7 +270,7 @@ public class PuppyPlayer : ModPlayer
 
     public override void PostUpdateMiscEffects()
     {
-        PuppyEquipmentStats stats = equipmentResolution.Stats;
+        PuppyEquipmentStats stats = _equipmentResolution.Stats;
         Player.pickSpeed -= stats.PickSpeed;
         Player.jumpSpeedBoost += stats.JumpSpeedBoost;
 
@@ -279,7 +279,7 @@ public class PuppyPlayer : ModPlayer
 
     public override void PostUpdateRunSpeeds()
     {
-        PuppyEquipmentStats stats = equipmentResolution.Stats;
+        PuppyEquipmentStats stats = _equipmentResolution.Stats;
         Player.moveSpeed += stats.MoveSpeed;
         Player.accRunSpeed += stats.AccRunSpeed;
         Player.maxRunSpeed += stats.MaxRunSpeed;
@@ -293,14 +293,14 @@ public class PuppyPlayer : ModPlayer
 
     private void ApplyEquipmentDefense()
     {
-        int defense = (int)MathF.Round(equipmentResolution.Stats.Defense, MidpointRounding.AwayFromZero);
+        int defense = (int)MathF.Round(_equipmentResolution.Stats.Defense, MidpointRounding.AwayFromZero);
         if (defense != 0)
             Player.statDefense += defense;
     }
 
     private void ApplyEquipmentKnockback()
     {
-        PuppyEquipmentStats stats = equipmentResolution.Stats;
+        PuppyEquipmentStats stats = _equipmentResolution.Stats;
         Player.GetKnockback(DamageClass.Melee) += stats.MeleeKnockbackAdditive;
         Player.GetKnockback(DamageClass.Summon).Flat += stats.SummonKnockbackFlat;
     }
