@@ -22,6 +22,8 @@ public class ShinyTailItem : ModItem, IPuppyTail
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
+        // CloneDefaults overwrites the autoloaded back slot with vanilla DogTail (25), which would render the vanilla tail; restore the mod equip slot.
+        Item.backSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Back);
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)

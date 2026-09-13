@@ -34,6 +34,8 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogEars);
+        // CloneDefaults overwrites the autoloaded head slot with vanilla DogEars (242), which would render vanilla ears; restore the mod equip slot.
+        Item.headSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
         Item.rare = ItemRarityID.Blue;
         Item.value = Item.sellPrice(gold: 1, silver: 50);
     }

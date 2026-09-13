@@ -21,9 +21,10 @@ public class ReinforcedEarsItem : ModItem, IPuppyEars
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogEars);
+        // CloneDefaults overwrites the autoloaded head slot with vanilla DogEars (242), which would render vanilla ears; restore the mod equip slot.
+        Item.headSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
         // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
-        Item.accessory = true;
     }
 
     public override void AddRecipes()

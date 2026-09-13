@@ -23,6 +23,8 @@ public class ReinforcedTailItem : ModItem, IPuppyTail
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
+        // CloneDefaults overwrites the autoloaded back slot with vanilla DogTail (25), which would render the vanilla tail; restore the mod equip slot.
+        Item.backSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Back);
         // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
         Item.accessory = true;
