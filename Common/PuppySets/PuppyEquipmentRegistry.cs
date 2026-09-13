@@ -42,12 +42,13 @@ public static class PuppyEquipmentRegistry
 
     private sealed class VanillaDogEarsProvider : IPuppyEars
     {
-        public PuppyEarsStats Stats => new(0.10f);
+        public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: 0.10f);
     }
 
     private sealed class VanillaDogTailProvider : IPuppyTail
     {
-        public PuppyTailStats Stats => new(
+        public PuppyEquipmentStats Stats => new(
+            Defense: 0f,
             MoveSpeed: 0.30f,
             AccRunSpeed: 0.45f,
             MaxRunSpeed: 0.30f,

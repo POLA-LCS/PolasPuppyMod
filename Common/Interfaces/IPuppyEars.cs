@@ -9,8 +9,6 @@ namespace PuppyMod.Common.Interfaces;
 /// </summary>
 public interface IPuppyEars : IPuppyEquipmentProvider
 {
-    PuppyEarsStats Stats { get; }
-
     /// <summary>
     /// Purely cosmetic reaction to the set bonus bark.
     /// Called on the local client only, for every equipped ears item (vanity included).

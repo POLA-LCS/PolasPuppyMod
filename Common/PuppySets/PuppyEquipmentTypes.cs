@@ -28,74 +28,80 @@ public enum PuppyEquipmentSlotLocation
 }
 
 /// <summary>
-/// Base values supplied by an ears item. Slot scaling is applied by the equipment entry.
+/// Immutable additive contribution from one equipped Puppy item, or the aggregate of all
+/// recognized entries in a snapshot. Values are full-strength functional-slot values;
+/// <see cref="PuppyEquipmentEntry.ValueMultiplier"/> applies vanity scaling.
 /// </summary>
-public readonly record struct PuppyEarsStats(float PickSpeed)
+public readonly record struct PuppyEquipmentStats(
+    float Defense = 0f,
+    float PickSpeed = 0f,
+    float MoveSpeed = 0f,
+    float AccRunSpeed = 0f,
+    float MaxRunSpeed = 0f,
+    float JumpSpeedBoost = 0f,
+    float MeleeKnockbackAdditive = 0f,
+    float SummonKnockbackFlat = 0f)
 {
-    public PuppyEarsStats Scale(float multiplier) => new(PickSpeed * multiplier);
-}
-
-/// <summary>
-/// Base values supplied by a tail item. Slot scaling is applied by the equipment entry.
-/// </summary>
-public readonly record struct PuppyTailStats(
-    float MoveSpeed,
-    float AccRunSpeed,
-    float MaxRunSpeed,
-    float JumpSpeedBoost)
-{
-    public PuppyTailStats Scale(float multiplier) => new(
+    public PuppyEquipmentStats Scale(float multiplier) => new(
+        Defense * multiplier,
+        PickSpeed * multiplier,
         MoveSpeed * multiplier,
         AccRunSpeed * multiplier,
         MaxRunSpeed * multiplier,
-        JumpSpeedBoost * multiplier);
-}
+        JumpSpeedBoost * multiplier,
+        MeleeKnockbackAdditive * multiplier,
+        SummonKnockbackFlat * multiplier);
 
-public readonly record struct PuppyEquipmentStats(
-    float PickSpeed,
-    float MoveSpeed,
-    float AccRunSpeed,
-    float MaxRunSpeed,
-    float JumpSpeedBoost);
+    public static PuppyEquipmentStats operator +(PuppyEquipmentStats left, PuppyEquipmentStats right) => new(
+        left.Defense + right.Defense,
+        left.PickSpeed + right.PickSpeed,
+        left.MoveSpeed + right.MoveSpeed,
+        left.AccRunSpeed + right.AccRunSpeed,
+        left.MaxRunSpeed + right.MaxRunSpeed,
+        left.JumpSpeedBoost + right.JumpSpeedBoost,
+        left.MeleeKnockbackAdditive + right.MeleeKnockbackAdditive,
+        left.SummonKnockbackFlat + right.SummonKnockbackFlat);
+}
 
 public interface IPuppyEquipmentProvider
 {
+    PuppyEquipmentStats Stats { get; }
 }
 
 public abstract class PuppyEquipmentDefinition
 {
-    protected PuppyEquipmentDefinition(int itemType, PuppyEquipmentKind kind, PuppyFamily family)
+    protected PuppyEquipmentDefinition(
+        int itemType,
+        PuppyEquipmentKind kind,
+        PuppyFamily family,
+        IPuppyEquipmentProvider provider)
     {
         ItemType = itemType;
         Kind = kind;
         Family = family;
+        Provider = provider;
     }
 
     public int ItemType { get; }
     public PuppyEquipmentKind Kind { get; }
     public PuppyFamily Family { get; }
+    public IPuppyEquipmentProvider Provider { get; }
 }
 
 public sealed class PuppyEarsDefinition : PuppyEquipmentDefinition
 {
     public PuppyEarsDefinition(int itemType, PuppyFamily family, IPuppyEars provider)
-        : base(itemType, PuppyEquipmentKind.Ears, family)
+        : base(itemType, PuppyEquipmentKind.Ears, family, provider)
     {
-        Provider = provider;
     }
-
-    public IPuppyEars Provider { get; }
 }
 
 public sealed class PuppyTailDefinition : PuppyEquipmentDefinition
 {
     public PuppyTailDefinition(int itemType, PuppyFamily family, IPuppyTail provider)
-        : base(itemType, PuppyEquipmentKind.Tail, family)
+        : base(itemType, PuppyEquipmentKind.Tail, family, provider)
     {
-        Provider = provider;
     }
-
-    public IPuppyTail Provider { get; }
 }
 
 public sealed class PuppyEquipmentEntry
@@ -117,8 +123,9 @@ public sealed class PuppyEquipmentEntry
     public bool IsAccessorySlot => Location == PuppyEquipmentSlotLocation.FunctionalAccessory || Location == PuppyEquipmentSlotLocation.VanityAccessory;
     public float ValueMultiplier => IsFunctional ? 1f : 0.5f;
 
-    public IPuppyEars EarsProvider => (Definition as PuppyEarsDefinition)?.Provider;
-    public IPuppyTail TailProvider => (Definition as PuppyTailDefinition)?.Provider;
+    public IPuppyEquipmentProvider Provider => Definition.Provider;
+    public IPuppyEars EarsProvider => Definition.Provider as IPuppyEars;
+    public IPuppyTail TailProvider => Definition.Provider as IPuppyTail;
 }
 
 /// <summary>

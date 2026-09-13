@@ -8,5 +8,4 @@ namespace PuppyMod.Common.Interfaces;
 /// </summary>
 public interface IPuppyTail : IPuppyEquipmentProvider
 {
-    PuppyTailStats Stats { get; }
 }

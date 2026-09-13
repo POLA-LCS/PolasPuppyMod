@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -151,6 +152,8 @@ public class PuppyPlayer : ModPlayer
     {
         equipmentSnapshot = PuppyEquipmentScanner.Scan(Player);
         equipmentResolution = PuppyEquipmentResolver.Resolve(equipmentSnapshot);
+        ApplyEquipmentDefense();
+        ApplyEquipmentKnockback();
         if (IsPuppy)
         {
             string dir = Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
@@ -162,12 +165,31 @@ public class PuppyPlayer : ModPlayer
     {
         PuppyEquipmentStats stats = equipmentResolution.Stats;
         Player.pickSpeed -= stats.PickSpeed;
-        Player.moveSpeed += stats.MoveSpeed;
-        Player.accRunSpeed += stats.AccRunSpeed;
-        Player.maxRunSpeed += stats.MaxRunSpeed;
         Player.jumpSpeedBoost += stats.JumpSpeedBoost;
 
         HappyIfClicker();
+    }
+
+    public override void PostUpdateRunSpeeds()
+    {
+        PuppyEquipmentStats stats = equipmentResolution.Stats;
+        Player.moveSpeed += stats.MoveSpeed;
+        Player.accRunSpeed += stats.AccRunSpeed;
+        Player.maxRunSpeed += stats.MaxRunSpeed;
+    }
+
+    private void ApplyEquipmentDefense()
+    {
+        int defense = (int)MathF.Round(equipmentResolution.Stats.Defense, MidpointRounding.AwayFromZero);
+        if (defense != 0)
+            Player.statDefense += defense;
+    }
+
+    private void ApplyEquipmentKnockback()
+    {
+        PuppyEquipmentStats stats = equipmentResolution.Stats;
+        Player.GetKnockback(DamageClass.Melee) += stats.MeleeKnockbackAdditive;
+        Player.GetKnockback(DamageClass.Summon).Flat += stats.SummonKnockbackFlat;
     }
 
     private void HappyIfClicker()

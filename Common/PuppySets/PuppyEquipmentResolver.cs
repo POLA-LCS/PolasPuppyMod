@@ -21,7 +21,6 @@ public static class PuppyEquipmentResolver
             .ThenBy(entry => entry.Slot)
             .ToArray();
 
-        PuppyEquipmentEntry primaryTail = validTails.FirstOrDefault();
         PuppyEquipmentEntry selectedTail = null;
         if (selectedEars != null && selectedEars.Family != PuppyFamily.None)
         {
@@ -34,14 +33,12 @@ public static class PuppyEquipmentResolver
                 .FirstOrDefault();
         }
 
-        PuppyEquipmentEntry effectiveTail = selectedTail ?? primaryTail;
-        PuppyEquipmentStats stats = BuildStats(selectedEars, effectiveTail);
+        PuppyEquipmentStats stats = BuildStats(snapshot);
 
         return new PuppyEquipmentResolution(
             snapshot,
             Array.AsReadOnly(validTails),
             selectedEars,
-            primaryTail,
             selectedTail,
             stats);
     }
@@ -68,21 +65,12 @@ public static class PuppyEquipmentResolver
         };
     }
 
-    private static PuppyEquipmentStats BuildStats(PuppyEquipmentEntry ears, PuppyEquipmentEntry tail)
+    private static PuppyEquipmentStats BuildStats(PuppyEquipmentSnapshot snapshot)
     {
-        PuppyEarsStats earsStats = default;
-        if (ears != null)
-            earsStats = ears.EarsProvider.Stats.Scale(ears.ValueMultiplier);
+        PuppyEquipmentStats stats = default;
+        foreach (PuppyEquipmentEntry entry in snapshot.Entries)
+            stats += entry.Provider.Stats.Scale(entry.ValueMultiplier);
 
-        PuppyTailStats tailStats = default;
-        if (tail != null)
-            tailStats = tail.TailProvider.Stats.Scale(tail.ValueMultiplier);
-
-        return new PuppyEquipmentStats(
-            earsStats.PickSpeed,
-            tailStats.MoveSpeed,
-            tailStats.AccRunSpeed,
-            tailStats.MaxRunSpeed,
-            tailStats.JumpSpeedBoost);
+        return stats;
     }
 }

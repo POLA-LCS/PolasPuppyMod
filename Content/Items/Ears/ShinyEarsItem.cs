@@ -14,7 +14,7 @@ namespace PuppyMod.Content.Items.Ears;
 public class ShinyEarsItem : ModItem, IPuppyEars
 {
     private const float BasePickSpeed = 0.12f;
-    public PuppyEarsStats Stats => new(BasePickSpeed);
+    public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: BasePickSpeed);
 
     private const int ShineBoxHalf = 12;
 
