@@ -163,6 +163,7 @@ Items: {
 	ReinforcedTailItem: {
 		DisplayName: Reinforced Tail
 		Tooltip: ""
+		PuppyDefense: 2 defense
 		PuppyStat: Increase mobility but a little heavier
 		PuppyFlavor: "'Ready for stronger walkies! Aarr-woof! :3'"
 	}

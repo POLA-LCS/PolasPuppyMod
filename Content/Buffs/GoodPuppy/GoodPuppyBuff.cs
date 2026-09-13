@@ -11,6 +11,7 @@ public class GoodPuppyBuff : ModBuff
     public const int LifeRegen = 14;
     public const float MoveSpeed = 0.6f;
     public const float AccRunSpeed = 1.5f;
+    public const float MaxRunSpeed = 1.5f;
     public const float JumpBoost = 1.0f;
 
     public override void SetStaticDefaults()
@@ -23,6 +24,10 @@ public class GoodPuppyBuff : ModBuff
         player.lifeRegen += LifeRegen;
         player.moveSpeed += MoveSpeed;
         player.accRunSpeed += AccRunSpeed;
+        player.maxRunSpeed += MaxRunSpeed;
         player.jumpSpeedBoost += JumpBoost;
+        // Keep acc == max to suppress Hermes sprint dust (acc > max triggers HorizontalMovement dust).
+        if (player.accRunSpeed > player.maxRunSpeed)
+            player.accRunSpeed = player.maxRunSpeed;
     }
 }

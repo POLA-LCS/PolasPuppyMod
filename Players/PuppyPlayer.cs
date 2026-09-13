@@ -224,6 +224,10 @@ public class PuppyPlayer : ModPlayer
         Player.moveSpeed += stats.MoveSpeed;
         Player.accRunSpeed += stats.AccRunSpeed;
         Player.maxRunSpeed += stats.MaxRunSpeed;
+
+        // Hermes-like sprint dust triggers when accRunSpeed > maxRunSpeed in vanilla HorizontalMovement.
+        // Keep them equal to suppress dust while preserving movement bonuses (functional/vanity scaling is already applied in stats).
+        Player.accRunSpeed = Player.maxRunSpeed;
     }
 
     private void ApplyEquipmentDefense()
