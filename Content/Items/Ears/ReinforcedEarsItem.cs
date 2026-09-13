@@ -8,7 +8,6 @@ using PuppyMod.Common.Tooltip;
 
 namespace PuppyMod.Content.Items.Ears;
 
-[AutoloadEquip(EquipType.Head)]
 public class ReinforcedEarsItem : ModItem, IPuppyEars
 {
     public PuppyEquipmentStats Stats => new(
@@ -16,21 +15,13 @@ public class ReinforcedEarsItem : ModItem, IPuppyEars
         MeleeKnockbackAdditive: 0.25f,
         SummonKnockbackFlat: 0.25f);
 
-    public override string Texture => "PuppyMod/Assets/Armor/ReinforcedDogEarsArmor";
+    public override string Texture => "Terraria/Images/Item_" + ItemID.DogEars;
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogEars);
-        // CloneDefaults overwrites the autoloaded head slot with vanilla DogEars (242), which would render vanilla ears; restore the mod equip slot.
-        Item.headSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
         // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
-    }
-
-    public override void SetStaticDefaults()
-    {
-        // Vanilla DogEars (242) opts into full hair; modded head slots default to hiding it.
-        ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
     }
 
     public override void AddRecipes()

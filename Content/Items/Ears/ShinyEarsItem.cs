@@ -11,7 +11,6 @@ using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Ears;
 
-[AutoloadEquip(EquipType.Head)]
 public class ShinyEarsItem : ModItem, IPuppyEars
 {
     private const float BasePickSpeed = 0.12f;
@@ -29,21 +28,13 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     private const float TileSizePixels = 16f;
     private const float HalfTilePixels = 8f;
 
-    public override string Texture => "PuppyMod/Assets/Armor/ShinyDogEarsArmor";
+    public override string Texture => "Terraria/Images/Item_" + ItemID.DogEars;
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogEars);
-        // CloneDefaults overwrites the autoloaded head slot with vanilla DogEars (242), which would render vanilla ears; restore the mod equip slot.
-        Item.headSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
         Item.rare = ItemRarityID.Blue;
         Item.value = Item.sellPrice(gold: 1, silver: 50);
-    }
-
-    public override void SetStaticDefaults()
-    {
-        // Vanilla DogEars (242) opts into full hair; modded head slots default to hiding it.
-        ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
     }
 
     public override void UpdateAccessory(Player player, bool hideVisual)

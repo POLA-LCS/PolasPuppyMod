@@ -16,13 +16,11 @@ public class ShinyTailItem : ModItem, IPuppyTail
 
     public PuppyEquipmentStats Stats => new(Defense: 0f);
 
-    public override string Texture => "PuppyMod/Assets/Armor/ShinyDogTailArmor";
+    public override string Texture => "Terraria/Images/Item_" + ItemID.DogTail;
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
-        // Worn sprite is drawn manually by PuppyTailDrawLayer; clear the vanilla back slot so the vanilla tail isn't drawn.
-        Item.backSlot = -1;
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)
