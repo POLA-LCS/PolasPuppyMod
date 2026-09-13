@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Tooltip;
+using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Ears;
 
@@ -16,7 +17,8 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: BasePickSpeed);
 
     // Treasure shine / ore detection: functional 12 tiles half-box, vanity 6 tiles (halved). Light intensity also halved in vanity.
-    // Vanity halving is handled locally via isVanity (UpdateAccessory/UpdateVanity/UpdateEquip); central PuppyEquipment stats only halves PickSpeed – no duplicate range handling.
+    // Vanity halving is handled locally via isVanity; central PuppyEquipment stats only halves PickSpeed – no duplicate range handling.
+    // H4: Centralized via PuppyPlayer like ShinyTail – functional present skips vanity to avoid double light/scan; intentional stacking dedup.
     private const int ShineBoxHalf = 12;
 
     private const float BaseLightIntensity = 0.25f;
@@ -33,17 +35,20 @@ public class ShinyEarsItem : ModItem, IPuppyEars
 
     public override void UpdateAccessory(Player player, bool hideVisual)
     {
-        ApplyEffects(player, isVanity: false);
+        // H4: Centralize via PuppyPlayer like ShinyTail – flag functional, emission deduped in PuppyPlayer.PostUpdate.
+        player.GetModPlayer<PuppyPlayer>().EnableShinyEars(isVanity: false);
     }
 
     public override void UpdateVanity(Player player)
     {
-        ApplyEffects(player, isVanity: true);
+        // H4: If functional present skip vanity light – PuppyPlayer dedup ensures vanity only when no functional.
+        player.GetModPlayer<PuppyPlayer>().EnableShinyEars(isVanity: true);
     }
 
     public override void UpdateEquip(Player player)
     {
-        ApplyEffects(player, isVanity: false);
+        // H4: Head slot functional – same central path.
+        player.GetModPlayer<PuppyPlayer>().EnableShinyEars(isVanity: false);
     }
 
     public void OnBark(Player player)
@@ -68,14 +73,20 @@ public class ShinyEarsItem : ModItem, IPuppyEars
 
     private static void ApplyEffects(Player player, bool isVanity)
     {
+        // Kept for backwards compat but not used – central path via PuppyPlayer dedups functional+vanity to single scan.
         EmitLight(player, isVanity);
         ShineTreasure(player, isVanity);
     }
+
+    // H4: Exposed for central PuppyPlayer aggregation – functional takes precedence, vanity only if no functional. Single scan per tick avoids ~625*2.
+    internal static void EmitLightForPlayer(Player player, bool isVanity) => EmitLight(player, isVanity);
+    internal static void ShineTreasureForPlayer(Player player, bool isVanity) => ShineTreasure(player, isVanity);
 
     private static void EmitLight(Player player, bool isVanity)
     {
         if (Main.dedServ) return;
         // Halved light intensity in vanity (0.125 vs 0.25) – matches treasure shine halving; no central double-apply.
+        // H4 dedup: functional+vanity both equipped does light once via PuppyPlayer (functional precedence), not twice.
         float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
         Lighting.AddLight(player.Center, new Vector3(i, i * 0.85f, i * 0.35f));
     }

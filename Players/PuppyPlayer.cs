@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs.GoodPuppy;
+using PuppyMod.Content.Items.Ears;
 using PuppyMod.Content.Items.Tail;
 using PuppyMod.Services.Leash;
 using System.Collections.Generic;
@@ -27,6 +28,9 @@ public class PuppyPlayer : ModPlayer
     private PuppyEquipmentResolution equipmentResolution = PuppyEquipmentResolution.Empty;
     private bool shinyTailFunctional;
     private bool shinyTailVanity;
+    // H4: Centralized ShinyEars light/treasure dedup like ShinyTail – functional present skips vanity to avoid double light/tile scan (~625*2).
+    private bool shinyEarsFunctional;
+    private bool shinyEarsVanity;
 
     public PuppyEquipmentSnapshot EquipmentSnapshot => equipmentSnapshot;
     public PuppyEquipmentResolution EquipmentResolution => equipmentResolution;
@@ -38,6 +42,14 @@ public class PuppyPlayer : ModPlayer
             shinyTailVanity = true;
         else
             shinyTailFunctional = true;
+    }
+
+    internal void EnableShinyEars(bool isVanity)
+    {
+        if (isVanity)
+            shinyEarsVanity = true;
+        else
+            shinyEarsFunctional = true;
     }
 
     public void Bark(SoundStyle sound, bool pitched = false)
@@ -114,6 +126,8 @@ public class PuppyPlayer : ModPlayer
         equipmentResolution = PuppyEquipmentResolution.Empty;
         shinyTailFunctional = false;
         shinyTailVanity = false;
+        shinyEarsFunctional = false;
+        shinyEarsVanity = false;
     }
 
     public override void PreUpdateMovement()
@@ -140,6 +154,14 @@ public class PuppyPlayer : ModPlayer
     {
         if (barkCooldown > 0)
             barkCooldown--;
+        // H4: Centralized ShinyEars emission – if functional present skip vanity light to avoid double scan (functional 12 tiles / vanity 6).
+        // Intentional stacking: functional takes precedence; vanity only if no functional, no double light when both slots active. Add comment documenting dedup.
+        if (shinyEarsFunctional || shinyEarsVanity)
+        {
+            bool isVanity = !shinyEarsFunctional && shinyEarsVanity;
+            ShinyEarsItem.EmitLightForPlayer(Player, isVanity);
+            ShinyEarsItem.ShineTreasureForPlayer(Player, isVanity);
+        }
     }
 
     public override void ArmorSetBonusActivated()
@@ -164,21 +186,34 @@ public class PuppyPlayer : ModPlayer
         modifiers.DisableSound();
         modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) =>
         {
+            // H5: Hurt cry respects barkCooldown to avoid overlapping set-bonus bark same tick (previously bypassed 25-tick cooldown).
+            // Small cooldown check before Bark(Cries/Growls); separate hurtSoundCooldown not needed – same BarkCooldownTicks prevents overlap.
+            if (barkCooldown > 0)
+                return;
             if (Player.statLife - info.Damage <= 0)
             {
                 if (Cries.Count != 0)
+                {
                     Bark(Cries.GetRandom());
+                    barkCooldown = BarkCooldownTicks;
+                }
                 return;
             }
             if (Main.rand.Next(RandomChanceMax) < GrowlChanceThreshold)
             {
                 if (Growls.Count != 0)
+                {
                     Bark(Growls.GetRandom());
+                    barkCooldown = BarkCooldownTicks;
+                }
             }
             else
             {
                 if (Cries.Count != 0)
+                {
                     Bark(Cries.GetRandom());
+                    barkCooldown = BarkCooldownTicks;
+                }
             }
         };
     }
@@ -200,6 +235,9 @@ public class PuppyPlayer : ModPlayer
         equipmentResolution = PuppyEquipmentResolver.Resolve(equipmentSnapshot);
         ApplyEquipmentDefense();
         ApplyEquipmentKnockback();
+        // H2: Aggregate attached pair defense together with equipment stats in PostUpdateEquips (no late ModSystem sweep).
+        // This ensures ResetEffects → PostUpdateEquips aggregation → no flicker, and strongest per-player stacking (individual stack, pair strongest).
+        PuppyLeashBonusService.ApplyDefenseForPlayer(Player);
         if (IsPuppy)
         {
             foreach (string bonusText in PuppySetBonusText.GetActiveLines(equipmentResolution, forTooltip: false))

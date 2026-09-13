@@ -140,6 +140,11 @@ public class ChainedPlayer : ModPlayer
         {
             Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f);
         }
+        // H2: Aggregate leash puppy effects (e.g., ChainLeash +5 defense) in PostUpdateEquips with other defense sources.
+        // Order: ResetEffects → PostUpdateEquips aggregation (equipment stats + leash + pair bonus via PuppyPlayer) → physics in PostUpdate.
+        // This prevents late defense flicker that occurred when leash/pair were applied in PostUpdate or ModSystem.PostUpdatePlayers.
+        if (HasValidAttachment && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leashForEquips)
+            leashForEquips.AffectPuppy(Player);
     }
 
     public override void PostUpdate()
@@ -153,8 +158,7 @@ public class ChainedPlayer : ModPlayer
             ActiveLeashItemType = 0;
             return;
         }
-        if (ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
-            leash.AffectPuppy(Player);
+        // H2: AffectPuppy moved to PostUpdateEquips for defense aggregation; physics remains late (post-movement).
         ApplyLeashPhysics(OwnerOf);
     }
 

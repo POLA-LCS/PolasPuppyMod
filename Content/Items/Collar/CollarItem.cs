@@ -12,14 +12,18 @@ public class CollarItem : BaseCollarItem
     public override void SetDefaults()
     {
         base.SetDefaults();
-        Item.defense = 2;
+        // H1 fix: Align with Reinforced pattern – defense solely via statDefense with vanity halving.
+        // Item.defense must be 0 to avoid double-count (previously 2 + statDefense 1 = 3 functional).
+        // Vanity 0 defense is intentional: collar effect only via UpdateAccessory (functional) and ICollarItem for owner; vanity collar intentionally gives no wearer bonus.
+        Item.defense = 0;
         Item.rare = ItemRarityID.Pink;
         Item.value = Item.sellPrice(silver: 27, copper: 1);
     }
 
     protected override void AffectWearer(Player player)
     {
-        player.statDefense += 1;
+        // Intent: +2 wearer defense functional, 0 vanity (documented above). Owner +2 via ICollarItem AffectOwner.
+        player.statDefense += 2;
     }
 
     public override void AffectOwner(Player owner)

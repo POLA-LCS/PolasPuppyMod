@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -54,15 +55,32 @@ public class RopeLeashItem : SummonLeashItem
 
     public override IEnumerable<TooltipLine> GetTooltipLines(Mod mod)
     {
+        // H3: Returns only Attached+Puppy without re-adding range to avoid duplicate range insertion.
+        // Range is handled exactly once in ModifyTooltips via Damage anchor; dedup via lineName check.
         yield return new TooltipLine(mod, "AttachedLabel", LabelColor("Attached:", ColorAttachedLabel));
         yield return new TooltipLine(mod, "LeashPuppy", $"{LabelColor("Puppy:", ColorPuppyLabel)} +15% movement speed");
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)
     {
-        base.ModifyTooltips(tooltips);
+        // H3: Unified single tooltip path – do not call base.ModifyTooltips to prevent order-sensitive duplicate range/Attached.
+        // GetTooltipLines returns only Attached+Puppy (no range); range inserted once at Damage anchor or Price fallback with dedup.
         tooltips.StripVanity();
-        tooltips.ApplyTooltips(Mod, this);
+        int dmgIdx = tooltips.FindIndex(l => l.Name == "Damage" && l.Mod == "Terraria");
+        if (dmgIdx >= 0 && !tooltips.Any(l => l.Mod == Mod.Name && l.Name == "LeashRange"))
+            tooltips.Insert(dmgIdx + 1, new TooltipLine(Mod, "LeashRange", LabelColor($"{RangeTiles} leash range", ColorLeashRange)));
+        // Apply Attached/Puppy lines exactly once; setBonus vs tooltip dedup already via lineName check in ApplyPuppyEquipmentTooltip – hjson lines intentional.
+        bool hasAttached = tooltips.Any(l => l.Mod == Mod.Name && l.Name == "AttachedLabel");
+        if (!hasAttached)
+            tooltips.ApplyTooltips(Mod, this);
+        // Fallback range if no Damage line existed – ensure range appears above Price.
+        if (!tooltips.Any(l => l.Mod == Mod.Name && l.Name == "LeashRange"))
+        {
+            int priceIdx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");
+            var rangeLine = new TooltipLine(Mod, "LeashRange", LabelColor($"{RangeTiles} leash range", ColorLeashRange));
+            if (priceIdx >= 0) tooltips.Insert(priceIdx, rangeLine);
+            else tooltips.Add(rangeLine);
+        }
         tooltips.MovePriceToBottom();
     }
 
