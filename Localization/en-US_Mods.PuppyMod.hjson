@@ -81,8 +81,8 @@ SetBonuses: {
 	Bark: Puppy bonus: Double tap {0} to bark, arf!
 	BarkDirectionUp: UP
 	BarkDirectionDown: DOWN
-	ReinforcedPair: Puppy bonus: 2 defense and reduced knockback when leashed/attached
-	ReinforcedPairTooltip: Puppy bonus: 2 defense and reduced knockback
+	ReinforcedPair: Puppy bonus: {0} defense and reduced knockback when leashed/attached
+	ReinforcedPairTooltip: Puppy bonus: {0} defense and reduced knockback
 	SpelunkerCostume: Puppy bonus: sense very close treasures
 	SpelunkerFurry: Puppy bonus: sense close treasures
 	SpelunkerTherian: Puppy bonus: sense nearby treasures

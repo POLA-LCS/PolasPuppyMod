@@ -58,9 +58,14 @@ public static class PuppySetBonusText
         string localizationKey = forTooltip
             ? pairBonus.TooltipLocalizationKey ?? pairBonus.SetBonusLocalizationKey
             : pairBonus.SetBonusLocalizationKey;
-        return string.IsNullOrEmpty(localizationKey)
-            ? string.Empty
-            : Language.GetTextValue(localizationKey);
+        if (string.IsNullOrEmpty(localizationKey))
+            return string.Empty;
+
+        // Defense text shows the value for the pair's placement state (Costume/Furry/Therian).
+        if (pairBonus.PlacementDefense.HasValue)
+            return Language.GetTextValue(localizationKey, pairBonus.PlacementDefense.Value.GetDefense(resolution.SelectedPlacement));
+
+        return Language.GetTextValue(localizationKey);
     }
 
     private static string GetSpelunkerLocalizationKey(PuppySetPlacement placement) => placement switch

@@ -34,11 +34,11 @@ The selection rules and the individual-effect aggregate are independent. An item
 
 The selected pair has a placement state that scales pair-specific effects:
 
-| State | Condition | Shiny ore-sight radius |
-| --- | --- | --- |
-| Costume | both selected pieces vanity | 5 tiles |
-| Furry | exactly one selected piece functional | 10 tiles |
-| Therian | both selected pieces functional | 15 tiles |
+| State | Condition | Shiny ore-sight radius | Reinforced defense |
+| --- | --- | --- | --- |
+| Costume | both selected pieces vanity | 5 tiles | 2 |
+| Furry | exactly one selected piece functional | 10 tiles | 3 |
+| Therian | both selected pieces functional | 15 tiles | 4 |
 
 Placement is derived from the selected pair only; extra duplicate copies do not change it. The state is exposed as `PuppyEquipmentResolution.SelectedPlacement`.
 
@@ -73,8 +73,8 @@ The Reinforced Ears knockback values are outgoing effects: they are added to the
 
 The Vanilla family has no additional gameplay pair effect. A matching Shiny Ears/Tail pair grants ore sight (see Placement states): `Main.tileSpelunker` tiles inside the state radius are lit for the local player. The effect is applied by `PuppySpelunkerService` from `PuppyPlayer.PostUpdate` and is client-only; it does not exist on Shiny Ears alone. A matching Reinforced Ears/Tail pair has an attached-only effect:
 
-- With both selected pieces functional, the attached Puppy and its Owner each gain `+2` defense and incoming knockback is multiplied by `0.8` (a 20% reduction).
-- If either selected piece is vanity, the pair effect is half strength: `+1` defense and incoming knockback multiplied by `0.9` (a 10% reduction).
+- The attached Puppy and its Owner each gain additional defense by placement state: `2` (Costume), `3` (Furry), `4` (Therian).
+- Incoming knockback is multiplied by `0.8` when both selected pieces are functional, and by `0.9` otherwise.
 
 The leash bonus service applies the defense to both sides of a valid attachment and applies the incoming knockback reduction when either side is hurt. The effect is not active merely because the pair is equipped; the Puppy must be attached to an Owner.
 
