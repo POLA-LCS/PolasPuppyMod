@@ -6,7 +6,7 @@ using PuppyMod.Common.Tooltip;
 using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 
-namespace PuppyMod.Content.Items.Collar;
+namespace PuppyMod.Content.Items.Collars;
 
 public abstract class BaseCollarItem : ModItem, ICollarItem, ITooltipProvider
 {

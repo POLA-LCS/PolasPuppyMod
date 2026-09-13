@@ -6,7 +6,7 @@ using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Tooltip;
 
-namespace PuppyMod.Content.Items.Tail;
+namespace PuppyMod.Content.Items.Tails;
 
 public class ReinforcedTailItem : ModItem, IPuppyTailItem
 {

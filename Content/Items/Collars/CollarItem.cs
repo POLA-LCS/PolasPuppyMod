@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Tooltip;
 using static PuppyMod.Common.Tooltip.TooltipExtensions;
 
-namespace PuppyMod.Content.Items.Collar;
+namespace PuppyMod.Content.Items.Collars;
 
 public class CollarItem : BaseCollarItem
 {

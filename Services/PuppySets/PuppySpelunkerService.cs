@@ -3,7 +3,7 @@ using Terraria;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Players;
 
-namespace PuppyMod.Services.PuppySet;
+namespace PuppyMod.Services.PuppySets;
 
 /// <summary>
 /// Applies the Shiny puppy set's ore sight. The effect belongs to the pair bonus, so it only

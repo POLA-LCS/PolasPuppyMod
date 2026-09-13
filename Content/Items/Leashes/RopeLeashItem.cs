@@ -12,7 +12,7 @@ using PuppyMod.Common.Utils;
 using PuppyMod.Content.Projectiles;
 using static PuppyMod.Common.Tooltip.TooltipExtensions;
 
-namespace PuppyMod.Content.Items.Leash;
+namespace PuppyMod.Content.Items.Leashes;
 
 public class RopeLeashItem : SummonLeashItem
 {

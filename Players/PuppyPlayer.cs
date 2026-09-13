@@ -8,11 +8,11 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
-using PuppyMod.Content.Buffs.GoodPuppy;
+using PuppyMod.Content.Buffs;
 using PuppyMod.Content.Items.Ears;
-using PuppyMod.Content.Items.Tail;
+using PuppyMod.Content.Items.Tails;
 using PuppyMod.Services.Leash;
-using PuppyMod.Services.PuppySet;
+using PuppyMod.Services.PuppySets;
 
 namespace PuppyMod.Players;
 

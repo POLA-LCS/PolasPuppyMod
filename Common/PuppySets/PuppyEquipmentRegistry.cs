@@ -3,7 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Content.Items.Ears;
-using PuppyMod.Content.Items.Tail;
+using PuppyMod.Content.Items.Tails;
 
 namespace PuppyMod.Common.PuppySets;
 

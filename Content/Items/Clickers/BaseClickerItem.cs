@@ -11,7 +11,7 @@ using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.Tooltip;
 using static PuppyMod.Common.Tooltip.TooltipExtensions;
 
-namespace PuppyMod.Content.Items.Clicker;
+namespace PuppyMod.Content.Items.Clickers;
 
 public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
 {

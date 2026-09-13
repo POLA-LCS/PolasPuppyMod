@@ -11,7 +11,7 @@ using PuppyMod.Content.GlobalItems;
 using static PuppyMod.Common.Tooltip.TooltipExtensions;
 using PuppyMod.Services.Leash;
 
-namespace PuppyMod.Content.Items.Leash;
+namespace PuppyMod.Content.Items.Leashes;
 
 public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvider
 {

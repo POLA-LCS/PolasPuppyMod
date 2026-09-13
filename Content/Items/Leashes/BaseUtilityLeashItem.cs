@@ -8,7 +8,7 @@ using PuppyMod.Common.Physics;
 using PuppyMod.Common.Tooltip;
 using PuppyMod.Services.Leash;
 
-namespace PuppyMod.Content.Items.Leash;
+namespace PuppyMod.Content.Items.Leashes;
 
 public abstract class BaseUtilityLeashItem : ModItem, ILeashItem, ITooltipProvider
 {

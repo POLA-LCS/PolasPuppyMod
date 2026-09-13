@@ -1,7 +1,7 @@
 using PuppyMod.Common.Physics;
 using Terraria.ModLoader;
 
-namespace PuppyMod.Content.Items.Leash;
+namespace PuppyMod.Content.Items.Leashes;
 
 public abstract class SummonLeashItem : BaseWeaponLeashItem
 {

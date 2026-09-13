@@ -2,7 +2,7 @@ using Terraria;
 using Terraria.ModLoader;
 using PuppyMod.Common.Utils;
 
-namespace PuppyMod.Content.Buffs.GoodPuppy;
+namespace PuppyMod.Content.Buffs;
 
 public class GoodPuppyBuff : ModBuff
 {
