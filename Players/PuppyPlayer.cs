@@ -67,6 +67,8 @@ public class PuppyPlayer : ModPlayer
 
     public void PlayRandomBark(bool forcePitch = false)
     {
+        if (Barks.Count == 0)
+            return;
         var bark = Barks.GetRandom();
         bool isGoodPuppy = Player.HasBuff(ModContent.BuffType<GoodPuppyBuff>());
         if (forcePitch || isGoodPuppy)
@@ -164,13 +166,20 @@ public class PuppyPlayer : ModPlayer
         {
             if (Player.statLife - info.Damage <= 0)
             {
-                Bark(Cries.GetRandom());
+                if (Cries.Count != 0)
+                    Bark(Cries.GetRandom());
                 return;
             }
             if (Main.rand.Next(RandomChanceMax) < GrowlChanceThreshold)
-                Bark(Growls.GetRandom());
+            {
+                if (Growls.Count != 0)
+                    Bark(Growls.GetRandom());
+            }
             else
-                Bark(Cries.GetRandom());
+            {
+                if (Cries.Count != 0)
+                    Bark(Cries.GetRandom());
+            }
         };
     }
 
@@ -227,7 +236,9 @@ public class PuppyPlayer : ModPlayer
 
         // Hermes-like sprint dust triggers when accRunSpeed > maxRunSpeed in vanilla HorizontalMovement.
         // Keep them equal to suppress dust while preserving movement bonuses (functional/vanity scaling is already applied in stats).
-        Player.accRunSpeed = Player.maxRunSpeed;
+        // Guard: only for puppies and only when acc would exceed max, to avoid clobbering Hermes boots for non-puppies.
+        if (IsPuppy && Player.accRunSpeed > Player.maxRunSpeed)
+            Player.accRunSpeed = Player.maxRunSpeed;
     }
 
     private void ApplyEquipmentDefense()
@@ -246,6 +257,9 @@ public class PuppyPlayer : ModPlayer
 
     private void HappyIfClicker()
     {
+        if (!IsPuppy)
+            return;
+
         for (int i = 0; i < Main.player.Length; i++)
         {
             Player other = Main.player[i];

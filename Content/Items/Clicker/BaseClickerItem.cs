@@ -47,7 +47,8 @@ public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
     public override bool? UseItem(Player player)
     {
         ClickerService.Trigger(player, RangeTiles * 16f, BuffDuration, UsageCooldown);
-        SoundEngine.PlaySound(Clicks.GetRandom(), player.Center);
+        if (Clicks.Count != 0)
+            SoundEngine.PlaySound(Clicks.GetRandom(), player.Center);
         return true;
     }
 

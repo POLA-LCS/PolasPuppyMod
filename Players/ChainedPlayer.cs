@@ -72,8 +72,8 @@ public class ChainedPlayer : ModPlayer
     public override void SaveData(TagCompound tag)
     {
         tag["ActiveCollarItemType"] = ActiveCollarItemType;
-        tag["GrabberIndex"] = GrabberIndex ?? -1;
-        tag["ActiveLeashItemType"] = ActiveLeashItemType;
+        // GrabberIndex and ActiveLeashItemType are transient (owner attachment, not persisted).
+        // Do not save them; they are cleared on load/enter world and synced via net packets.
     }
 
     public override void LoadData(TagCompound tag)
@@ -155,7 +155,6 @@ public class ChainedPlayer : ModPlayer
         }
         if (ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
             leash.AffectPuppy(Player);
-        Player.AddBuff(BuffID.Sunflower, 60);
         ApplyLeashPhysics(OwnerOf);
     }
 
