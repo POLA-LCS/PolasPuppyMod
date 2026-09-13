@@ -89,12 +89,21 @@ public class PuppyMod : Mod
         packet.Send();
     }
 
+    /// <summary>
+    /// Player-array guard for packet-supplied indices. <see cref="Main.player"/> must never be indexed
+    /// with a wire value before checking bounds and active state (255 is also the detach sentinel).
+    /// </summary>
+    private static bool IsValidPlayer(int who)
+    {
+        return who >= 0 && who < Main.player.Length && Main.player[who] != null && Main.player[who].active;
+    }
+
     private void HandleServerAttach(int ownerWho, int targetWho, int leashItemType)
     {
+        if (!IsValidPlayer(ownerWho) || !IsValidPlayer(targetWho))
+            return;
         Player owner = Main.player[ownerWho];
         Player target = Main.player[targetWho];
-        if (owner == null || target == null)
-            return;
         if (ownerWho == targetWho)
             return;
         if (!LeashService.CanAttach(owner, target, leashItemType))
@@ -106,9 +115,9 @@ public class PuppyMod : Mod
 
     private void HandleServerDetach(int ownerWho, int targetWho)
     {
-        Player target = Main.player[targetWho];
-        if (target == null)
+        if (!IsValidPlayer(targetWho))
             return;
+        Player target = Main.player[targetWho];
         var chain = target.GetModPlayer<ChainedPlayer>();
         if (chain.GrabberIndex != ownerWho)
             return;
@@ -142,6 +151,8 @@ public class PuppyMod : Mod
                         collarType = reader.ReadInt32();
                         hasCollar = true;
                     }
+                    if (!IsValidPlayer(targetWho) || (ownerWho != byte.MaxValue && !IsValidPlayer(ownerWho)))
+                        break;
                     var chained = Main.player[targetWho].GetModPlayer<ChainedPlayer>();
                     if (hasCollar)
                         chained.ApplyClientState(ownerWho, leashType, collarType);
