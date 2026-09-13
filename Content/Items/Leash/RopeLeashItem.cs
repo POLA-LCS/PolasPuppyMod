@@ -4,12 +4,13 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using PuppyMod.Common.Physics;
 using PuppyMod.Common.Tooltip;
-using static PuppyMod.Common.Tooltip.TooltipExtensions;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Projectiles;
+using static PuppyMod.Common.Tooltip.TooltipExtensions;
 
 namespace PuppyMod.Content.Items.Leash;
 
@@ -57,8 +58,8 @@ public class RopeLeashItem : SummonLeashItem
     {
         // H3: Returns only Attached+Puppy without re-adding range to avoid duplicate range insertion.
         // Range is handled exactly once in ModifyTooltips via Damage anchor; dedup via lineName check.
-        yield return new TooltipLine(mod, "AttachedLabel", LabelColor("Attached:", ColorAttachedLabel));
-        yield return new TooltipLine(mod, "LeashPuppy", $"{LabelColor("Puppy:", ColorPuppyLabel)} +15% movement speed");
+        yield return new TooltipLine(mod, "AttachedLabel", LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Attached"), ColorAttachedLabel));
+        yield return new TooltipLine(mod, "LeashPuppy", $"{LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Puppy"), ColorPuppyLabel)} +15% movement speed");
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)

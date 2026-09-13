@@ -199,7 +199,7 @@ public class ChainedPlayer : ModPlayer
             puppyPull = leash.Physics.PuppyInertia;
             ownerPull = leash.Physics.OwnerInertia;
         }
-        const float div = 8f;
+        const float div = 8f; // Fallback inertia divisor
         Player.velocity -= puppyOffset * puppyPull / div;
         owner.velocity -= ownerOffset * ownerPull / div;
     }

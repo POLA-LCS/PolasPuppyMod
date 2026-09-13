@@ -4,12 +4,13 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using PuppyMod.Common.Physics;
 using PuppyMod.Common.Tooltip;
-using static PuppyMod.Common.Tooltip.TooltipExtensions;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Projectiles;
+using static PuppyMod.Common.Tooltip.TooltipExtensions;
 
 namespace PuppyMod.Content.Items.Leash;
 
@@ -71,9 +72,9 @@ public class ChainLeashItem : SummonLeashItem
         // H3: Returns only effect+Attached+Puppy without re-adding range to avoid duplicate range insertion.
         yield return new TooltipLine(mod, "ChainPoison", "May poison foes");
         yield return new TooltipLine(mod, "LeashPenalty", "Weaker while leashing");
-        yield return new TooltipLine(mod, "AttachedLabel", LabelColor("Attached:", ColorAttachedLabel));
-        yield return new TooltipLine(mod, "LeashPuppyDefense", $"{LabelColor("Puppy:", ColorPuppyLabel)} +5 defense");
-        yield return new TooltipLine(mod, "LeashPuppySlow", $"{LabelColor("Puppy:", ColorPuppyLabel)} -5% movement speed");
+        yield return new TooltipLine(mod, "AttachedLabel", LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Attached"), ColorAttachedLabel));
+        yield return new TooltipLine(mod, "LeashPuppyDefense", $"{LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Puppy"), ColorPuppyLabel)} +5 defense");
+        yield return new TooltipLine(mod, "LeashPuppySlow", $"{LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Puppy"), ColorPuppyLabel)} -5% movement speed");
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)

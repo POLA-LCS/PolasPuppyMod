@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using PuppyMod.Common.Tooltip;
 using static PuppyMod.Common.Tooltip.TooltipExtensions;
@@ -44,8 +45,8 @@ public class CollarItem : BaseCollarItem
         int anchor = TooltipExtensions.FindTooltipAnchor(tooltips);
         int index = anchor >= 0 ? anchor + 1 : tooltips.Count;
         // Insert via unified anchor before Price / after Knockback fallback already encoded in FindTooltipAnchor.
-        tooltips.Insert(index, new TooltipLine(Mod, "AttachedLabel", LabelColor("Attached:", ColorAttachedLabel)));
-        tooltips.Insert(index + 1, new TooltipLine(Mod, "CollarOwnerDefense", $"{LabelColor("Owner:", ColorOwnerLabel)} +2 defense"));
+        tooltips.Insert(index, new TooltipLine(Mod, "AttachedLabel", LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Attached"), ColorAttachedLabel)));
+        tooltips.Insert(index + 1, new TooltipLine(Mod, "CollarOwnerDefense", $"{LabelColor(Language.GetTextValue("Mods.PuppyMod.Tooltips.Owner"), ColorOwnerLabel)} +2 defense"));
 
         tooltips.MovePriceToBottom();
     }

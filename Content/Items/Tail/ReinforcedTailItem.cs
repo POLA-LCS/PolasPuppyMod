@@ -22,9 +22,7 @@ public class ReinforcedTailItem : ModItem, IPuppyTail
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
-        // Defense handled via PuppyEquipmentStats / Player.statDefense (PostUpdateEquips) so vanity correctly gives halved value (functional 2 / vanity 1).
-        // Item.defense is not used because vanity slots ignore Item.defense (0) and using it would duplicate with stats; tooltip "2 defense" is custom localization.
-        // Movement/jump bonuses are applied via Player fields (PostUpdateRunSpeeds / PostUpdateMiscEffects), not Item fields, per tModLoader best practice.
+        // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
         Item.accessory = true;
     }

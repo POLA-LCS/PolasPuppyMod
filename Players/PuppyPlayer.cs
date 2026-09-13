@@ -58,6 +58,7 @@ public class PuppyPlayer : ModPlayer
     public void Bark(SoundStyle sound, bool pitched = false)
     {
         var config = ModContent.GetInstance<PuppyModClientConfig>();
+        // Apply client-chosen volume/pitch; GoodPuppy buff +0.3 pitch
         float targetPitch = PitchOf(config.BarkPitch) + (pitched ? BarkPitchIncrease : 0f);
         SoundStyle bark = sound with { Pitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax), Volume = sound.Volume * config.BarkVolume };
         if (Player.whoAmI == Main.myPlayer)
@@ -142,7 +143,7 @@ public class PuppyPlayer : ModPlayer
             ? ShinyTailItem.FunctionalHoverDuration
             : ShinyTailItem.VanityHoverDuration;
 
-        // Cap carpetTime; vanilla initializes to 300
+        // Cap carpetTime; vanilla initializes to 300 ticks.
         if (Player.carpetFrame >= 0 && Player.carpetTime > hoverDuration)
             Player.carpetTime = hoverDuration;
 

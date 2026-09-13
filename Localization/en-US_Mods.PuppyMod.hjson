@@ -72,6 +72,9 @@ Tooltips: {
 	VanityEquipable: Vanity/Equipable
 	Release: Release the puppiness!
 	Halved: "[c/C8C864:halved]: {0}"
+	Attached: Attached:
+	Owner: Owner:
+	Puppy: Puppy:
 }
 
 SetBonuses: {

@@ -108,7 +108,7 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     {
         if (Main.dedServ) return;
         float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
-        int range = isVanity ? ShineBoxHalf / 2 : ShineBoxHalf; // functional 12 / vanity 6 – vanity exactly half, no duplicate central handling
+        int range = isVanity ? ShineBoxHalf / 2 : ShineBoxHalf;
         Vector3 color = new(i, i * 0.85f, i * 0.35f);
         Point center = player.Center.ToTileCoordinates();
         for (int x = center.X - range; x <= center.X + range; x++)
