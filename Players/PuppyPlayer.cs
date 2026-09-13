@@ -32,7 +32,6 @@ public class PuppyPlayer : ModPlayer
     private PuppyEquipmentResolution _equipmentResolution = PuppyEquipmentResolution.Empty;
     private bool _shinyTailFunctional;
     private bool _shinyTailVanity;
-    // H4: Centralized ShinyEars light/treasure dedup like ShinyTail – functional present skips vanity to avoid double light/tile scan (~625*2).
     private bool _shinyEarsFunctional;
     private bool _shinyEarsVanity;
 
@@ -193,8 +192,7 @@ public class PuppyPlayer : ModPlayer
         modifiers.DisableSound();
         modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) =>
         {
-            // H5: Hurt cry respects _barkCooldown to avoid overlapping set-bonus bark same tick (previously bypassed 25-tick cooldown).
-            // Small cooldown check before Bark(Cries/Growls); separate hurtSoundCooldown not needed – same BarkCooldownTicks prevents overlap.
+            // Hurt cries share the bark cooldown so they can't overlap a set-bonus bark.
             if (_barkCooldown > 0)
                 return;
             if (Player.statLife - info.Damage <= 0)
@@ -242,10 +240,9 @@ public class PuppyPlayer : ModPlayer
         _equipmentResolution = PuppyEquipmentResolver.Resolve(_equipmentSnapshot);
         ApplyEquipmentDefense();
         ApplyEquipmentKnockback();
-        // H2: Aggregate attached pair defense together with equipment stats in PostUpdateEquips (no late ModSystem sweep).
-        // This ensures ResetEffects → PostUpdateEquips aggregation → no flicker, and strongest per-player stacking (individual stack, pair strongest).
+        // Attached pair defense is applied with the other equipment stats.
         PuppyLeashBonusService.ApplyDefenseForPlayer(Player);
-        // Clear previous setBonus each tick to avoid substring false positives and stale accumulation (M5).
+        // Reset setBonus each tick before appending the active lines.
         Player.setBonus = string.Empty;
         if (IsPuppy)
         {
@@ -284,9 +281,7 @@ public class PuppyPlayer : ModPlayer
         Player.accRunSpeed += stats.AccRunSpeed;
         Player.maxRunSpeed += stats.MaxRunSpeed;
 
-        // Hermes-like sprint dust triggers when accRunSpeed > maxRunSpeed in vanilla HorizontalMovement.
-        // Keep them equal to suppress dust while preserving movement bonuses (functional/vanity scaling is already applied in stats).
-        // Guard: only for puppies and only when acc would exceed max, to avoid clobbering Hermes boots for non-puppies.
+        // Clamp acceleration to max run speed for puppies so sprint dust never triggers.
         if (IsPuppy && Player.accRunSpeed > Player.maxRunSpeed)
             Player.accRunSpeed = Player.maxRunSpeed;
     }

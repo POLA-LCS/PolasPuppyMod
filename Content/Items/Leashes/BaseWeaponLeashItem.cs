@@ -62,7 +62,7 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
         if (player.GetModPlayer<Players.PuppyPlayer>().IsPuppy)
             return false;
 
-        // Per-Item cache via GlobalItem to avoid ModItem singleton cross-contamination (M11).
+        // Per-item cache stored on the GlobalItem instance.
         var g = Item.GetGlobalItem<WeaponLeashGlobalItem>();
         EnsureOriginalCached(Item);
 

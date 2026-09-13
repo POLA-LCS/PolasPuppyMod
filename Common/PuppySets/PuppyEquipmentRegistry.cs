@@ -7,13 +7,7 @@ using PuppyMod.Content.Items.Tails;
 
 namespace PuppyMod.Common.PuppySets;
 
-/// <summary>
-/// Central registry for Puppy equipment. Research note (tModLoader best practice):
-/// For accessories/armor that must give halved vanity (2 functional / 1 vanity), defense cannot be done correctly via Item.defense alone (vanity gives 0 automatically).
-/// Use Player.statDefense in PostUpdateEquips via central PuppyEquipmentStats with vanity multiplier (see PuppyPlayer.ApplyEquipmentDefense), as currently done,
-/// and keep defense tooltip via custom localization ("2 defense") rather than relying on Item.defense duplicate line.
-/// For knockback/movement/jump, modify Player fields in UpdateAccessory/PostUpdateRunSpeeds etc., not Item fields.
-/// </summary>
+/// <summary>Central registry mapping item types to their Puppy equipment definitions.</summary>
 public static class PuppyEquipmentRegistry
 {
     private static readonly Dictionary<int, PuppyEquipmentDefinition> definitions = new();
@@ -117,8 +111,7 @@ public static class PuppyEquipmentRegistry
 
     private sealed class VanillaDogTailProvider : IPuppyTailItem
     {
-        // Note: AccRunSpeed (0.45) > MaxRunSpeed (0.30) would normally trigger Hermes sprint dust when acc > max.
-        // PuppyPlayer.PostUpdateRunSpeeds neutralizes this by setting accRunSpeed = maxRunSpeed after applying stats, preserving movement without dust.
+        // Acceleration above max run speed is clamped in PuppyPlayer.PostUpdateRunSpeeds to avoid sprint dust.
         public PuppyEquipmentStats Stats => new(
             Defense: 0f,
             MoveSpeed: 0.30f,

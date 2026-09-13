@@ -5,7 +5,7 @@ namespace PuppyMod.Common.Utils;
 
 public static class DistanceUtils
 {
-    /// <summary>Terraria tile size in pixels (16px per tile) – kept as named const for audit.</summary>
+    /// <summary>Terraria tile size in pixels.</summary>
     public const float TilePixels = 16f;
 
     public static bool WithinTiles(Player a, Player b, float tiles) => WithinPixels(a.Center, b.Center, tiles * TilePixels);

@@ -20,7 +20,7 @@ public class ChainedPlayer : ModPlayer
     public int ActiveLeashItemType { get; private set; }
     private int _overstretchTicks;
 
-    // M10: Cached rope texture to avoid ModContent.Request each frame; refreshed when leash type changes.
+    // Cached rope texture; refreshed when the leash visual changes.
     private Texture2D _cachedRopeTexture;
     private string _cachedRopePath;
     private Asset<Texture2D> _cachedRopeAsset;
@@ -147,12 +147,6 @@ public class ChainedPlayer : ModPlayer
         {
             Lighting.AddLight(Player.Center, 0.4f, 0.3f, 0.15f);
         }
-        // H2: Aggregate leash puppy effects (e.g., ChainLeash +5 defense) in PostUpdateEquips with other defense sources.
-        // Order: ResetEffects → PostUpdateEquips aggregation (equipment stats + leash + pair bonus via PuppyPlayer) → physics in PostUpdate.
-        // Important: do NOT gate this on IsChainValid(). PuppyPlayer.ResetEffects() clears its resolution at the start of
-        // the tick and recomputes it in its own PostUpdateEquips; ModPlayer hook order is not guaranteed, so a resolution
-        // check here can read the cleared state and skip the puppy buff entirely. PostUpdate re-validates with the fresh
-        // resolution and clears the chain if it is no longer valid.
         if (TryGetActiveAttachment(out _) && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leashForEquips)
             leashForEquips.AffectPuppy(Player);
     }
@@ -168,7 +162,6 @@ public class ChainedPlayer : ModPlayer
             ActiveLeashItemType = 0;
             return;
         }
-        // H2: AffectPuppy moved to PostUpdateEquips for defense aggregation; physics remains late (post-movement).
         ApplyLeashPhysics(OwnerOf);
     }
 
@@ -334,7 +327,6 @@ public class ChainedPlayer : ModPlayer
 
     public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
     {
-        // M10: ModifyDrawInfo runs every draw – now lightweight; actual texture load cached above.
         if (Main.dedServ)
             return;
         if (!GrabberIndex.HasValue) return;

@@ -6,8 +6,7 @@ namespace PuppyMod.Services.Leash;
 
 public static class PuppyLeashBonusService
 {
-    // Defense aggregation happens in PostUpdateEquips (equipment stats + pair bonus) to avoid late-sweep flicker.
-    // Individual stats stack additively; the attached pair bonus uses the strongest applicable effect per player.
+    // Attached pair defense is aggregated in PostUpdateEquips; the strongest applicable effect wins per player.
     public static void ApplyDefenseForPlayer(Player player)
     {
         if (player == null || !player.active || player.dead) return;

@@ -13,9 +13,7 @@ public class CollarItem : BaseCollarItem
     public override void SetDefaults()
     {
         base.SetDefaults();
-        // H1 fix: Align with Reinforced pattern – defense solely via statDefense with vanity halving.
-        // Item.defense must be 0 to avoid double-count (previously 2 + statDefense 1 = 3 functional).
-        // Vanity 0 defense is intentional: collar effect only via UpdateAccessory (functional) and ICollarItem for owner; vanity collar intentionally gives no wearer bonus.
+        // Defense comes from statDefense; Item.defense stays 0 to avoid double counting.
         Item.defense = 0;
         Item.rare = ItemRarityID.Pink;
         Item.value = Item.sellPrice(silver: 27, copper: 1);
@@ -23,7 +21,7 @@ public class CollarItem : BaseCollarItem
 
     protected override void AffectWearer(Player player)
     {
-        // Intent: +2 wearer defense functional, 0 vanity (documented above). Owner +2 via ICollarItem AffectOwner.
+        // Functional wearer bonus only; vanity collars give no defense.
         player.statDefense += 2;
     }
 
@@ -41,10 +39,8 @@ public class CollarItem : BaseCollarItem
     {
         tooltips.StripVanity();
 
-        // Unified anchor via TooltipExtensions.FindTooltipAnchor (Tooltip0 → Defense → Knockback/Price fallback).
         int anchor = TooltipExtensions.FindTooltipAnchor(tooltips);
         int index = anchor >= 0 ? anchor + 1 : tooltips.Count;
-        // Insert via unified anchor before Price / after Knockback fallback already encoded in FindTooltipAnchor.
         tooltips.Insert(index, new TooltipLine(Mod, "AttachedLabel", ColorizeLabel(Language.GetTextValue("Mods.PuppyMod.Tooltips.Attached"), ColorAttachedLabel)));
         tooltips.Insert(index + 1, new TooltipLine(Mod, "CollarOwnerDefense", $"{ColorizeLabel(Language.GetTextValue("Mods.PuppyMod.Tooltips.Owner"), ColorOwnerLabel)} +2 defense"));
 

@@ -19,7 +19,7 @@ public sealed class PuppyEquipmentEntry
     public PuppyEquipmentSlotLocation Location { get; }
     public bool IsFunctional => Location == PuppyEquipmentSlotLocation.FunctionalHead || Location == PuppyEquipmentSlotLocation.FunctionalAccessory;
     public bool IsAccessorySlot => Location == PuppyEquipmentSlotLocation.FunctionalAccessory || Location == PuppyEquipmentSlotLocation.VanityAccessory;
-    /// <summary>Uniform halving: functional 1f, vanity 0.5f centrally for all PuppyEquipmentStats; collar/leash functional-only (no vanity).</summary>
+    /// <summary>Functional entries count at full value, vanity entries at half.</summary>
     public float ValueMultiplier => IsFunctional ? 1f : 0.5f;
 
     public IPuppyEquipmentProvider Provider => Definition.Provider;

@@ -3,10 +3,7 @@ namespace PuppyMod.Common.PuppySets;
 /// <summary>
 /// Immutable additive contribution from one equipped Puppy item, or the aggregate of all
 /// recognized entries in a snapshot. Values are full-strength functional-slot values;
-/// <see cref="PuppyEquipmentEntry.ValueMultiplier"/> applies vanity scaling (0.5).
-/// Uniform halving rule: All Player-stat contributions via PuppyEquipmentStats are centrally halved
-/// in vanity (ValueMultiplier 0.5, pair strength 0.5); visual/physics (ShinyEars light/range,
-/// ShinyTail hover 30→15) are locally halved; collar/leash are functional-only and intentionally not halved.
+/// <see cref="PuppyEquipmentEntry.ValueMultiplier"/> applies vanity scaling.
 /// </summary>
 public readonly record struct PuppyEquipmentStats(
     float Defense = 0f,

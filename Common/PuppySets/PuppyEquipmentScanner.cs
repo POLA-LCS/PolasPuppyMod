@@ -5,8 +5,8 @@ using Terraria.ID;
 namespace PuppyMod.Common.PuppySets;
 
 /// <summary>
-/// Scans the vanilla armor array layout plus dynamic extra accessory slots (Demon Heart / Master).
-/// H6: Previously hardcoded FunctionalAccessory 3-9 only (vanilla 20 slots); now iterates beyond 20 for dynamic slots.
+/// Scans the player's armor for registered Puppy equipment, including extra accessory slots
+/// beyond the vanilla array.
 /// </summary>
 public static class PuppyEquipmentScanner
 {
@@ -16,7 +16,7 @@ public static class PuppyEquipmentScanner
     private const int VanityHeadSlot = 10;
     private const int VanityAccessoryStart = 13;
     private const int VanityAccessoryEndExclusive = 20;
-    // H6: Dynamic extra slots start at 20 (vanilla length) – Demon Heart / Master Mode adds functional accessory slots beyond.
+    // Extra accessory slots start past the vanilla armor array.
 
     public static PuppyEquipmentSnapshot Scan(Player player)
     {
@@ -30,8 +30,6 @@ public static class PuppyEquipmentScanner
         for (int slot = VanityAccessoryStart; slot < VanityAccessoryEndExclusive; slot++)
             AddSlot(player, entries, slot, PuppyEquipmentSlotLocation.VanityAccessory);
 
-        // H6: Iterate dynamic extra accessory slots beyond vanilla 20 for Demon Heart/Master; treat as FunctionalAccessory if TryGetDefinition succeeds.
-        // Also supports mods that extend armor.Length – loop 20..Length with functional mapping.
         for (int slot = 20; slot < player.armor.Length; slot++)
             AddSlot(player, entries, slot, PuppyEquipmentSlotLocation.FunctionalAccessory);
 

@@ -15,7 +15,7 @@ public class ShinyEarsItem : ModItem, IPuppyEarsItem
     private const float BasePickSpeed = 0.12f;
     public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: BasePickSpeed);
 
-    // Individual light: full intensity functional, half in vanity. Ore sight belongs to the Shiny pair bonus now.
+    // Individual light: full intensity functional, half in vanity. Ore sight comes from the Shiny pair bonus.
     private const float BaseLightIntensity = 0.5f;
     private const float BaseLightIntensityVanity = BaseLightIntensity * 0.5f;
 
@@ -38,19 +38,16 @@ public class ShinyEarsItem : ModItem, IPuppyEarsItem
 
     public override void UpdateAccessory(Player player, bool hideVisual)
     {
-        // H4: Centralize via PuppyPlayer like ShinyTail – flag functional, emission deduped in PuppyPlayer.PostUpdate.
         player.GetModPlayer<PuppyPlayer>().EnableShinyEars(isVanity: false);
     }
 
     public override void UpdateVanity(Player player)
     {
-        // H4: If functional present skip vanity light – PuppyPlayer dedup ensures vanity only when no functional.
         player.GetModPlayer<PuppyPlayer>().EnableShinyEars(isVanity: true);
     }
 
     public override void UpdateEquip(Player player)
     {
-        // H4: Head slot functional – same central path.
         player.GetModPlayer<PuppyPlayer>().EnableShinyEars(isVanity: false);
     }
 
@@ -83,14 +80,11 @@ public class ShinyEarsItem : ModItem, IPuppyEarsItem
     public override void ModifyTooltips(List<TooltipLine> tooltips)
         => tooltips.ApplyPuppyEquipmentTooltip(Mod, Item);
 
-    /// <summary>Central light emission – functional takes precedence over vanity via PuppyPlayer.</summary>
     internal static void EmitLightForPlayer(Player player, bool isVanity) => EmitLight(player, isVanity);
 
     private static void EmitLight(Player player, bool isVanity)
     {
         if (Main.dedServ) return;
-        // Halved light intensity in vanity (0.125 vs 0.25) – matches treasure shine halving; no central double-apply.
-        // H4 dedup: functional+vanity both equipped does light once via PuppyPlayer (functional precedence), not twice.
         float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
         Lighting.AddLight(player.Center, new Vector3(i, i * 0.85f, i * 0.35f));
     }
