@@ -17,14 +17,17 @@ public static class PuppySetBonusText
         if (resolution == null || !resolution.IsPuppy)
             yield break;
 
+        if (resolution.TryGetPairBonus(out PuppyPairBonusDefinition pairBonus))
+        {
+            string pairBonusText = GetPairBonusText(pairBonus, forTooltip);
+            if (!string.IsNullOrEmpty(pairBonusText))
+            {
+                yield return pairBonusText;
+                yield break;
+            }
+        }
+
         yield return GetBarkText();
-
-        if (!resolution.TryGetPairBonus(out PuppyPairBonusDefinition pairBonus))
-            yield break;
-
-        string pairBonusText = GetPairBonusText(pairBonus, forTooltip);
-        if (!string.IsNullOrEmpty(pairBonusText))
-            yield return pairBonusText;
     }
 
     public static string GetBarkText()
