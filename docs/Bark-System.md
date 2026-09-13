@@ -49,7 +49,8 @@ flowchart TB
 ### Concepts
 
 - A **bark pool** is a collection of recorded bark sounds. One pool is used for happy barks, another for distress, another for growls. The active pool is chosen by the situation, not by the player.
-- A **set bonus** is the in-game label that appears when a player is wearing both the dog ears and the dog tail. Activating this set bonus is one way to bark on demand.
+- A **set bonus** is the in-game label that appears when a player has any recognized Puppy Ears and any recognized Tail in an accessory location. The families do not have to match. Activating this set bonus is one way to bark on demand.
+- **Bark presentation is local.** The bark sound is played only for the local player, and built-in cosmetic reactions such as Shiny Ears' yellow star burst are client-side visual effects rather than synchronized gameplay state.
 - A **bark cooldown** prevents barks from stacking. Once a bark has played, another cannot be triggered until enough time has passed. This applies to set-bonus barks, not to emotional barks.
 - The **Good Puppy buff** is granted to a puppy that has been praised by a clicker. While this buff is active, a bark's tone is raised slightly, signalling a happy moment.
 - The bark's **tone** is shaped by a player-chosen style. The style is a discrete choice from a small set of named pitch profiles, rendered as a slider with notches. The choice has no gameplay effect; it is purely cosmetic.
@@ -59,10 +60,11 @@ flowchart TB
 
 ### Work Sequence
 
-1. **Puppy equips both ears and tail** - the set bonus is now active. The puppy is eligible to bark on demand.
+1. **Puppy equips recognized Ears and a Tail** - any recognized Ears plus any recognized accessory Tail activates the set bonus. A matching family pair is not required for barking.
 2. **Player triggers the set bonus** - the puppy is asked to bark. The cooldown is checked.
 3. **Cooldown check** - if the cooldown is still ticking, nothing happens. If it has elapsed, a bark is played and the cooldown resets.
 4. **Tone and loudness are applied** - the player's chosen pitch style and volume are applied to the bark before it is heard.
 5. **Pitch is raised if praised** - if the puppy currently has the Good Puppy buff, the bark's tone is raised slightly to express happiness.
-6. **Hurt override** - if the puppy takes damage during any of the above, the hurt path takes over: a cry or growl plays immediately, ignoring cooldown, and the situation is signalled instead of a normal bark.
-7. **Death override** - if the hit is fatal, a single cry plays. No growl is rolled, and the puppy does not get to bark in response to a death.
+6. **Local cosmetic reaction** - recognized Ears receive the bark notification; Shiny Ears can add its star burst on a client.
+7. **Hurt override** - if the puppy takes damage during any of the above, the hurt path takes over: a cry or growl plays immediately, ignoring cooldown, and the situation is signalled instead of a normal bark.
+8. **Death override** - if the hit is fatal, a single cry plays. No growl is rolled, and the puppy does not get to bark in response to a death.

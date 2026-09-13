@@ -1,8 +1,8 @@
 # Vanilla Item Augmentation - How It Works
 
-This document describes how the mod enhances the vanilla dog ears and dog tail without replacing them. No implementation details are listed here - only the conceptual changes that the mod makes to those items.
+This document describes how the mod enhances the vanilla dog ears and dog tail without replacing them. The shared Puppy set architecture, including custom Ears and Tails, is covered in [Puppy Set System](Puppy-Set-System.md); this page focuses on the vanilla-item integration.
 
-The vanilla game has a dog ears item and a dog tail item. The mod leaves those items in place and instead augments their tooltip and behavior. The result is the same items the player already knows, but with extra information and a small gameplay effect that ties them to the puppy system.
+The vanilla game has a dog ears item and a dog tail item. The mod leaves those items in place and augments their tooltips through GlobalItem hooks while the Puppy registry supplies their set identity and stat contributions. The result is the same vanilla item instances with extra information and Puppy behavior layered on top.
 
 ```mermaid
 flowchart TB
@@ -12,19 +12,19 @@ flowchart TB
     end
 
     subgraph Augmentation[Mod augmentation]
-        Tooltip[Tooltip merge]
-        Bonus[Set bonus text]
-        Stat[Stat contribution]
+        Tooltip[GlobalItem tooltip augmentation]
+        Bonus[Dynamic set text]
+        Stat[Registry stat contribution]
     end
 
     subgraph Player[Player]
         Slots[Accessory and vanity slots]
-        IsPuppy[Is puppy detection]
+        IsPuppy[Puppy resolution]
     end
 
-    Ears -- "in any slot" --> Slots
-    Tail -- "in any slot" --> Slots
-    Slots -- "worn together" --> IsPuppy
+    Ears -- "vanilla item type" --> Slots
+    Tail -- "vanilla item type" --> Slots
+    Slots -- "scanned with registered equipment" --> IsPuppy
     IsPuppy -- "shows" --> Bonus
     Slots -- "modifies" --> Stat
     Ears --> Tooltip
@@ -35,19 +35,19 @@ flowchart TB
 ### Concepts
 
 - The mod does **not replace** the dog ears or dog tail. The same items the vanilla game provides continue to exist, with the same icons, the same internal type, and the same slot behavior.
-- The mod **augments** those items by reacting to them. When a player holds, wears, or equips a dog ears or dog tail, the mod adds extra information and behavior on top of what vanilla already does.
+- The mod **augments** those items by reacting to their vanilla item types. `DogEarsGlobalItem` and `DogTailGlobalItem` send their tooltips through the shared Puppy tooltip helper; the equipment registry supplies their family and individual Puppy stats.
 - The tooltip is **merged**. Vanilla shows separate lines for equipable and vanity. The mod combines those lines so the player sees a single clear indication that the item works in both contexts.
 - The **vanity line** is replaced with a flavor line. The vanilla "this is a vanity item" text is swapped for a friendly, on-brand message that invites the player to enjoy the puppy aesthetic.
-- A **set bonus** is shown when both the dog ears and the dog tail are equipped or worn as vanity. The set bonus explains how to bark and what the player gets out of the puppy set. The bonus is shown only to players who are actually puppies.
-- The mod contributes to the **puppy's stats** while either item is worn. Wearing either item in an accessory slot contributes a small bonus to the relevant stat. Wearing either item in a vanity slot contributes a smaller version of the same bonus. Wearing both makes the player a puppy.
-- The augmentation is **transparent**. A player who has never heard of the mod and equips the dog ears will still see the merged tooltip, the flavor line, and the set bonus. The mod does not require the player to opt in.
+- A **set bonus** is shown when the Puppy resolution contains any recognized Ears and any valid accessory Tail. The families do not have to match. The dynamic `Player.setBonus` text explains how to bark and adds a pair line only when a matching family pair has one.
+- The mod contributes to the **puppy's stats** while recognized entries are equipped. Functional entries contribute full strength; vanity entries contribute half strength. Every recognized entry contributes, not just the entries selected for a pair.
+- The augmentation is **transparent**. A player who has never heard of the mod and views or equips a vanilla dog item still sees the merged tooltip and flavor line, while the dynamic set text appears only when the local player currently has an active Puppy resolution.
 - The vanilla items are still **craftable through the vanilla recipe**. The mod does not add a new way to obtain them, nor does it remove the existing way.
 
 ### Work Sequence
 
-1. **Mod loads** - the augmentation registers. The vanilla dog ears and dog tail items are now known to the mod as augmentable items.
-2. **Player acquires the dog ears or dog tail** - the player obtains the item through normal play. The item itself is unchanged.
-3. **Player views the item's tooltip** - the mod intercepts the tooltip and applies the augmentation: the equipable and vanity lines are merged, the flavor line replaces the vanilla vanity line, and a stat line is added.
-4. **Player equips or vanity-wears the items** - the item sits in an accessory or vanity slot. The mod's stat contribution kicks in immediately.
-5. **Player wears both items** - the player is now a puppy. The set bonus is shown, explaining how to bark.
-6. **Player uses the set bonus** - on the next double-tap, the player barks. The bark uses the player's chosen pitch style and volume.
+1. **Mod loads** - the vanilla item types are registered alongside the custom Puppy equipment definitions.
+2. **Player views a vanilla tooltip** - the matching GlobalItem hook merges the equipable/vanity presentation, adds Puppy flavor and stat information, and keeps the vanilla item itself unchanged.
+3. **Player equips or vanity-wears recognized entries** - the Puppy scanner records the armor slots and the resolver aggregates the individual effects with the functional/vanity multiplier.
+4. **A valid Puppy state appears** - any recognized Ears plus any recognized accessory Tail enables the bark set state, regardless of family match.
+5. **Dynamic set text is written** - `PuppyPlayer` appends the localized bark line, and any selected pair line, through `Player.setBonus`.
+6. **Player uses the set bonus** - on the next allowed double-tap, the player barks. Bark audio and cosmetic reactions are handled locally.
