@@ -149,8 +149,11 @@ public class ChainedPlayer : ModPlayer
         }
         // H2: Aggregate leash puppy effects (e.g., ChainLeash +5 defense) in PostUpdateEquips with other defense sources.
         // Order: ResetEffects → PostUpdateEquips aggregation (equipment stats + leash + pair bonus via PuppyPlayer) → physics in PostUpdate.
-        // This prevents late defense flicker that occurred when leash/pair were applied in PostUpdate or ModSystem.PostUpdatePlayers.
-        if (HasValidAttachment && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leashForEquips)
+        // Important: do NOT gate this on IsChainValid(). PuppyPlayer.ResetEffects() clears its resolution at the start of
+        // the tick and recomputes it in its own PostUpdateEquips; ModPlayer hook order is not guaranteed, so a resolution
+        // check here can read the cleared state and skip the puppy buff entirely. PostUpdate re-validates with the fresh
+        // resolution and clears the chain if it is no longer valid.
+        if (TryGetActiveAttachment(out _) && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leashForEquips)
             leashForEquips.AffectPuppy(Player);
     }
 
@@ -239,12 +242,21 @@ public class ChainedPlayer : ModPlayer
 
     private bool IsChainValid()
     {
-        if (!Player.GetModPlayer<PuppyPlayer>().IsPuppy) return false;
-        if (!HasCollar) return false;
-        Player owner = OwnerOf;
-        if (owner == null || !owner.active || owner.dead) return false;
-        if (owner.GetModPlayer<PuppyPlayer>().IsPuppy) return false;
-        return true;
+        return Player.GetModPlayer<PuppyPlayer>().IsPuppy && TryGetActiveAttachment(out _);
+    }
+
+    /// <summary>
+    /// Order-independent attachment check (safe during PostUpdateEquips): uses the tick-refreshed collar
+    /// flag and the stored grabber index instead of PuppyPlayer's resolution, which is reset mid-tick.
+    /// </summary>
+    private bool TryGetActiveAttachment(out Player owner)
+    {
+        owner = null;
+        if (!GrabberIndex.HasValue || !HasCollar)
+            return false;
+
+        owner = OwnerOf;
+        return owner != null && owner.active && !owner.dead && !owner.GetModPlayer<PuppyPlayer>().IsPuppy;
     }
 
     private Player OwnerOf
