@@ -138,6 +138,16 @@ Items: {
 		DisplayName: Shiny Ears
 		Tooltip: ""
 	}
+
+	ReinforcedEarsItem: {
+		DisplayName: Reinforced Ears
+		Tooltip: ""
+	}
+
+	ReinforcedTailItem: {
+		DisplayName: Reinforced Tail
+		Tooltip: ""
+	}
 }
 
 Buffs: {

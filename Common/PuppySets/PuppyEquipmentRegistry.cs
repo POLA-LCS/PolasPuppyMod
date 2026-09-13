@@ -3,6 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Content.Items.Ears;
+using PuppyMod.Content.Items.Tail;
 
 namespace PuppyMod.Common.PuppySets;
 
@@ -30,6 +31,12 @@ public static class PuppyEquipmentRegistry
         definitions.Clear();
         RegisterEars(ItemID.DogEars, PuppyFamily.Vanilla, new VanillaDogEarsProvider());
         RegisterTail(ItemID.DogTail, PuppyFamily.Vanilla, new VanillaDogTailProvider());
+
+        int reinforcedEarsType = ModContent.ItemType<ReinforcedEarsItem>();
+        RegisterEars(reinforcedEarsType, PuppyFamily.Reinforced, ModContent.GetInstance<ReinforcedEarsItem>());
+
+        int reinforcedTailType = ModContent.ItemType<ReinforcedTailItem>();
+        RegisterTail(reinforcedTailType, PuppyFamily.Reinforced, ModContent.GetInstance<ReinforcedTailItem>());
 
         int shinyEarsType = ModContent.ItemType<ShinyEarsItem>();
         RegisterEars(shinyEarsType, PuppyFamily.Shiny, ModContent.GetInstance<ShinyEarsItem>());
