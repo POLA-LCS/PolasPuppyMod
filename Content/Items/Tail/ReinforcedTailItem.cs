@@ -8,6 +8,7 @@ using PuppyMod.Common.Tooltip;
 
 namespace PuppyMod.Content.Items.Tail;
 
+[AutoloadEquip(EquipType.Back)]
 public class ReinforcedTailItem : ModItem, IPuppyTail
 {
     public PuppyEquipmentStats Stats => new(

@@ -9,6 +9,7 @@ using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Tail;
 
+[AutoloadEquip(EquipType.Back)]
 public class ShinyTailItem : ModItem, IPuppyTail
 {
     internal const int FunctionalHoverDuration = 30;
