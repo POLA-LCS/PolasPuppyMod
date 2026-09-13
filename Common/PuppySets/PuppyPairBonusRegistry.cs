@@ -18,6 +18,20 @@ public readonly record struct PuppyLeashBonusEffect(
     }
 }
 
+/// <summary>Ore-highlight radii granted by a set pair, chosen by the pair's placement state.</summary>
+public readonly record struct PuppySpelunkerEffect(
+    int CostumeRadius,
+    int FurryRadius,
+    int TherianRadius)
+{
+    public int GetRadius(PuppySetPlacement placement) => placement switch
+    {
+        PuppySetPlacement.Therian => TherianRadius,
+        PuppySetPlacement.Furry => FurryRadius,
+        _ => CostumeRadius
+    };
+}
+
 public sealed class PuppyPairBonusDefinition
 {
     public PuppyPairBonusDefinition(
@@ -25,7 +39,8 @@ public sealed class PuppyPairBonusDefinition
         int defenseBonus,
         float fullKnockbackMultiplier,
         string setBonusLocalizationKey = null,
-        string tooltipLocalizationKey = null)
+        string tooltipLocalizationKey = null,
+        PuppySpelunkerEffect? spelunker = null)
     {
         if (fullKnockbackMultiplier <= 0f || fullKnockbackMultiplier > 1f)
             throw new ArgumentOutOfRangeException(nameof(fullKnockbackMultiplier));
@@ -35,6 +50,7 @@ public sealed class PuppyPairBonusDefinition
         FullKnockbackMultiplier = fullKnockbackMultiplier;
         SetBonusLocalizationKey = setBonusLocalizationKey;
         TooltipLocalizationKey = tooltipLocalizationKey;
+        Spelunker = spelunker;
     }
 
     public PuppyFamily Family { get; }
@@ -42,6 +58,9 @@ public sealed class PuppyPairBonusDefinition
     public float FullKnockbackMultiplier { get; }
     public string SetBonusLocalizationKey { get; }
     public string TooltipLocalizationKey { get; }
+
+    /// <summary>Optional ore-highlight effect granted by the pair; radius follows the placement state.</summary>
+    public PuppySpelunkerEffect? Spelunker { get; }
 
     /// <summary>Uniform halving: pair strength 0.5 if either selected piece vanity; visual/physics locally halved; stats centrally via ValueMultiplier.</summary>
     public PuppyLeashBonusEffect GetEffect(PuppyEquipmentEntry selectedEars, PuppyEquipmentEntry selectedTail)
@@ -77,14 +96,16 @@ public static class PuppyPairBonusRegistry
         int defenseBonus,
         float fullKnockbackMultiplier,
         string setBonusLocalizationKey = null,
-        string tooltipLocalizationKey = null)
+        string tooltipLocalizationKey = null,
+        PuppySpelunkerEffect? spelunker = null)
     {
         Register(new PuppyPairBonusDefinition(
             family,
             defenseBonus,
             fullKnockbackMultiplier,
             setBonusLocalizationKey,
-            tooltipLocalizationKey));
+            tooltipLocalizationKey,
+            spelunker));
     }
 
     public static bool TryGet(PuppyFamily family, out PuppyPairBonusDefinition definition)
@@ -102,7 +123,11 @@ public static class PuppyPairBonusRegistry
             fullKnockbackMultiplier: 0.8f,
             setBonusLocalizationKey: "Mods.PuppyMod.SetBonuses.ReinforcedPair",
             tooltipLocalizationKey: "Mods.PuppyMod.SetBonuses.ReinforcedPairTooltip");
-        Register(PuppyFamily.Shiny, defenseBonus: 0, fullKnockbackMultiplier: 1f);
+        Register(
+            PuppyFamily.Shiny,
+            defenseBonus: 0,
+            fullKnockbackMultiplier: 1f,
+            spelunker: new PuppySpelunkerEffect(CostumeRadius: 5, FurryRadius: 10, TherianRadius: 15));
     }
 
     public static void Clear()

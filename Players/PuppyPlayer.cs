@@ -12,6 +12,7 @@ using PuppyMod.Content.Buffs.GoodPuppy;
 using PuppyMod.Content.Items.Ears;
 using PuppyMod.Content.Items.Tail;
 using PuppyMod.Services.Leash;
+using PuppyMod.Services.PuppySet;
 
 namespace PuppyMod.Players;
 
@@ -159,14 +160,15 @@ public class PuppyPlayer : ModPlayer
     {
         if (barkCooldown > 0)
             barkCooldown--;
-        // H4: Centralized ShinyEars emission – if functional present skip vanity light to avoid double scan (functional 12 tiles / vanity 6).
-        // Intentional stacking: functional takes precedence; vanity only if no functional, no double light when both slots active. Add comment documenting dedup.
+        // ShinyEars light stays an individual effect: full functional, half vanity.
         if (shinyEarsFunctional || shinyEarsVanity)
         {
             bool isVanity = !shinyEarsFunctional && shinyEarsVanity;
             ShinyEarsItem.EmitLightForPlayer(Player, isVanity);
-            ShinyEarsItem.ShineTreasureForPlayer(Player, isVanity);
         }
+
+        // Ore sight belongs to the Shiny pair bonus and only exists while the matching pair is selected.
+        PuppySpelunkerService.Apply(Player);
     }
 
     public override void ArmorSetBonusActivated()

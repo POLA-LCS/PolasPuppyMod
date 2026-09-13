@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -16,17 +15,9 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     private const float BasePickSpeed = 0.12f;
     public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: BasePickSpeed);
 
-    // Treasure shine / ore detection: functional 12 tiles half-box, vanity 6 tiles (halved). Light intensity also halved in vanity.
-    // Vanity halving is handled locally via isVanity; central PuppyEquipment stats only halves PickSpeed – no duplicate range handling.
-    // H4: Centralized via PuppyPlayer like ShinyTail – functional present skips vanity to avoid double light/scan; intentional stacking dedup.
-    private const int ShineBoxHalf = 12;
-
+    // Individual light: full intensity functional, half in vanity. Ore sight belongs to the Shiny pair bonus now.
     private const float BaseLightIntensity = 0.25f;
     private const float BaseLightIntensityVanity = BaseLightIntensity * 0.5f;
-
-    /// <summary>Tile size in pixels (Terraria world unit: 16px per tile); 8f is half-tile centering offset.</summary>
-    private const float TileSizePixels = 16f;
-    private const float HalfTilePixels = 8f;
 
     public override string Texture => "PuppyMod/Assets/Armor/ShinyDogEarsArmor";
 
@@ -92,16 +83,8 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     public override void ModifyTooltips(List<TooltipLine> tooltips)
         => tooltips.ApplyPuppyEquipmentTooltip(Mod, Item);
 
-    private static void ApplyEffects(Player player, bool isVanity)
-    {
-        // Kept for backwards compat but not used – central path via PuppyPlayer dedups functional+vanity to single scan.
-        EmitLight(player, isVanity);
-        ShineTreasure(player, isVanity);
-    }
-
-    // H4: Exposed for central PuppyPlayer aggregation – functional takes precedence, vanity only if no functional. Single scan per tick avoids ~625*2.
+    /// <summary>Central light emission – functional takes precedence over vanity via PuppyPlayer.</summary>
     internal static void EmitLightForPlayer(Player player, bool isVanity) => EmitLight(player, isVanity);
-    internal static void ShineTreasureForPlayer(Player player, bool isVanity) => ShineTreasure(player, isVanity);
 
     private static void EmitLight(Player player, bool isVanity)
     {
@@ -110,24 +93,6 @@ public class ShinyEarsItem : ModItem, IPuppyEars
         // H4 dedup: functional+vanity both equipped does light once via PuppyPlayer (functional precedence), not twice.
         float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
         Lighting.AddLight(player.Center, new Vector3(i, i * 0.85f, i * 0.35f));
-    }
-
-    private static void ShineTreasure(Player player, bool isVanity)
-    {
-        if (Main.dedServ) return;
-        float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
-        int range = isVanity ? ShineBoxHalf / 2 : ShineBoxHalf;
-        Vector3 color = new(i, i * 0.85f, i * 0.35f);
-        Point center = player.Center.ToTileCoordinates();
-        for (int x = center.X - range; x <= center.X + range; x++)
-        for (int y = center.Y - range; y <= center.Y + range; y++)
-        {
-            if (!WorldGen.InWorld(x, y)) continue;
-            Tile tile = Main.tile[x, y];
-            if (!tile.HasTile || tile.IsActuated) continue;
-            if (Main.tileSpelunker[tile.TileType])
-                Lighting.AddLight(new Vector2(x * TileSizePixels + HalfTilePixels, y * TileSizePixels + HalfTilePixels), color);
-        }
     }
 
     private static void SpawnStarBurst(Player player)

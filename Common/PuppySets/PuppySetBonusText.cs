@@ -10,6 +10,10 @@ public static class PuppySetBonusText
     public const string BarkDirectionUpLocalizationKey = "Mods.PuppyMod.SetBonuses.BarkDirectionUp";
     public const string BarkDirectionDownLocalizationKey = "Mods.PuppyMod.SetBonuses.BarkDirectionDown";
 
+    public const string SpelunkerCostumeLocalizationKey = "Mods.PuppyMod.SetBonuses.SpelunkerCostume";
+    public const string SpelunkerFurryLocalizationKey = "Mods.PuppyMod.SetBonuses.SpelunkerFurry";
+    public const string SpelunkerTherianLocalizationKey = "Mods.PuppyMod.SetBonuses.SpelunkerTherian";
+
     public static IEnumerable<string> GetActiveLines(
         PuppyEquipmentResolution resolution,
         bool forTooltip)
@@ -19,7 +23,7 @@ public static class PuppySetBonusText
 
         if (resolution.TryGetPairBonus(out PuppyPairBonusDefinition pairBonus))
         {
-            string pairBonusText = GetPairBonusText(pairBonus, forTooltip);
+            string pairBonusText = GetPairBonusText(resolution, pairBonus, forTooltip);
             if (!string.IsNullOrEmpty(pairBonusText))
             {
                 yield return pairBonusText;
@@ -40,11 +44,16 @@ public static class PuppySetBonusText
     }
 
     public static string GetPairBonusText(
+        PuppyEquipmentResolution resolution,
         PuppyPairBonusDefinition pairBonus,
         bool forTooltip)
     {
         if (pairBonus == null)
             return string.Empty;
+
+        // Ore sight text follows the pair's placement state (Costume/Furry/Therian).
+        if (pairBonus.Spelunker.HasValue)
+            return Language.GetTextValue(GetSpelunkerLocalizationKey(resolution.SelectedPlacement));
 
         string localizationKey = forTooltip
             ? pairBonus.TooltipLocalizationKey ?? pairBonus.SetBonusLocalizationKey
@@ -53,4 +62,11 @@ public static class PuppySetBonusText
             ? string.Empty
             : Language.GetTextValue(localizationKey);
     }
+
+    private static string GetSpelunkerLocalizationKey(PuppySetPlacement placement) => placement switch
+    {
+        PuppySetPlacement.Therian => SpelunkerTherianLocalizationKey,
+        PuppySetPlacement.Furry => SpelunkerFurryLocalizationKey,
+        _ => SpelunkerCostumeLocalizationKey
+    };
 }
