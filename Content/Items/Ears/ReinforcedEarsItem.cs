@@ -27,6 +27,12 @@ public class ReinforcedEarsItem : ModItem, IPuppyEars
         Item.defense = 0;
     }
 
+    public override void SetStaticDefaults()
+    {
+        // Vanilla DogEars (242) opts into full hair; modded head slots default to hiding it.
+        ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
+    }
+
     public override void AddRecipes()
     {
         CreateRecipe()

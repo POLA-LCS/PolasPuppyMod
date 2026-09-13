@@ -26,6 +26,12 @@ public class ShinyTailItem : ModItem, IPuppyTail
         Item.backSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Back);
     }
 
+    public override void SetStaticDefaults()
+    {
+        // Vanilla DogTail (25) draws in the tail layer; without this the modded back slot renders in the backpack layer (near the head).
+        ArmorIDs.Back.Sets.DrawInTailLayer[Item.backSlot] = true;
+    }
+
     public override void ModifyTooltips(List<TooltipLine> tooltips)
         => tooltips.ApplyPuppyEquipmentTooltip(Mod, Item);
 

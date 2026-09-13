@@ -30,6 +30,12 @@ public class ReinforcedTailItem : ModItem, IPuppyTail
         Item.accessory = true;
     }
 
+    public override void SetStaticDefaults()
+    {
+        // Vanilla DogTail (25) draws in the tail layer; without this the modded back slot renders in the backpack layer (near the head).
+        ArmorIDs.Back.Sets.DrawInTailLayer[Item.backSlot] = true;
+    }
+
     public override void AddRecipes()
     {
         CreateRecipe()

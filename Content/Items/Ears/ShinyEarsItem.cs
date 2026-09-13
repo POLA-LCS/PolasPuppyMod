@@ -40,6 +40,12 @@ public class ShinyEarsItem : ModItem, IPuppyEars
         Item.value = Item.sellPrice(gold: 1, silver: 50);
     }
 
+    public override void SetStaticDefaults()
+    {
+        // Vanilla DogEars (242) opts into full hair; modded head slots default to hiding it.
+        ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
+    }
+
     public override void UpdateAccessory(Player player, bool hideVisual)
     {
         // H4: Centralize via PuppyPlayer like ShinyTail – flag functional, emission deduped in PuppyPlayer.PostUpdate.
