@@ -30,6 +30,18 @@ The resolver makes separate selections for family effects:
 
 The selection rules and the individual-effect aggregate are independent. An item does not need to be selected for a pair to contribute its own registered stats.
 
+## Placement states
+
+The selected pair has a placement state that scales pair-specific effects:
+
+| State | Condition | Shiny ore-sight radius |
+| --- | --- | --- |
+| Costume | both selected pieces vanity | 5 tiles |
+| Furry | exactly one selected piece functional | 10 tiles |
+| Therian | both selected pieces functional | 15 tiles |
+
+Placement is derived from the selected pair only; extra duplicate copies do not change it. The state is exposed as `PuppyEquipmentResolution.SelectedPlacement`.
+
 ## Individual effects
 
 Every recognized equipment entry contributes to one additive `PuppyEquipmentStats` aggregate. Functional entries contribute their full provider values; vanity entries contribute one half of those values. This applies to every recognized entry, so individual effects stack across multiple Ears and Tails. It is separate from the one-pair selection above.
@@ -39,7 +51,7 @@ Every recognized equipment entry contributes to one additive `PuppyEquipmentStat
 | Category | Halving behavior | Implementation |
 | --- | --- | --- |
 | Player stats via `PuppyEquipmentStats` (Defense, PickSpeed, MoveSpeed, etc.) | Halved in vanity (multiplier `0.5`) | Central `PuppyEquipmentEntry.ValueMultiplier` and `PuppyPairBonusDefinition.GetEffect` strength `0.5` |
-| Visual / physics (ShinyEars light intensity & ore scan range, ShinyTail hover) | Locally halved in the item's own code | `ShinyEarsItem` halves light intensity and scan box (`12 → 6`); `ShinyTailItem` hover `30 → 15` ticks via `PuppyPlayer` |
+| Visual / physics (ShinyEars light intensity, ShinyTail hover) | Locally halved in the item's own code | `ShinyEarsItem` halves light intensity; `ShinyTailItem` hover `30 → 15` ticks via `PuppyPlayer` |
 | Collar / leash (`CollarItem` wearer defense, `ChainLeashItem` puppy defense) | Functional-only, no vanity contribution | Applied only in functional accessory via `UpdateAccessory` / `ChainedPlayer.PostUpdateEquips`; intentionally not halved because vanity gives `0` |
 
 Pair bonus strength is also centralized at `0.5` when either selected piece is vanity.
@@ -52,14 +64,14 @@ The current full-strength functional contributions are:
 | Vanilla Dog Tail | `moveSpeed += 0.30`, `accRunSpeed += 0.45`, `maxRunSpeed += 0.30`, `jumpSpeedBoost += 1.0` |
 | Reinforced Ears | `+2` defense; `+0.25` melee knockback; `+0.25` flat summon knockback |
 | Reinforced Tail | `+2` defense; `moveSpeed += 0.20`, `accRunSpeed += 0.30`, `maxRunSpeed += 0.20`, `jumpSpeedBoost += 0.6666667` |
-| Shiny Ears | `pickSpeed -= 0.12`; also emits light and highlights spelunker tiles |
+| Shiny Ears | `pickSpeed -= 0.12`; also emits a warm light |
 | Shiny Tail | No registered stat contribution; enables the carpet hover described below |
 
 The Reinforced Ears knockback values are outgoing effects: they are added to the player's melee and summon knockback. In vanity, the individual values are halved just like the other centralized equipment stats.
 
-## Pair effects while attached
+## Pair effects
 
-The Vanilla and Shiny families have no additional gameplay pair effect. A matching Reinforced Ears/Tail pair has an attached-only effect:
+The Vanilla family has no additional gameplay pair effect. A matching Shiny Ears/Tail pair grants ore sight (see Placement states): `Main.tileSpelunker` tiles inside the state radius are lit for the local player. The effect is applied by `PuppySpelunkerService` from `PuppyPlayer.PostUpdate` and is client-only; it does not exist on Shiny Ears alone. A matching Reinforced Ears/Tail pair has an attached-only effect:
 
 - With both selected pieces functional, the attached Puppy and its Owner each gain `+2` defense and incoming knockback is multiplied by `0.8` (a 20% reduction).
 - If either selected piece is vanity, the pair effect is half strength: `+1` defense and incoming knockback multiplied by `0.9` (a 10% reduction).
@@ -68,7 +80,7 @@ The leash bonus service applies the defense to both sides of a valid attachment 
 
 ## Shiny item behavior
 
-- **Shiny Ears** provide their digging stat and treasure-lighting behavior in both functional and vanity use. Vanity lighting uses half intensity and the smaller treasure scan range. When the Puppy barks, Shiny Ears can add a local yellow star burst.
+- **Shiny Ears** provide their digging stat and a warm light in both functional and vanity use (vanity halves the light intensity). When the Puppy barks, Shiny Ears can add a local yellow star burst. Ore sight is not part of the item anymore: it belongs to the Shiny pair bonus.
 - **Shiny Tail** sets the vanilla carpet flag, creating a star-particle hover platform using vanilla carpet movement. A functional Shiny Tail allows up to **30 ticks (0.5 seconds)** of hover; a vanity Shiny Tail allows **15 ticks (0.25 seconds)**. If both forms are active, the functional duration is used. Star dust beneath the player is visual feedback while the carpet is active.
 
 ## Vanilla item augmentation and set text
