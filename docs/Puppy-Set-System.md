@@ -40,7 +40,7 @@ The current full-strength functional contributions are:
 | --- | --- |
 | Vanilla Dog Ears | `pickSpeed -= 0.10` (faster digging) |
 | Vanilla Dog Tail | `moveSpeed += 0.30`, `accRunSpeed += 0.45`, `maxRunSpeed += 0.30`, `jumpSpeedBoost += 1.0` |
-| Reinforced Ears | `+2` defense; `+0.5` melee knockback; `+0.5` flat summon knockback |
+| Reinforced Ears | `+2` defense; `+0.25` melee knockback; `+0.25` flat summon knockback |
 | Reinforced Tail | `+2` defense; `moveSpeed += 0.20`, `accRunSpeed += 0.30`, `maxRunSpeed += 0.20`, `jumpSpeedBoost += 0.6666667` |
 | Shiny Ears | `pickSpeed -= 0.12`; also emits light and highlights spelunker tiles |
 | Shiny Tail | No registered stat contribution; enables the carpet hover described below |
