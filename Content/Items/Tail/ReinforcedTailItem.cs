@@ -8,7 +8,6 @@ using PuppyMod.Common.Tooltip;
 
 namespace PuppyMod.Content.Items.Tail;
 
-[AutoloadEquip(EquipType.Back)]
 public class ReinforcedTailItem : ModItem, IPuppyTail
 {
     public PuppyEquipmentStats Stats => new(
@@ -23,17 +22,11 @@ public class ReinforcedTailItem : ModItem, IPuppyTail
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
-        // CloneDefaults overwrites the autoloaded back slot with vanilla DogTail (25), which would render the vanilla tail; restore the mod equip slot.
-        Item.backSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Back);
+        // Worn sprite is drawn manually by PuppyTailDrawLayer; clear the vanilla back slot so the vanilla tail isn't drawn.
+        Item.backSlot = -1;
         // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
         Item.accessory = true;
-    }
-
-    public override void SetStaticDefaults()
-    {
-        // Vanilla DogTail (25) draws in the tail layer; without this the modded back slot renders in the backpack layer (near the head).
-        ArmorIDs.Back.Sets.DrawInTailLayer[Item.backSlot] = true;
     }
 
     public override void AddRecipes()
