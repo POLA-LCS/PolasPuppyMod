@@ -24,7 +24,8 @@ public sealed class PuppyPairBonusDefinition
         PuppyFamily family,
         int defenseBonus,
         float fullKnockbackMultiplier,
-        string setBonusLocalizationKey = null)
+        string setBonusLocalizationKey = null,
+        string tooltipLocalizationKey = null)
     {
         if (fullKnockbackMultiplier <= 0f || fullKnockbackMultiplier > 1f)
             throw new ArgumentOutOfRangeException(nameof(fullKnockbackMultiplier));
@@ -33,12 +34,14 @@ public sealed class PuppyPairBonusDefinition
         DefenseBonus = defenseBonus;
         FullKnockbackMultiplier = fullKnockbackMultiplier;
         SetBonusLocalizationKey = setBonusLocalizationKey;
+        TooltipLocalizationKey = tooltipLocalizationKey;
     }
 
     public PuppyFamily Family { get; }
     public int DefenseBonus { get; }
     public float FullKnockbackMultiplier { get; }
     public string SetBonusLocalizationKey { get; }
+    public string TooltipLocalizationKey { get; }
 
     public PuppyLeashBonusEffect GetEffect(PuppyEquipmentEntry selectedEars, PuppyEquipmentEntry selectedTail)
     {
@@ -72,13 +75,15 @@ public static class PuppyPairBonusRegistry
         PuppyFamily family,
         int defenseBonus,
         float fullKnockbackMultiplier,
-        string setBonusLocalizationKey = null)
+        string setBonusLocalizationKey = null,
+        string tooltipLocalizationKey = null)
     {
         Register(new PuppyPairBonusDefinition(
             family,
             defenseBonus,
             fullKnockbackMultiplier,
-            setBonusLocalizationKey));
+            setBonusLocalizationKey,
+            tooltipLocalizationKey));
     }
 
     public static bool TryGet(PuppyFamily family, out PuppyPairBonusDefinition definition)
@@ -94,7 +99,8 @@ public static class PuppyPairBonusRegistry
             PuppyFamily.Reinforced,
             defenseBonus: 2,
             fullKnockbackMultiplier: 0.8f,
-            setBonusLocalizationKey: "Mods.PuppyMod.SetBonuses.ReinforcedPair");
+            setBonusLocalizationKey: "Mods.PuppyMod.SetBonuses.ReinforcedPair",
+            tooltipLocalizationKey: "Mods.PuppyMod.SetBonuses.ReinforcedPairTooltip");
         Register(PuppyFamily.Shiny, defenseBonus: 0, fullKnockbackMultiplier: 1f);
     }
 

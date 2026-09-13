@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
@@ -194,15 +193,9 @@ public class PuppyPlayer : ModPlayer
         ApplyEquipmentKnockback();
         if (IsPuppy)
         {
-            string dir = Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
-            string barkBonus = $"Puppy bonus: Double tap {dir} to bark, arf!";
-            Player.setBonus = AppendSetBonusLine(Player.setBonus, barkBonus);
-
-            if (equipmentResolution.TryGetPairBonus(out PuppyPairBonusDefinition pairBonus)
-                && !string.IsNullOrEmpty(pairBonus.SetBonusLocalizationKey))
+            foreach (string bonusText in PuppySetBonusText.GetActiveLines(equipmentResolution, forTooltip: false))
             {
-                string pairBonusText = Language.GetTextValue(pairBonus.SetBonusLocalizationKey);
-                Player.setBonus = AppendSetBonusLine(Player.setBonus, pairBonusText);
+                Player.setBonus = AppendSetBonusLine(Player.setBonus, bonusText);
             }
         }
     }

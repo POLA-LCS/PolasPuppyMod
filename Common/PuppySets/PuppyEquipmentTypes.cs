@@ -68,38 +68,73 @@ public interface IPuppyEquipmentProvider
     PuppyEquipmentStats Stats { get; }
 }
 
+public sealed class PuppyTooltipLineDefinition
+{
+    public PuppyTooltipLineDefinition(string lineName, string localizationKey, bool halveInVanity)
+    {
+        LineName = lineName;
+        LocalizationKey = localizationKey;
+        HalveInVanity = halveInVanity;
+    }
+
+    public string LineName { get; }
+    public string LocalizationKey { get; }
+    public bool HalveInVanity { get; }
+}
+
+public sealed class PuppyTooltipDefinition
+{
+    public PuppyTooltipDefinition(params PuppyTooltipLineDefinition[] lines)
+    {
+        Lines = Array.AsReadOnly(lines ?? Array.Empty<PuppyTooltipLineDefinition>());
+    }
+
+    public IReadOnlyList<PuppyTooltipLineDefinition> Lines { get; }
+}
+
 public abstract class PuppyEquipmentDefinition
 {
     protected PuppyEquipmentDefinition(
         int itemType,
         PuppyEquipmentKind kind,
         PuppyFamily family,
-        IPuppyEquipmentProvider provider)
+        IPuppyEquipmentProvider provider,
+        PuppyTooltipDefinition tooltip)
     {
         ItemType = itemType;
         Kind = kind;
         Family = family;
         Provider = provider;
+        Tooltip = tooltip;
     }
 
     public int ItemType { get; }
     public PuppyEquipmentKind Kind { get; }
     public PuppyFamily Family { get; }
     public IPuppyEquipmentProvider Provider { get; }
+    public PuppyTooltipDefinition Tooltip { get; }
 }
 
 public sealed class PuppyEarsDefinition : PuppyEquipmentDefinition
 {
-    public PuppyEarsDefinition(int itemType, PuppyFamily family, IPuppyEars provider)
-        : base(itemType, PuppyEquipmentKind.Ears, family, provider)
+    public PuppyEarsDefinition(
+        int itemType,
+        PuppyFamily family,
+        IPuppyEars provider,
+        PuppyTooltipDefinition tooltip)
+        : base(itemType, PuppyEquipmentKind.Ears, family, provider, tooltip)
     {
     }
 }
 
 public sealed class PuppyTailDefinition : PuppyEquipmentDefinition
 {
-    public PuppyTailDefinition(int itemType, PuppyFamily family, IPuppyTail provider)
-        : base(itemType, PuppyEquipmentKind.Tail, family, provider)
+    public PuppyTailDefinition(
+        int itemType,
+        PuppyFamily family,
+        IPuppyTail provider,
+        PuppyTooltipDefinition tooltip)
+        : base(itemType, PuppyEquipmentKind.Tail, family, provider, tooltip)
     {
     }
 }

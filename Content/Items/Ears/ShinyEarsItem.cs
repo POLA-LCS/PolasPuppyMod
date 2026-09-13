@@ -7,7 +7,6 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Tooltip;
-using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Ears;
 
@@ -62,39 +61,8 @@ public class ShinyEarsItem : ModItem, IPuppyEars
             .Register();
     }
 
-    private const string DigSpeedText = "Increase digging speed";
-    private const string ShinyDefault = "Now you are shiny";
-    private const string ShinyQuote = "'I sniff treasures everywhere! ^OwO^'";
-    private const string HalvedPrefix = "halved: ";
-
     public override void ModifyTooltips(List<TooltipLine> tooltips)
-    {
-        tooltips.StripVanity();
-        tooltips.ApplyPuppyFlavor(Mod);
-
-        int index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Tooltip0");
-        if (index == -1) index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name.StartsWith("Tooltip"));
-        if (index == -1) index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Defense");
-        if (index == -1) index = tooltips.Count - 1;
-
-        bool equipped = false;
-        bool inVanity = false;
-        if (Main.LocalPlayer != null && Main.LocalPlayer.active)
-        {
-            var puppy = Main.LocalPlayer.GetModPlayer<PuppyPlayer>();
-            equipped = puppy.EquipmentSnapshot.ContainsFunctional(Type) || puppy.EquipmentSnapshot.ContainsVanity(Type);
-            inVanity = puppy.EquipmentSnapshot.ContainsVanity(Type);
-        }
-
-        string prefix = inVanity ? HalvedPrefix : string.Empty;
-
-        tooltips.Insert(index + 1, new TooltipLine(Mod, "ShinyEarsStat", prefix + DigSpeedText));
-        tooltips.Insert(index + 2, new TooltipLine(Mod, "ShinyEarsDefault", prefix + ShinyDefault));
-        tooltips.Insert(index + 3, new TooltipLine(Mod, "ShinyEarsQuote", ShinyQuote));
-
-        tooltips.InsertPuppyBonus(Mod, equipped, index + 4);
-        tooltips.MovePriceToBottom();
-    }
+        => tooltips.ApplyPuppyEquipmentTooltip(Mod, Item);
 
     private static void ApplyEffects(Player player, bool isVanity)
     {

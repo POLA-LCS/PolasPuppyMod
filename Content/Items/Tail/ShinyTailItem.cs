@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.PuppySets;
+using PuppyMod.Common.Tooltip;
 using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Tail;
@@ -20,6 +22,9 @@ public class ShinyTailItem : ModItem, IPuppyTail
     {
         Item.CloneDefaults(ItemID.DogTail);
     }
+
+    public override void ModifyTooltips(List<TooltipLine> tooltips)
+        => tooltips.ApplyPuppyEquipmentTooltip(Mod, Item);
 
     public override void UpdateAccessory(Player player, bool hideVisual)
     {

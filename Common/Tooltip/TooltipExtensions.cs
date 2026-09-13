@@ -1,14 +1,25 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
+using PuppyMod.Common.PuppySets;
 using PuppyMod.Players;
 
 namespace PuppyMod.Common.Tooltip;
 
 public static class TooltipExtensions
 {
+    private const string PuppyVanityEquipableLineName = "PuppyVanityEquipable";
+    private const string PuppyReleaseLineName = "PuppyRelease";
+    private const string PuppyBarkBonusLineName = "PuppyBarkBonus";
+    private const string PuppyPairBonusLineName = "PuppyPairBonus";
+    private const string PuppyVanityEquipableLocalizationKey = "Mods.PuppyMod.Tooltips.VanityEquipable";
+    private const string PuppyReleaseLocalizationKey = "Mods.PuppyMod.Tooltips.Release";
+    private const string PuppyHalvedLocalizationKey = "Mods.PuppyMod.Tooltips.Halved";
+
     public static readonly Color ColorPuppyLabel = new(193, 154, 107);
     public static readonly Color ColorOwnerLabel = new(120, 176, 56);
     public static readonly Color ColorAttachedLabel = new(255, 180, 225);
@@ -65,27 +76,62 @@ public static class TooltipExtensions
 
     public static void StripVanity(this List<TooltipLine> tooltips)
     {
-        tooltips.RemoveAll(l => l.Mod == "Terraria" && l.Name == "Social");
-        tooltips.RemoveAll(l => l.Mod == "Terraria" && l.Name == "SocialDesc");
-        tooltips.RemoveAll(l => l.Text.Contains("No stats will be gained") || l.Text.Contains("Equipped in social slot"));
-        tooltips.RemoveAll(l => l.Mod == "Terraria" && l.Name == "SetBonus");
-        tooltips.RemoveAll(l => l.Text.Contains("Set bonus:"));
-        tooltips.RemoveAll(l => l.Text == "Vanity Item" || l.Text.Contains("Vanity Item"));
+        tooltips.RemoveAll(l => l.Mod == "Terraria" &&
+            (l.Name == "Social" || l.Name == "SocialDesc" || l.Name == "SetBonus"));
     }
 
-    public static void InsertPuppyBonus(this List<TooltipLine> tooltips, Mod mod, bool isEquipped, int insertIndex)
+    public static void ApplyPuppyEquipmentTooltip(
+        this List<TooltipLine> tooltips,
+        Mod mod,
+        Item item)
     {
-        if (!isEquipped) return;
-        if (tooltips.Any(l => l.Name == "PuppyBonus")) return;
-        if (Main.LocalPlayer == null || !Main.LocalPlayer.active) return;
+        if (item == null || !PuppyEquipmentRegistry.TryGetDefinition(item.type, out PuppyEquipmentDefinition definition))
+            return;
+        if (definition.Tooltip == null || definition.Tooltip.Lines.Count == 0)
+            return;
 
-        var puppy = Main.LocalPlayer.GetModPlayer<Players.PuppyPlayer>();
-        if (!puppy.IsPuppy) return;
+        tooltips.StripVanity();
+        tooltips.ApplyPuppyFlavor(mod);
 
-        string dir = Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
-        var bonusLine = new TooltipLine(mod, "PuppyBonus", $"Puppy bonus: Double tap {dir} to bark, arf!") { OverrideColor = new Color(255, 190, 125) };
-        int idx = insertIndex >= 0 && insertIndex <= tooltips.Count ? insertIndex : tooltips.Count;
-        tooltips.Insert(idx, bonusLine);
+        bool hasFunctional = false;
+        bool hasVanity = false;
+        PuppyPlayer puppy = null;
+        if (!Main.dedServ && Main.LocalPlayer != null && Main.LocalPlayer.active)
+        {
+            puppy = Main.LocalPlayer.GetModPlayer<PuppyPlayer>();
+            hasFunctional = puppy.EquipmentSnapshot.ContainsFunctional(item.type);
+            hasVanity = puppy.EquipmentSnapshot.ContainsVanity(item.type);
+        }
+
+        int anchorIndex = FindTooltipAnchor(tooltips);
+        int insertIndex = anchorIndex >= 0 ? anchorIndex + 1 : tooltips.Count;
+        bool vanityOnly = hasVanity && !hasFunctional;
+        foreach (PuppyTooltipLineDefinition lineDefinition in definition.Tooltip.Lines)
+        {
+            string text = Language.GetTextValue(lineDefinition.LocalizationKey);
+            if (lineDefinition.HalveInVanity && vanityOnly)
+                text = Language.GetTextValue(PuppyHalvedLocalizationKey, text);
+
+            tooltips.Insert(insertIndex++, new TooltipLine(mod, lineDefinition.LineName, text));
+        }
+
+        if (puppy != null && (hasFunctional || hasVanity))
+        {
+            bool isBarkLine = true;
+            foreach (string bonusText in PuppySetBonusText.GetActiveLines(puppy.EquipmentResolution, forTooltip: true))
+            {
+                string lineName = isBarkLine ? PuppyBarkBonusLineName : PuppyPairBonusLineName;
+                isBarkLine = false;
+                if (tooltips.Any(line => line.Name == lineName))
+                    continue;
+
+                tooltips.Insert(
+                    insertIndex++,
+                    new TooltipLine(mod, lineName, bonusText) { OverrideColor = ColorPuppyBonus });
+            }
+        }
+
+        tooltips.MovePriceToBottom();
     }
 
     public static void MovePriceToBottom(this List<TooltipLine> tooltips)
@@ -100,43 +146,47 @@ public static class TooltipExtensions
     public static void ApplyPuppyFlavor(this List<TooltipLine> tooltips, Mod mod)
     {
         var equipableLines = tooltips.Where(l => l.Mod == "Terraria" && (l.Name == "Equipable" || l.Name == "Vanity")).ToList();
+        int mergedIndex;
         if (equipableLines.Count > 0)
         {
-            equipableLines[0].Text = "Vanity/Equipable";
+            mergedIndex = tooltips.FindIndex(l => l.Mod == "Terraria" && (l.Name == "Equipable" || l.Name == "Vanity"));
+            equipableLines[0].Text = Language.GetTextValue(PuppyVanityEquipableLocalizationKey);
             for (int i = 1; i < equipableLines.Count; i++)
                 tooltips.Remove(equipableLines[i]);
         }
         else
         {
-            int insertIdx = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "ItemName");
-            if (insertIdx == -1) insertIdx = 0;
-            tooltips.Insert(insertIdx + 1, new TooltipLine(mod, "PuppyVanityEquipable", "Vanity/Equipable"));
+            mergedIndex = tooltips.FindIndex(l => l.Name == PuppyVanityEquipableLineName);
+            if (mergedIndex == -1)
+            {
+                int insertIdx = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "ItemName");
+                if (insertIdx == -1) insertIdx = 0;
+                mergedIndex = insertIdx + 1;
+                tooltips.Insert(
+                    mergedIndex,
+                    new TooltipLine(mod, PuppyVanityEquipableLineName, Language.GetTextValue(PuppyVanityEquipableLocalizationKey)));
+            }
         }
 
-        bool hasVanityItem = tooltips.Any(l => l.Text == "Vanity Item" || l.Text.Contains("Vanity Item"));
-        if (hasVanityItem)
+        bool hasRelease = tooltips.Any(l => l.Name == PuppyReleaseLineName);
+        if (!hasRelease)
         {
-            foreach (var line in tooltips)
-            {
-                if (line.Text == "Vanity Item" || line.Text.Contains("Vanity Item"))
+            tooltips.Insert(
+                mergedIndex + 1,
+                new TooltipLine(mod, PuppyReleaseLineName, Language.GetTextValue(PuppyReleaseLocalizationKey))
                 {
-                    line.Text = "Release the puppiness!";
-                    line.OverrideColor = new Color(193, 154, 107);
-                    break;
-                }
-            }
+                    OverrideColor = ColorPuppyLabel
+                });
         }
-        else
-        {
-            bool hasRelease = tooltips.Any(l => l.Text == "Release the puppiness!");
-            if (!hasRelease)
-            {
-                int idx = tooltips.FindIndex(l => l.Text == "Vanity/Equipable");
-                if (idx != -1)
-                    tooltips.Insert(idx + 1, new TooltipLine(mod, "PuppyRelease", "Release the puppiness!") { OverrideColor = new Color(193, 154, 107) });
-                else
-                    tooltips.Insert(1, new TooltipLine(mod, "PuppyRelease", "Release the puppiness!") { OverrideColor = new Color(193, 154, 107) });
-            }
-        }
+    }
+
+    private static int FindTooltipAnchor(List<TooltipLine> tooltips)
+    {
+        int index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Tooltip0");
+        if (index == -1)
+            index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name.StartsWith("Tooltip", StringComparison.Ordinal));
+        if (index == -1)
+            index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Defense");
+        return index;
     }
 }

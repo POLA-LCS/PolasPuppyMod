@@ -134,24 +134,59 @@ Items: {
 		Tooltip: puppy deserves expensive clicks
 	}
 
+	DogEars: {
+		PuppyStat: Increase digging speed
+		PuppyFlavor: "'Let's make a hole! *paw paw* :3'"
+	}
+
+	DogTail: {
+		PuppyStat: Increase mobility
+		PuppyFlavor: "'Walkies = zoomies! Aarr-woof! :3'"
+	}
+
 	ShinyEarsItem: {
 		DisplayName: Shiny Ears
 		Tooltip: ""
+		PuppyStat: Increase digging speed
+		PuppyEffect: Now you are shiny
+		PuppyFlavor: "'I sniff treasures everywhere! ^OwO^'"
 	}
 
 	ReinforcedEarsItem: {
 		DisplayName: Reinforced Ears
 		Tooltip: ""
+		PuppyStat: Reinforced for protection
+		PuppyFlavor: "'Tough enough for any adventure! :3'"
 	}
 
 	ReinforcedTailItem: {
 		DisplayName: Reinforced Tail
 		Tooltip: ""
+		PuppyStat: Reinforced for mobility
+		PuppyFlavor: "'Ready for stronger walkies! Aarr-woof! :3'"
+	}
+
+	ShinyTailItem: {
+		DisplayName: Shiny Tail
+		Tooltip: ""
+		PuppyStat: Flying Carpet-style star hover
+		PuppyDuration: 1.5-second base duration
+		PuppyFlavor: "'The stars carry my zoomies! ^OwO^'"
 	}
 }
 
+Tooltips: {
+	VanityEquipable: Vanity/Equipable
+	Release: Release the puppiness!
+	Halved: "[c/C8C864:halved]: {0}"
+}
+
 SetBonuses: {
+	Bark: "Puppy bonus: Double tap {0} to bark, arf!"
+	BarkDirectionUp: UP
+	BarkDirectionDown: DOWN
 	ReinforcedPair: "Puppy bonus: 2 defense and reduced knockback when leashed/attached"
+	ReinforcedPairTooltip: "Puppy bonus: 2 defense and reduced knockback"
 }
 
 Buffs: {
