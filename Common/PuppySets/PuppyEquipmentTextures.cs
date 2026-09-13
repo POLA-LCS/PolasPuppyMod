@@ -7,10 +7,10 @@ namespace PuppyMod.Common.PuppySets;
 /// </summary>
 public static class PuppyEquipmentTextures
 {
-    public const string ShinyEarsSheet = "PuppyMod/Assets/Armor/ShinyEarsArmorSpreadsheet";
-    public const string ReinforcedEarsSheet = "PuppyMod/Assets/Armor/ReinforcedEarsArmorSpreadsheet";
-    public const string ShinyTailSheet = "PuppyMod/Assets/Armor/ShinyTailArmorSpreadsheet";
-    public const string ReinforcedTailSheet = "PuppyMod/Assets/Armor/ReinforcedTailArmorSpreadsheet";
+    public const string ShinyEarsSheet = "PuppyMod/Assets/Spreadsheet/ShinyEarsArmorSpreadsheet";
+    public const string ReinforcedEarsSheet = "PuppyMod/Assets/Spreadsheet/ReinforcedEarsArmorSpreadsheet";
+    public const string ShinyTailSheet = "PuppyMod/Assets/Spreadsheet/ShinyTailArmorSpreadsheet";
+    public const string ReinforcedTailSheet = "PuppyMod/Assets/Spreadsheet/ReinforcedTailArmorSpreadsheet";
 
     public const string ShinyEarsHead = "ShinyEarsHead";
     public const string ReinforcedEarsHead = "ReinforcedEarsHead";
