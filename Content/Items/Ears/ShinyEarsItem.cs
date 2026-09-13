@@ -11,6 +11,7 @@ using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Ears;
 
+[AutoloadEquip(EquipType.Head)]
 public class ShinyEarsItem : ModItem, IPuppyEars
 {
     private const float BasePickSpeed = 0.12f;
@@ -28,7 +29,7 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     private const float TileSizePixels = 16f;
     private const float HalfTilePixels = 8f;
 
-    public override string Texture => "Terraria/Images/Item_" + ItemID.DogEars;
+    public override string Texture => "PuppyMod/Assets/Armor/ShinyDogEarsArmor";
 
     public override void SetDefaults()
     {

@@ -16,7 +16,7 @@ public class ShinyTailItem : ModItem, IPuppyTail
 
     public PuppyEquipmentStats Stats => new(Defense: 0f);
 
-    public override string Texture => "Terraria/Images/Item_" + ItemID.DogTail;
+    public override string Texture => "PuppyMod/Assets/Armor/ShinyDogTailArmor";
 
     public override void SetDefaults()
     {

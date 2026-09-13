@@ -8,6 +8,7 @@ using PuppyMod.Common.Tooltip;
 
 namespace PuppyMod.Content.Items.Ears;
 
+[AutoloadEquip(EquipType.Head)]
 public class ReinforcedEarsItem : ModItem, IPuppyEars
 {
     public PuppyEquipmentStats Stats => new(
@@ -15,7 +16,7 @@ public class ReinforcedEarsItem : ModItem, IPuppyEars
         MeleeKnockbackAdditive: 0.25f,
         SummonKnockbackFlat: 0.25f);
 
-    public override string Texture => "Terraria/Images/Item_" + ItemID.DogEars;
+    public override string Texture => "PuppyMod/Assets/Armor/ReinforcedDogEarsArmor";
 
     public override void SetDefaults()
     {

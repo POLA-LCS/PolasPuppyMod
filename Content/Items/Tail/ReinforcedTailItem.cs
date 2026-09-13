@@ -17,7 +17,7 @@ public class ReinforcedTailItem : ModItem, IPuppyTail
         MaxRunSpeed: 0.20f,
         JumpSpeedBoost: 0.6666667f);
 
-    public override string Texture => "Terraria/Images/Item_" + ItemID.DogTail;
+    public override string Texture => "PuppyMod/Assets/Armor/ReinforcedDogTailArmor";
 
     public override void SetDefaults()
     {
