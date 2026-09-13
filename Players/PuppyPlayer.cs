@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs.GoodPuppy;
+using PuppyMod.Content.Items.Tail;
 using PuppyMod.Services.Leash;
 using System.Collections.Generic;
 
@@ -25,10 +26,20 @@ public class PuppyPlayer : ModPlayer
     private int barkCooldown = 0;
     private PuppyEquipmentSnapshot equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
     private PuppyEquipmentResolution equipmentResolution = PuppyEquipmentResolution.Empty;
+    private bool shinyTailFunctional;
+    private bool shinyTailVanity;
 
     public PuppyEquipmentSnapshot EquipmentSnapshot => equipmentSnapshot;
     public PuppyEquipmentResolution EquipmentResolution => equipmentResolution;
     public bool IsPuppy => equipmentResolution.IsPuppy;
+
+    internal void EnableShinyTail(bool isVanity)
+    {
+        if (isVanity)
+            shinyTailVanity = true;
+        else
+            shinyTailFunctional = true;
+    }
 
     public void Bark(SoundStyle sound, bool pitched = false)
     {
@@ -100,6 +111,28 @@ public class PuppyPlayer : ModPlayer
     {
         equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
         equipmentResolution = PuppyEquipmentResolution.Empty;
+        shinyTailFunctional = false;
+        shinyTailVanity = false;
+    }
+
+    public override void PreUpdateMovement()
+    {
+        if (!shinyTailFunctional && !shinyTailVanity)
+            return;
+
+        int hoverDuration = shinyTailFunctional
+            ? ShinyTailItem.FunctionalHoverDuration
+            : ShinyTailItem.VanityHoverDuration;
+
+        // Vanilla CarpetMovement runs immediately before this hook and starts with 300 ticks.
+        // Cap that timer only while a carpet is active; never refill it on subsequent frames.
+        if (Player.carpetFrame >= 0 && Player.carpetTime > hoverDuration)
+            Player.carpetTime = hoverDuration;
+
+        if (Main.dedServ || Main.netMode == NetmodeID.Server || Player.carpetFrame < 0)
+            return;
+
+        SpawnShinyTailPlatformDust();
     }
 
     public override void PostUpdate()
@@ -228,6 +261,28 @@ public class PuppyPlayer : ModPlayer
             var owner = other.GetModPlayer<OwnerPlayer>();
             int buffTime = owner.BuffDuration;
             Player.AddBuff(ModContent.BuffType<GoodPuppyBuff>(), buffTime);
+        }
+    }
+
+    private void SpawnShinyTailPlatformDust()
+    {
+        if (Main.dedServ || Main.netMode == NetmodeID.Server)
+            return;
+
+        Vector2 platformCenter = Player.position + new Vector2(Player.width * 0.5f, Player.height + 2f);
+        for (int i = 0; i < 4; i++)
+        {
+            float offsetX = (i - 1.5f) * 10f + Main.rand.NextFloat(-2f, 2f);
+            Vector2 position = platformCenter + new Vector2(offsetX, Main.rand.NextFloat(-1f, 1f));
+            Dust dust = Dust.NewDustPerfect(
+                position,
+                DustID.YellowStarDust,
+                new Vector2(0f, -0.15f),
+                0,
+                default,
+                Main.rand.NextFloat(0.8f, 1.2f));
+            dust.noGravity = true;
+            dust.fadeIn = 0.2f;
         }
     }
 

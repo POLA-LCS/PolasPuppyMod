@@ -40,6 +40,9 @@ public static class PuppyEquipmentRegistry
 
         int shinyEarsType = ModContent.ItemType<ShinyEarsItem>();
         RegisterEars(shinyEarsType, PuppyFamily.Shiny, ModContent.GetInstance<ShinyEarsItem>());
+
+        int shinyTailType = ModContent.ItemType<ShinyTailItem>();
+        RegisterTail(shinyTailType, PuppyFamily.Shiny, ModContent.GetInstance<ShinyTailItem>());
     }
 
     public static void Clear()
