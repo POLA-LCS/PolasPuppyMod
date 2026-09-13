@@ -21,7 +21,7 @@ public static class PuppyEquipmentRegistry
     public static void RegisterEars(
         int itemType,
         PuppyFamily family,
-        IPuppyEars provider,
+        IPuppyEarsItem provider,
         PuppyTooltipDefinition tooltip)
     {
         definitions[itemType] = new PuppyEarsDefinition(itemType, family, provider, tooltip);
@@ -30,7 +30,7 @@ public static class PuppyEquipmentRegistry
     public static void RegisterTail(
         int itemType,
         PuppyFamily family,
-        IPuppyTail provider,
+        IPuppyTailItem provider,
         PuppyTooltipDefinition tooltip)
     {
         definitions[itemType] = new PuppyTailDefinition(itemType, family, provider, tooltip);
@@ -110,12 +110,12 @@ public static class PuppyEquipmentRegistry
         definitions.Clear();
     }
 
-    private sealed class VanillaDogEarsProvider : IPuppyEars
+    private sealed class VanillaDogEarsProvider : IPuppyEarsItem
     {
         public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: 0.10f);
     }
 
-    private sealed class VanillaDogTailProvider : IPuppyTail
+    private sealed class VanillaDogTailProvider : IPuppyTailItem
     {
         // Note: AccRunSpeed (0.45) > MaxRunSpeed (0.30) would normally trigger Hermes sprint dust when acc > max.
         // PuppyPlayer.PostUpdateRunSpeeds neutralizes this by setting accRunSpeed = maxRunSpeed after applying stats, preserving movement without dust.

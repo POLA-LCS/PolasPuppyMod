@@ -8,7 +8,7 @@ using PuppyMod.Common.Tooltip;
 
 namespace PuppyMod.Content.Items.Tail;
 
-public class ReinforcedTailItem : ModItem, IPuppyTail
+public class ReinforcedTailItem : ModItem, IPuppyTailItem
 {
     public PuppyEquipmentStats Stats => new(
         Defense: 2f,

@@ -10,7 +10,7 @@ using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Ears;
 
-public class ShinyEarsItem : ModItem, IPuppyEars
+public class ShinyEarsItem : ModItem, IPuppyEarsItem
 {
     private const float BasePickSpeed = 0.12f;
     public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: BasePickSpeed);

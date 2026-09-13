@@ -9,7 +9,7 @@ using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Tail;
 
-public class ShinyTailItem : ModItem, IPuppyTail
+public class ShinyTailItem : ModItem, IPuppyTailItem
 {
     internal const int FunctionalHoverDuration = 30;
     internal const int VanityHoverDuration = 15;

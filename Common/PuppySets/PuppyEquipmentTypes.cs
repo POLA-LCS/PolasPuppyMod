@@ -134,7 +134,7 @@ public sealed class PuppyEarsDefinition : PuppyEquipmentDefinition
     public PuppyEarsDefinition(
         int itemType,
         PuppyFamily family,
-        IPuppyEars provider,
+        IPuppyEarsItem provider,
         PuppyTooltipDefinition tooltip)
         : base(itemType, PuppyEquipmentKind.Ears, family, provider, tooltip)
     {
@@ -146,7 +146,7 @@ public sealed class PuppyTailDefinition : PuppyEquipmentDefinition
     public PuppyTailDefinition(
         int itemType,
         PuppyFamily family,
-        IPuppyTail provider,
+        IPuppyTailItem provider,
         PuppyTooltipDefinition tooltip)
         : base(itemType, PuppyEquipmentKind.Tail, family, provider, tooltip)
     {
@@ -174,8 +174,8 @@ public sealed class PuppyEquipmentEntry
     public float ValueMultiplier => IsFunctional ? 1f : 0.5f;
 
     public IPuppyEquipmentProvider Provider => Definition.Provider;
-    public IPuppyEars EarsProvider => Definition.Provider as IPuppyEars;
-    public IPuppyTail TailProvider => Definition.Provider as IPuppyTail;
+    public IPuppyEarsItem EarsProvider => Definition.Provider as IPuppyEarsItem;
+    public IPuppyTailItem TailProvider => Definition.Provider as IPuppyTailItem;
 }
 
 /// <summary>

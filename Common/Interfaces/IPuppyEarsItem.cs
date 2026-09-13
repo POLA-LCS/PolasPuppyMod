@@ -7,7 +7,7 @@ namespace PuppyMod.Common.Interfaces;
 /// Implemented by anything that counts as Puppy Ears. Stats are full functional-slot values;
 /// the equipment entry applies the vanity multiplier centrally.
 /// </summary>
-public interface IPuppyEars : IPuppyEquipmentProvider
+public interface IPuppyEarsItem : IPuppyEquipmentProvider
 {
     /// <summary>
     /// Purely cosmetic reaction to the set bonus bark.

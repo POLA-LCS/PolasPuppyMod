@@ -8,7 +8,7 @@ using PuppyMod.Common.Tooltip;
 
 namespace PuppyMod.Content.Items.Ears;
 
-public class ReinforcedEarsItem : ModItem, IPuppyEars
+public class ReinforcedEarsItem : ModItem, IPuppyEarsItem
 {
     public PuppyEquipmentStats Stats => new(
         Defense: 2f,
