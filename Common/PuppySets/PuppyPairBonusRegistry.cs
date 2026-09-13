@@ -43,6 +43,7 @@ public sealed class PuppyPairBonusDefinition
     public string SetBonusLocalizationKey { get; }
     public string TooltipLocalizationKey { get; }
 
+    /// <summary>Uniform halving: pair strength 0.5 if either selected piece vanity; visual/physics locally halved; stats centrally via ValueMultiplier.</summary>
     public PuppyLeashBonusEffect GetEffect(PuppyEquipmentEntry selectedEars, PuppyEquipmentEntry selectedTail)
     {
         if (selectedEars == null || selectedTail == null

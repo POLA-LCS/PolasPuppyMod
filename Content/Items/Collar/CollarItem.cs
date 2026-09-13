@@ -40,12 +40,12 @@ public class CollarItem : BaseCollarItem
     {
         tooltips.StripVanity();
 
-        int index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Tooltip0");
-        if (index == -1) index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name.StartsWith("Tooltip"));
-        if (index == -1) index = tooltips.Count - 1;
-
-        tooltips.Insert(index + 1, new TooltipLine(Mod, "AttachedLabel", LabelColor("Attached:", ColorAttachedLabel)));
-        tooltips.Insert(index + 2, new TooltipLine(Mod, "CollarOwnerDefense", $"{LabelColor("Owner:", ColorOwnerLabel)} +2 defense"));
+        // Unified anchor via TooltipExtensions.FindTooltipAnchor (Tooltip0 → Defense → Knockback/Price fallback).
+        int anchor = TooltipExtensions.FindTooltipAnchor(tooltips);
+        int index = anchor >= 0 ? anchor + 1 : tooltips.Count;
+        // Insert via unified anchor before Price / after Knockback fallback already encoded in FindTooltipAnchor.
+        tooltips.Insert(index, new TooltipLine(Mod, "AttachedLabel", LabelColor("Attached:", ColorAttachedLabel)));
+        tooltips.Insert(index + 1, new TooltipLine(Mod, "CollarOwnerDefense", $"{LabelColor("Owner:", ColorOwnerLabel)} +2 defense"));
 
         tooltips.MovePriceToBottom();
     }

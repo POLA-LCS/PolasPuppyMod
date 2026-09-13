@@ -1,3 +1,5 @@
+using System;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace PuppyMod.Common.Utils;
@@ -42,7 +44,17 @@ public static class AssetUtils
 
     private static bool HasAsset(AssetCategory category, string name)
     {
+        if (Main.dedServ)
+            return false;
         string path = GetTexturePath(category, name);
-        try { return ModContent.HasAsset(path); } catch { return false; }
+        try
+        {
+            return ModContent.HasAsset(path);
+        }
+        catch (Exception ex)
+        {
+            try { ModContent.GetInstance<PuppyMod>().Logger.Warn($"HasAsset failed for {path}: {ex.Message}"); } catch { }
+            return false;
+        }
     }
 }

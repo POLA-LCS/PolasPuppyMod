@@ -17,9 +17,6 @@ namespace PuppyMod
 
     public class PuppyMod : Mod
     {
-        public const byte LeashReqAttach = (byte)LeashPacketType.RequestAttach;
-        public const byte LeashReqDetach = (byte)LeashPacketType.RequestDetach;
-        public const byte LeashState = (byte)LeashPacketType.State;
 
         public override uint ExtraPlayerBuffSlots => 1;
 
@@ -39,7 +36,7 @@ namespace PuppyMod
         {
             if (Main.netMode != NetmodeID.MultiplayerClient) return;
             var packet = GetPacket();
-            packet.Write(LeashReqAttach);
+            packet.Write((byte)LeashPacketType.RequestAttach);
             packet.Write((byte)targetWho);
             packet.Write(leashItemType);
             packet.Send();
@@ -49,7 +46,7 @@ namespace PuppyMod
         {
             if (Main.netMode != NetmodeID.MultiplayerClient) return;
             var packet = GetPacket();
-            packet.Write(LeashReqDetach);
+            packet.Write((byte)LeashPacketType.RequestDetach);
             packet.Write((byte)targetWho);
             packet.Send();
         }
@@ -58,7 +55,7 @@ namespace PuppyMod
         {
             if (Main.netMode != NetmodeID.Server) return;
             var packet = GetPacket();
-            packet.Write(LeashState);
+            packet.Write((byte)LeashPacketType.State);
             packet.Write((byte)ownerWho);
             packet.Write((byte)targetWho);
             packet.Write(leashItemType);
@@ -70,7 +67,7 @@ namespace PuppyMod
         {
             if (Main.netMode != NetmodeID.Server) return;
             var packet = GetPacket();
-            packet.Write(LeashState);
+            packet.Write((byte)LeashPacketType.State);
             packet.Write(byte.MaxValue);
             packet.Write((byte)targetWho);
             packet.Write(0);
@@ -105,15 +102,15 @@ namespace PuppyMod
             byte type = reader.ReadByte();
             switch (type)
             {
-                case LeashReqAttach:
+                case (byte)LeashPacketType.RequestAttach:
                     if (Main.netMode == NetmodeID.Server)
                         HandleServerAttach(whoAmI, reader.ReadByte(), reader.ReadInt32());
                     break;
-                case LeashReqDetach:
+                case (byte)LeashPacketType.RequestDetach:
                     if (Main.netMode == NetmodeID.Server)
                         HandleServerDetach(whoAmI, reader.ReadByte());
                     break;
-                case LeashState:
+                case (byte)LeashPacketType.State:
                     if (Main.netMode != NetmodeID.Server)
                     {
                         int ownerWho = reader.ReadByte();

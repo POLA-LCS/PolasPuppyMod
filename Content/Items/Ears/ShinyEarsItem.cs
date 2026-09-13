@@ -24,6 +24,10 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     private const float BaseLightIntensity = 0.25f;
     private const float BaseLightIntensityVanity = BaseLightIntensity * 0.5f;
 
+    /// <summary>Tile size in pixels (Terraria world unit: 16px per tile); 8f is half-tile centering offset.</summary>
+    private const float TileSizePixels = 16f;
+    private const float HalfTilePixels = 8f;
+
     public override string Texture => "Terraria/Images/Item_" + ItemID.DogEars;
 
     public override void SetDefaults()
@@ -66,6 +70,15 @@ public class ShinyEarsItem : ModItem, IPuppyEars
             .AddIngredient(ItemID.GoldOre, 20)
             .AddTile(TileID.WorkBenches)
             .Register();
+
+        // Alternative platinum variant – same cost, avoids forcing Gold world.
+        CreateRecipe()
+            .AddIngredient(ItemID.DogEars, 1)
+            .AddIngredient(ItemID.FallenStar, 5)
+            .AddIngredient(ItemID.Daybloom, 5)
+            .AddIngredient(ItemID.PlatinumOre, 20)
+            .AddTile(TileID.WorkBenches)
+            .Register();
     }
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -105,7 +118,7 @@ public class ShinyEarsItem : ModItem, IPuppyEars
             Tile tile = Main.tile[x, y];
             if (!tile.HasTile || tile.IsActuated) continue;
             if (Main.tileSpelunker[tile.TileType])
-                Lighting.AddLight(new Vector2(x * 16f + 8f, y * 16f + 8f), color);
+                Lighting.AddLight(new Vector2(x * TileSizePixels + HalfTilePixels, y * TileSizePixels + HalfTilePixels), color);
         }
     }
 

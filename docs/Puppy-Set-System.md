@@ -34,6 +34,16 @@ The selection rules and the individual-effect aggregate are independent. An item
 
 Every recognized equipment entry contributes to one additive `PuppyEquipmentStats` aggregate. Functional entries contribute their full provider values; vanity entries contribute one half of those values. This applies to every recognized entry, so individual effects stack across multiple Ears and Tails. It is separate from the one-pair selection above.
 
+**Uniform halving rule (centralized):**
+
+| Category | Halving behavior | Implementation |
+| --- | --- | --- |
+| Player stats via `PuppyEquipmentStats` (Defense, PickSpeed, MoveSpeed, etc.) | Halved in vanity (multiplier `0.5`) | Central `PuppyEquipmentEntry.ValueMultiplier` and `PuppyPairBonusDefinition.GetEffect` strength `0.5` |
+| Visual / physics (ShinyEars light intensity & ore scan range, ShinyTail hover) | Locally halved in the item's own code | `ShinyEarsItem` halves light intensity and scan box (`12 → 6`); `ShinyTailItem` hover `30 → 15` ticks via `PuppyPlayer` |
+| Collar / leash (`CollarItem` wearer defense, `ChainLeashItem` puppy defense) | Functional-only, no vanity contribution | Applied only in functional accessory via `UpdateAccessory` / `ChainedPlayer.PostUpdateEquips`; intentionally not halved because vanity gives `0` |
+
+Pair bonus strength is also centralized at `0.5` when either selected piece is vanity.
+
 The current full-strength functional contributions are:
 
 | Item | Individual contribution or effect |

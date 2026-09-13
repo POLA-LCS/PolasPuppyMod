@@ -50,6 +50,15 @@ public class ShinyTailItem : ModItem, IPuppyTail
             .AddIngredient(ItemID.GoldOre, 20)
             .AddTile(TileID.WorkBenches)
             .Register();
+
+        // Alternative platinum variant – same cost, avoids forcing Gold world.
+        CreateRecipe()
+            .AddIngredient(ItemID.DogTail, 1)
+            .AddIngredient(ItemID.FallenStar, 5)
+            .AddIngredient(ItemID.Daybloom, 5)
+            .AddIngredient(ItemID.PlatinumOre, 20)
+            .AddTile(TileID.WorkBenches)
+            .Register();
     }
 
     private static void ApplyHover(Player player, bool isVanity)

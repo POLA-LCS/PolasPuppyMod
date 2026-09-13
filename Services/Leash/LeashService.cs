@@ -48,7 +48,7 @@ public static class LeashService
 
     public static Player FindPuppyUnderCursor(Player owner, int rangeTiles)
     {
-        float rangePx = rangeTiles * 16f;
+        float rangePx = rangeTiles * DistanceUtils.TilePixels;
         foreach (Player target in Main.player)
         {
             if (target == null || !target.active || target.dead) continue;

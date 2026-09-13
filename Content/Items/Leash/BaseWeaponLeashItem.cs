@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.Physics;
 using PuppyMod.Common.Tooltip;
+using PuppyMod.Content.GlobalItems;
 using static PuppyMod.Common.Tooltip.TooltipExtensions;
 using PuppyMod.Services.Leash;
 
@@ -25,11 +26,6 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
     protected virtual int BaseDamage => 18;
     protected virtual float BaseKnockback => 3f;
     protected virtual bool AppliesPenalty => true;
-
-    private int originStyle;
-    private int origTime;
-    private int origAnim;
-    private bool hasOriginal;
 
     public override void SetDefaults()
     {
@@ -51,13 +47,14 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
 
     public override bool AltFunctionUse(Player player) => true;
 
-    private void EnsureOriginalCached()
+    private void EnsureOriginalCached(Item item)
     {
-        if (hasOriginal) return;
-        originStyle = Item.useStyle;
-        origTime = Item.useTime;
-        origAnim = Item.useAnimation;
-        hasOriginal = true;
+        var g = item.GetGlobalItem<WeaponLeashGlobalItem>();
+        if (g.HasOriginal) return;
+        g.OriginStyle = item.useStyle;
+        g.OrigTime = item.useTime;
+        g.OrigAnim = item.useAnimation;
+        g.HasOriginal = true;
     }
 
     public override bool CanUseItem(Player player)
@@ -65,7 +62,9 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
         if (player.GetModPlayer<Players.PuppyPlayer>().IsPuppy)
             return false;
 
-        EnsureOriginalCached();
+        // Per-Item cache via GlobalItem to avoid ModItem singleton cross-contamination (M11).
+        var g = Item.GetGlobalItem<WeaponLeashGlobalItem>();
+        EnsureOriginalCached(Item);
 
         if (player.altFunctionUse == 2)
         {
@@ -73,11 +72,11 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
             Item.useTime = 12;
             Item.useAnimation = 12;
         }
-        else if (hasOriginal)
+        else if (g.HasOriginal)
         {
-            Item.useStyle = originStyle;
-            Item.useTime = origTime;
-            Item.useAnimation = origAnim;
+            Item.useStyle = g.OriginStyle;
+            Item.useTime = g.OrigTime;
+            Item.useAnimation = g.OrigAnim;
         }
 
         if (AppliesPenalty && LeashService.IsLeashing(player, Type))

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -10,13 +12,14 @@ using PuppyMod.Content.Buffs.GoodPuppy;
 using PuppyMod.Content.Items.Ears;
 using PuppyMod.Content.Items.Tail;
 using PuppyMod.Services.Leash;
-using System.Collections.Generic;
 
 namespace PuppyMod.Players;
 
 public class PuppyPlayer : ModPlayer
 {
+    /// <summary>Bark cooldown in ticks (25 = ~0.42s at 60 TPS) prevents spam between set-bonus bark and hurt barks.</summary>
     public const int BarkCooldownTicks = 25;
+    /// <summary>Pitch increase when forced/puppy buff active (+0.3).</summary>
     private const float BarkPitchIncrease = 0.3f;
     private const int RandomChanceMax = 100;
     private const int GrowlChanceThreshold = 25;
@@ -139,12 +142,13 @@ public class PuppyPlayer : ModPlayer
             ? ShinyTailItem.FunctionalHoverDuration
             : ShinyTailItem.VanityHoverDuration;
 
-        // Vanilla CarpetMovement runs immediately before this hook and starts with 300 ticks.
-        // Cap that timer only while a carpet is active; never refill it on subsequent frames.
+        // Cap carpetTime; vanilla initializes to 300
         if (Player.carpetFrame >= 0 && Player.carpetTime > hoverDuration)
             Player.carpetTime = hoverDuration;
 
-        if (Main.dedServ || Main.netMode == NetmodeID.Server || Player.carpetFrame < 0)
+        if (Main.netMode == NetmodeID.Server)
+            return;
+        if (Player.carpetFrame < 0)
             return;
 
         SpawnShinyTailPlatformDust();
@@ -238,6 +242,8 @@ public class PuppyPlayer : ModPlayer
         // H2: Aggregate attached pair defense together with equipment stats in PostUpdateEquips (no late ModSystem sweep).
         // This ensures ResetEffects → PostUpdateEquips aggregation → no flicker, and strongest per-player stacking (individual stack, pair strongest).
         PuppyLeashBonusService.ApplyDefenseForPlayer(Player);
+        // Clear previous setBonus each tick to avoid substring false positives and stale accumulation (M5).
+        Player.setBonus = string.Empty;
         if (IsPuppy)
         {
             foreach (string bonusText in PuppySetBonusText.GetActiveLines(equipmentResolution, forTooltip: false))
@@ -249,7 +255,10 @@ public class PuppyPlayer : ModPlayer
 
     private static string AppendSetBonusLine(string existing, string line)
     {
-        if (string.IsNullOrEmpty(line) || existing != null && existing.Contains(line, StringComparison.Ordinal))
+        if (string.IsNullOrEmpty(line))
+            return existing;
+        // Exact line check via split instead of substring Contains to avoid fragile false positives.
+        if (!string.IsNullOrEmpty(existing) && existing.Split('\n').Contains(line))
             return existing;
         if (string.IsNullOrWhiteSpace(existing))
             return line;

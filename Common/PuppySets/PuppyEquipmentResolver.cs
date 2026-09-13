@@ -7,8 +7,7 @@ public static class PuppyEquipmentResolver
 {
     public static PuppyEquipmentResolution Resolve(PuppyEquipmentSnapshot snapshot)
     {
-        if (snapshot == null)
-            throw new ArgumentNullException(nameof(snapshot));
+        ArgumentNullException.ThrowIfNull(snapshot);
 
         PuppyEquipmentEntry selectedEars = snapshot.Ears
             .OrderBy(GetEarsPriority)

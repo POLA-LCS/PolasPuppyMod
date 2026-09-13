@@ -180,13 +180,23 @@ public static class TooltipExtensions
         }
     }
 
-    private static int FindTooltipAnchor(List<TooltipLine> tooltips)
+    /// <summary>Unified anchor helper: prefer Tooltip0 / any Tooltip, then Defense, else Knockback (+1) or Price (-1) so insertion ends before Price / after Knockback.</summary>
+    public static int FindTooltipAnchor(List<TooltipLine> tooltips)
     {
         int index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Tooltip0");
         if (index == -1)
             index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name.StartsWith("Tooltip", StringComparison.Ordinal));
         if (index == -1)
             index = tooltips.FindIndex(l => l.Mod == "Terraria" && l.Name == "Defense");
-        return index;
+        if (index != -1)
+            return index;
+        // Unified fallback consistent with InsertLines: after Knockback or before Price.
+        int kbIdx = tooltips.FindIndex(l => l.Name == "Knockback");
+        if (kbIdx >= 0)
+            return kbIdx;
+        int priceIdx = tooltips.FindIndex(l => l.Name == "Price" && l.Mod == "Terraria");
+        if (priceIdx >= 0)
+            return priceIdx - 1;
+        return -1;
     }
 }

@@ -1,5 +1,7 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -17,6 +19,11 @@ public class ChainedPlayer : ModPlayer
     public int? GrabberIndex { get; private set; }
     public int ActiveLeashItemType { get; private set; }
     private int _overstretchTicks;
+
+    // M10: Cached rope texture to avoid ModContent.Request each frame; refreshed when leash type changes.
+    private Texture2D _cachedRopeTexture;
+    private string _cachedRopePath;
+    private Asset<Texture2D> _cachedRopeAsset;
 
     public Player AttachedOwner => OwnerOf;
     public bool HasValidAttachment => GrabberIndex.HasValue && IsChainValid();
@@ -107,7 +114,7 @@ public class ChainedPlayer : ModPlayer
         if (clone.GrabberIndex != GrabberIndex || clone.ActiveLeashItemType != ActiveLeashItemType || clone.ActiveCollarItemType != ActiveCollarItemType)
         {
             ModPacket packet = Mod.GetPacket();
-            packet.Write(PuppyMod.LeashState);
+            packet.Write((byte)LeashPacketType.State);
             packet.Write((byte)(GrabberIndex ?? byte.MaxValue));
             packet.Write((byte)Player.whoAmI);
             packet.Write(ActiveLeashItemType);
@@ -120,7 +127,7 @@ public class ChainedPlayer : ModPlayer
     {
         if (Main.netMode == NetmodeID.SinglePlayer) return;
         var packet = Mod.GetPacket();
-        packet.Write(PuppyMod.LeashState);
+        packet.Write((byte)LeashPacketType.State);
         packet.Write((byte)(GrabberIndex ?? byte.MaxValue));
         packet.Write((byte)Player.whoAmI);
         packet.Write(ActiveLeashItemType);
@@ -252,15 +259,49 @@ public class ChainedPlayer : ModPlayer
 
     private void DrawRope(Player owner)
     {
+        if (Main.dedServ)
+            return;
         Vector2 start = Player.Center;
         Vector2 end = owner.Center;
         Vector2 direction = end - start;
         float length = direction.Length();
+        if (length <= 0f)
+            return;
         direction.Normalize();
         string texPath = "Terraria/Images/Chain";
         if (ActiveLeashItemType != 0 && ModContent.GetModItem(ActiveLeashItemType) is ILeashItem leash)
             texPath = leash.LeashTexturePath;
-        Texture2D ropeTexture = ModContent.Request<Texture2D>(texPath).Value;
+
+        Texture2D ropeTexture;
+        // Use cached texture if path unchanged; otherwise TryGet via Request with guard.
+        if (_cachedRopePath == texPath && _cachedRopeTexture != null)
+        {
+            ropeTexture = _cachedRopeTexture;
+        }
+        else
+        {
+            try
+            {
+                if (Main.dedServ)
+                    return;
+                // Prefer cached asset; request with ImmediateLoad to avoid async.
+                Asset<Texture2D> asset = ModContent.Request<Texture2D>(texPath, AssetRequestMode.ImmediateLoad);
+                if (asset == null || !asset.IsLoaded)
+                    return;
+                ropeTexture = asset.Value;
+                if (ropeTexture == null)
+                    return;
+                _cachedRopePath = texPath;
+                _cachedRopeTexture = ropeTexture;
+                _cachedRopeAsset = asset;
+            }
+            catch (Exception ex)
+            {
+                try { ModContent.GetInstance<PuppyMod>().Logger.Warn($"DrawRope load failed for {texPath}: {ex.Message}"); } catch { }
+                return;
+            }
+        }
+
         Color ropeColor = Color.White;
         for (float i = 0; i < length; i += ropeTexture.Width)
         {
@@ -281,6 +322,9 @@ public class ChainedPlayer : ModPlayer
 
     public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
     {
+        // M10: ModifyDrawInfo runs every draw – now lightweight; actual texture load cached above.
+        if (Main.dedServ)
+            return;
         if (!GrabberIndex.HasValue) return;
         Player owner = OwnerOf;
         if (owner == null || !owner.active || owner.dead) return;

@@ -27,16 +27,28 @@ public sealed class SoundPad
 
     private static string[] ScanCategory(string category)
     {
+        if (Main.dedServ)
+            return [];
         var mod = ModContent.GetInstance<PuppyMod>();
         string prefix = $"Assets/Sounds/{category}/";
-        var packed = mod.GetFileNames()
-            .Where(f => f.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            .Select(Path.GetFileNameWithoutExtension)
-            .Where(n => !string.IsNullOrEmpty(n))
-            .ToArray();
-        if (packed.Length > 0) return packed;
+        try
+        {
+            var packed = mod.GetFileNames()
+                .Where(f => f.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                .Select(Path.GetFileNameWithoutExtension)
+                .Where(n => !string.IsNullOrEmpty(n))
+                .ToArray();
+            if (packed.Length > 0) return packed;
+        }
+        catch (Exception ex)
+        {
+            try { mod.Logger.Warn($"ScanCategory GetFileNames failed for {category}: {ex.Message}"); } catch { }
+        }
 
-        var assemblyPath = Path.GetDirectoryName(typeof(SoundPad).Assembly.Location) ?? "";
+        string assemblyPath;
+        try { assemblyPath = Path.GetDirectoryName(typeof(SoundPad).Assembly.Location) ?? ""; }
+        catch (Exception ex) { try { mod.Logger.Warn($"ScanCategory assemblyPath failed for {category}: {ex.Message}"); } catch { } return []; }
+
         var relativePath = Path.Combine("Assets", "Sounds", category);
         var candidates = new[]
         {
@@ -45,13 +57,28 @@ public sealed class SoundPad
         };
         foreach (var c in candidates)
         {
-            if (Directory.Exists(c))
+            try
             {
-                var files = Directory.EnumerateFiles(c, "*", SearchOption.TopDirectoryOnly)
-                    .Select(Path.GetFileNameWithoutExtension)
-                    .Where(n => !string.IsNullOrEmpty(n))
-                    .ToArray();
+                if (!Directory.Exists(c))
+                    continue;
+                string[] files;
+                try
+                {
+                    files = Directory.EnumerateFiles(c, "*", SearchOption.TopDirectoryOnly)
+                        .Select(Path.GetFileNameWithoutExtension)
+                        .Where(n => !string.IsNullOrEmpty(n))
+                        .ToArray();
+                }
+                catch (Exception ex)
+                {
+                    try { mod.Logger.Warn($"ScanCategory EnumerateFiles failed for {c}: {ex.Message}"); } catch { }
+                    continue;
+                }
                 if (files.Length > 0) return files;
+            }
+            catch (Exception ex)
+            {
+                try { mod.Logger.Warn($"ScanCategory candidate failed for {c}: {ex.Message}"); } catch { }
             }
         }
         return [];

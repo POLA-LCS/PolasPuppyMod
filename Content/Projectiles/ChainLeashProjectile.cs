@@ -38,6 +38,9 @@ public class ChainLeashProjectile : ModProjectile
         List<Vector2> controlPoints = [];
         Projectile.FillWhipControlPoints(Projectile, controlPoints);
 
+        if (controlPoints.Count < 2)
+            return false;
+
         Texture2D texture = TextureAssets.Projectile[Type].Value;
         Vector2 origin = texture.Size() / 2f;
 
@@ -51,8 +54,7 @@ public class ChainLeashProjectile : ModProjectile
             Main.EntitySpriteDraw(texture, pos, null, col, rot, origin, 1f, SpriteEffects.None, 0);
         }
 
-        DrawSegment(controlPoints.Count - 2);
-        for(int i = 0; i < controlPoints.Count - 2; i += 2)
+        for (int i = 0; i < controlPoints.Count - 1; i++)
         {
             DrawSegment(i);
         }
