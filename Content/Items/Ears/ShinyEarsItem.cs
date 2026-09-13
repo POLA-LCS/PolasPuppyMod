@@ -16,7 +16,7 @@ public class ShinyEarsItem : ModItem, IPuppyEars
     public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: BasePickSpeed);
 
     // Individual light: full intensity functional, half in vanity. Ore sight belongs to the Shiny pair bonus now.
-    private const float BaseLightIntensity = 0.25f;
+    private const float BaseLightIntensity = 0.5f;
     private const float BaseLightIntensityVanity = BaseLightIntensity * 0.5f;
 
     public override string Texture => "PuppyMod/Assets/Armor/ShinyDogEarsArmor";
