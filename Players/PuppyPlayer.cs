@@ -3,24 +3,16 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using PuppyMod.Common.Interfaces;
+using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs.GoodPuppy;
 using System.Collections.Generic;
 
 namespace PuppyMod.Players;
 
-public class PuppyPlayer : PolasBasePlayer
+public class PuppyPlayer : ModPlayer
 {
     public const int BarkCooldownTicks = 25;
-    public const float TailMoveAccessory = 0.30f;
-    public const float TailAccRunAccessory = 0.45f;
-    public const float TailMaxRunAccessory = 0.30f;
-    public const float TailJumpAccessory = 1.0f;
-    public const float TailMoveVanity = 0.15f;
-    public const float TailAccRunVanity = 0.22f;
-    public const float TailMaxRunVanity = 0.15f;
-    public const float TailJumpVanity = 0.5f;
     private const float BarkPitchIncrease = 0.3f;
     private const int RandomChanceMax = 100;
     private const int GrowlChanceThreshold = 25;
@@ -28,20 +20,12 @@ public class PuppyPlayer : PolasBasePlayer
     private const float PitchClampMax = 1f;
 
     private int barkCooldown = 0;
+    private PuppyEquipmentSnapshot equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
+    private PuppyEquipmentResolution equipmentResolution = PuppyEquipmentResolution.Empty;
 
-    // 0 = no item in that slot
-    public int DogEarsAccessoryType;
-    public int DogEarsVanityType;
-    public int DogTailAccessoryType;
-    public int DogTailVanityType;
-
-    public bool HasDogEarsAccessory => DogEarsAccessoryType != 0;
-    public bool HasDogEarsVanity => DogEarsVanityType != 0;
-    public bool HasDogTailAccessory => DogTailAccessoryType != 0;
-    public bool HasDogTailVanity => DogTailVanityType != 0;
-    public bool HasDogEars => HasDogEarsAccessory || HasDogEarsVanity;
-    public bool HasDogTail => HasDogTailAccessory || HasDogTailVanity;
-    public bool IsPuppy => HasDogEars && HasDogTail;
+    public PuppyEquipmentSnapshot EquipmentSnapshot => equipmentSnapshot;
+    public PuppyEquipmentResolution EquipmentResolution => equipmentResolution;
+    public bool IsPuppy => equipmentResolution.IsPuppy;
 
     public void Bark(SoundStyle sound, bool pitched = false)
     {
@@ -82,10 +66,14 @@ public class PuppyPlayer : PolasBasePlayer
 
     private void NotifyEarsBark()
     {
-        if (DogEarsAccessoryType != 0)
-            PuppySetUtils.GetEarsProvider(DogEarsAccessoryType)?.OnBark(Player);
-        if (DogEarsVanityType != 0 && DogEarsVanityType != DogEarsAccessoryType)
-            PuppySetUtils.GetEarsProvider(DogEarsVanityType)?.OnBark(Player);
+        var notifiedTypes = new HashSet<int>();
+        foreach (PuppyEquipmentEntry entry in equipmentResolution.Ears)
+        {
+            if (!notifiedTypes.Add(entry.ItemType))
+                continue;
+
+            entry.EarsProvider?.OnBark(Player);
+        }
     }
 
     public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
@@ -107,10 +95,8 @@ public class PuppyPlayer : PolasBasePlayer
 
     public override void ResetEffects()
     {
-        DogEarsAccessoryType = 0;
-        DogEarsVanityType = 0;
-        DogTailAccessoryType = 0;
-        DogTailVanityType = 0;
+        equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
+        equipmentResolution = PuppyEquipmentResolution.Empty;
     }
 
     public override void PostUpdate()
@@ -161,18 +147,10 @@ public class PuppyPlayer : PolasBasePlayer
         return Vector2.DistanceSquared(Player.Center, clickerHolder.Center) <= range * range;
     }
 
-    private void UpdatePuppySetFlags()
-    {
-        GetDogSetLocationTypes(out int earsAcc, out int earsVan, out int tailAcc, out int tailVan);
-        if (DogEarsAccessoryType == 0) DogEarsAccessoryType = earsAcc;
-        if (DogEarsVanityType == 0) DogEarsVanityType = earsVan;
-        if (DogTailAccessoryType == 0) DogTailAccessoryType = tailAcc;
-        if (DogTailVanityType == 0) DogTailVanityType = tailVan;
-    }
-
     public override void PostUpdateEquips()
     {
-        UpdatePuppySetFlags();
+        equipmentSnapshot = PuppyEquipmentScanner.Scan(Player);
+        equipmentResolution = PuppyEquipmentResolver.Resolve(equipmentSnapshot);
         if (IsPuppy)
         {
             string dir = Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
@@ -182,38 +160,14 @@ public class PuppyPlayer : PolasBasePlayer
 
     public override void PostUpdateMiscEffects()
     {
-        Player.pickSpeed -= GetCurrentEarsPickSpeed();
-
-        float move = 0f, accRun = 0f, maxRun = 0f, jump = 0f;
-        if (HasDogTailAccessory)
-        {
-            move = TailMoveAccessory;
-            accRun = TailAccRunAccessory;
-            maxRun = TailMaxRunAccessory;
-            jump = TailJumpAccessory;
-        }
-        else if (HasDogTailVanity)
-        {
-            move = TailMoveVanity;
-            accRun = TailAccRunVanity;
-            maxRun = TailMaxRunVanity;
-            jump = TailJumpVanity;
-        }
-        Player.moveSpeed += move;
-        Player.accRunSpeed += accRun;
-        Player.maxRunSpeed += maxRun;
-        Player.jumpSpeedBoost += jump;
+        PuppyEquipmentStats stats = equipmentResolution.Stats;
+        Player.pickSpeed -= stats.PickSpeed;
+        Player.moveSpeed += stats.MoveSpeed;
+        Player.accRunSpeed += stats.AccRunSpeed;
+        Player.maxRunSpeed += stats.MaxRunSpeed;
+        Player.jumpSpeedBoost += stats.JumpSpeedBoost;
 
         HappyIfClicker();
-    }
-
-    private float GetCurrentEarsPickSpeed()
-    {
-        if (DogEarsAccessoryType != 0)
-            return PuppySetUtils.GetEarsProvider(DogEarsAccessoryType)?.PickSpeedAccessory ?? 0f;
-        if (DogEarsVanityType != 0)
-            return PuppySetUtils.GetEarsProvider(DogEarsVanityType)?.PickSpeedVanity ?? 0f;
-        return 0f;
     }
 
     private void HappyIfClicker()

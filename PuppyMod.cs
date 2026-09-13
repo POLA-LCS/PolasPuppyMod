@@ -2,9 +2,9 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using PuppyMod.Common.PuppySets;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
-using PuppyMod.Common.Utils;
 
 namespace PuppyMod
 {
@@ -25,13 +25,12 @@ namespace PuppyMod
 
         public override void Load()
         {
-            PuppySetUtils.RegisterShinyEars();
+            PuppyEquipmentRegistry.RegisterDefaults();
         }
 
         public override void Unload()
         {
-            PuppySetUtils.EarsItemIDs = [ItemID.DogEars];
-            PuppySetUtils.TailItemIDs = [ItemID.DogTail];
+            PuppyEquipmentRegistry.Clear();
         }
 
         public void RequestLeashAttach(int targetWho, int leashItemType)

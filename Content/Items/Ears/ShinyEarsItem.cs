@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
+using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Tooltip;
 using PuppyMod.Players;
 
@@ -13,8 +14,7 @@ namespace PuppyMod.Content.Items.Ears;
 public class ShinyEarsItem : ModItem, IPuppyEars
 {
     private const float BasePickSpeed = 0.12f;
-    public float PickSpeedAccessory => BasePickSpeed;
-    public float PickSpeedVanity => BasePickSpeed * 0.5f;
+    public PuppyEarsStats Stats => new(BasePickSpeed);
 
     private const int ShineBoxHalf = 12;
 
@@ -32,19 +32,16 @@ public class ShinyEarsItem : ModItem, IPuppyEars
 
     public override void UpdateAccessory(Player player, bool hideVisual)
     {
-        player.GetModPlayer<PuppyPlayer>().DogEarsAccessoryType = Type;
         ApplyEffects(player, isVanity: false);
     }
 
     public override void UpdateVanity(Player player)
     {
-        player.GetModPlayer<PuppyPlayer>().DogEarsVanityType = Type;
         ApplyEffects(player, isVanity: true);
     }
 
     public override void UpdateEquip(Player player)
     {
-        player.GetModPlayer<PuppyPlayer>().DogEarsAccessoryType = Type;
         ApplyEffects(player, isVanity: false);
     }
 
@@ -84,9 +81,9 @@ public class ShinyEarsItem : ModItem, IPuppyEars
         bool inVanity = false;
         if (Main.LocalPlayer != null && Main.LocalPlayer.active)
         {
-            var polas = Main.LocalPlayer.GetModPlayer<PolasBasePlayer>();
-            equipped = polas.HasInAccessory(Type) || polas.HasInVanity(Type);
-            inVanity = polas.HasInVanity(Type);
+            var puppy = Main.LocalPlayer.GetModPlayer<PuppyPlayer>();
+            equipped = puppy.EquipmentSnapshot.ContainsFunctional(Type) || puppy.EquipmentSnapshot.ContainsVanity(Type);
+            inVanity = puppy.EquipmentSnapshot.ContainsVanity(Type);
         }
 
         string prefix = inVanity ? HalvedPrefix : string.Empty;
@@ -99,20 +96,20 @@ public class ShinyEarsItem : ModItem, IPuppyEars
         tooltips.MovePriceToBottom();
     }
 
-    private void ApplyEffects(Player player, bool isVanity)
+    private static void ApplyEffects(Player player, bool isVanity)
     {
         EmitLight(player, isVanity);
         ShineTreasure(player, isVanity);
     }
 
-    private void EmitLight(Player player, bool isVanity)
+    private static void EmitLight(Player player, bool isVanity)
     {
         if (Main.dedServ) return;
         float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
         Lighting.AddLight(player.Center, new Vector3(i, i * 0.85f, i * 0.35f));
     }
 
-    private void ShineTreasure(Player player, bool isVanity)
+    private static void ShineTreasure(Player player, bool isVanity)
     {
         if (Main.dedServ) return;
         float i = isVanity ? BaseLightIntensityVanity : BaseLightIntensity;
@@ -130,7 +127,7 @@ public class ShinyEarsItem : ModItem, IPuppyEars
         }
     }
 
-    private void SpawnStarBurst(Player player)
+    private static void SpawnStarBurst(Player player)
     {
         Vector2 mouth = player.Center + new Vector2(player.direction * 6f, -14f);
         for (int i = 0; i < 20; i++)

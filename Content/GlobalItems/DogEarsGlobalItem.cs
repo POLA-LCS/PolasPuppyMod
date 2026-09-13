@@ -8,19 +8,9 @@ namespace PuppyMod.Content.GlobalItems
     {
         public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == ItemID.DogEars;
 
-        public override void UpdateAccessory(Item item, Player player, bool hideVisual)
-        {
-            player.GetModPlayer<PuppyPlayer>().DogEarsAccessoryType = ItemID.DogEars;
-        }
-
-        public override void UpdateVanity(Item item, Player player)
-        {
-            player.GetModPlayer<PuppyPlayer>().DogEarsVanityType = ItemID.DogEars;
-        }
-
         public override string EarOrTailName => "Ears";
-        public override bool HasAccessory => Main.LocalPlayer != null && Main.LocalPlayer.active && Main.LocalPlayer.GetModPlayer<PolasBasePlayer>().HasInAccessory(ItemID.DogEars);
-        public override bool HasVanity => Main.LocalPlayer != null && Main.LocalPlayer.active && Main.LocalPlayer.GetModPlayer<PolasBasePlayer>().HasInVanity(ItemID.DogEars);
+        public override bool HasAccessory => Main.LocalPlayer != null && Main.LocalPlayer.active && Main.LocalPlayer.GetModPlayer<PuppyPlayer>().EquipmentSnapshot.ContainsFunctional(ItemID.DogEars);
+        public override bool HasVanity => Main.LocalPlayer != null && Main.LocalPlayer.active && Main.LocalPlayer.GetModPlayer<PuppyPlayer>().EquipmentSnapshot.ContainsVanity(ItemID.DogEars);
         public override string AccessoryTypeString => "Increase digging speed";
         public override string FlavorText => "'Let's make a hole! *paw paw* :3'";
     }

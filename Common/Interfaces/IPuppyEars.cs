@@ -1,19 +1,15 @@
 using Terraria;
+using PuppyMod.Common.PuppySets;
 
 namespace PuppyMod.Common.Interfaces;
 
 /// <summary>
-/// Implemented by anything that counts as "dog ears" for the puppy set.
-/// Each ears item owns its own stats - the puppy set only cares about which item is equipped
-/// and where it is sitting (functional slot / vanity slot).
+/// Implemented by anything that counts as Puppy Ears. Stats are full functional-slot values;
+/// the equipment entry applies the vanity multiplier centrally.
 /// </summary>
-public interface IPuppyEars
+public interface IPuppyEars : IPuppyEquipmentProvider
 {
-    /// <summary>pickSpeed reduction granted while worn in a functional slot.</summary>
-    float PickSpeedAccessory { get; }
-
-    /// <summary>pickSpeed reduction granted while worn in a vanity slot.</summary>
-    float PickSpeedVanity { get; }
+    PuppyEarsStats Stats { get; }
 
     /// <summary>
     /// Purely cosmetic reaction to the set bonus bark.
