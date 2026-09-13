@@ -17,8 +17,8 @@ namespace PuppyMod.Content.Items.Tail;
 /// </summary>
 public class PuppyTailDrawLayer : PlayerDrawLayer
 {
-    /// <summary>Vertical offset from the torso anchor so the tail sits at the lower back instead of the neck.</summary>
-    private const float VerticalOffset = 8f;
+    /// <summary>Vertical offset from the torso anchor so the tail sits at the lower back instead of the chest.</summary>
+    private const float VerticalOffset = 16f;
 
     /// <summary>Small horizontal offset behind the player, mirrored by facing direction.</summary>
     private const float BackwardOffset = 2f;
