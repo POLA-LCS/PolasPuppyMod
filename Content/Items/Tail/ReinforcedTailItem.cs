@@ -24,6 +24,15 @@ public class ReinforcedTailItem : ModItem, IPuppyTail
         Item.CloneDefaults(ItemID.DogTail);
     }
 
+    public override void AddRecipes()
+    {
+        CreateRecipe()
+            .AddIngredient(ItemID.DogTail, 1)
+            .AddRecipeGroup(RecipeGroupID.IronBar, 20)
+            .AddTile(TileID.Anvils)
+            .Register();
+    }
+
     public override void ModifyTooltips(List<TooltipLine> tooltips)
         => tooltips.ApplyPuppyEquipmentTooltip(Mod, Item);
 }

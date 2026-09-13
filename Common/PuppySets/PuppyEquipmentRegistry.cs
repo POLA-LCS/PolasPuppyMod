@@ -61,7 +61,8 @@ public static class PuppyEquipmentRegistry
             ModContent.GetInstance<ReinforcedEarsItem>(),
             CreateTooltip(
                 "ReinforcedEarsItem",
-                Line("PuppyReinforcedEarsStat", "PuppyStat", halveInVanity: false),
+                Line("PuppyReinforcedEarsDefense", "PuppyStat", halveInVanity: false),
+                Line("PuppyReinforcedEarsKnockback", "PuppyEffect", halveInVanity: false),
                 Line("PuppyReinforcedEarsFlavor", "PuppyFlavor", halveInVanity: false)));
 
         int reinforcedTailType = ModContent.ItemType<ReinforcedTailItem>();
