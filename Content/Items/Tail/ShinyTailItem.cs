@@ -11,8 +11,8 @@ namespace PuppyMod.Content.Items.Tail;
 
 public class ShinyTailItem : ModItem, IPuppyTail
 {
-    internal const int FunctionalHoverDuration = 90;
-    internal const int VanityHoverDuration = 45;
+    internal const int FunctionalHoverDuration = 30;
+    internal const int VanityHoverDuration = 15;
 
     public PuppyEquipmentStats Stats => new(Defense: 0f);
 

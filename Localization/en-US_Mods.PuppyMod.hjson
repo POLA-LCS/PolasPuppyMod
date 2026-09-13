@@ -170,8 +170,7 @@ Items: {
 	ShinyTailItem: {
 		DisplayName: Shiny Tail
 		Tooltip: ""
-		PuppyStat: Flying Carpet-style star hover
-		PuppyDuration: 1.5-second base duration
+		PuppyStat: Allows the puppy to be floaty
 		PuppyFlavor: "'The stars carry my zoomies! ^OwO^'"
 	}
 }

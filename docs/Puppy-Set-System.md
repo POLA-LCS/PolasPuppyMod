@@ -59,7 +59,7 @@ The leash bonus service applies the defense to both sides of a valid attachment 
 ## Shiny item behavior
 
 - **Shiny Ears** provide their digging stat and treasure-lighting behavior in both functional and vanity use. Vanity lighting uses half intensity and the smaller treasure scan range. When the Puppy barks, Shiny Ears can add a local yellow star burst.
-- **Shiny Tail** sets the vanilla carpet flag, giving Flying Carpet-style hover. A functional Shiny Tail allows up to **90 ticks (1.5 seconds)** of hover; a vanity Shiny Tail allows **45 ticks (0.75 seconds)**. If both forms are active, the functional duration is used. Star dust beneath the player is visual feedback while the carpet is active.
+- **Shiny Tail** sets the vanilla carpet flag, creating a star-particle hover platform using vanilla carpet movement. A functional Shiny Tail allows up to **30 ticks (0.5 seconds)** of hover; a vanity Shiny Tail allows **15 ticks (0.25 seconds)**. If both forms are active, the functional duration is used. Star dust beneath the player is visual feedback while the carpet is active.
 
 ## Vanilla item augmentation and set text
 

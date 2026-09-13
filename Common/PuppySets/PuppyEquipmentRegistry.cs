@@ -94,7 +94,6 @@ public static class PuppyEquipmentRegistry
             CreateTooltip(
                 "ShinyTailItem",
                 Line("ShinyTailStat", "PuppyStat", halveInVanity: true),
-                Line("ShinyTailDuration", "PuppyDuration", halveInVanity: true),
                 Line("ShinyTailFlavor", "PuppyFlavor", halveInVanity: false)));
     }
 
