@@ -11,6 +11,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Utils;
+using PuppyMod.Players;
 using MorphAPIMod = MorphAPI.MorphAPI;
 
 namespace PuppyMod.Content.Transformations;
@@ -263,7 +264,8 @@ public class DogTransformationMorph : Morph
         }
         else
         {
-            _standProgress += 1f;
+            // Being petted makes the tail wag twice as fast.
+            _standProgress += player.GetModPlayer<PuppyPlayer>().PatWagTicks > 0 ? 2f : 1f;
             if (_standProgress >= StandTicksPerFrame)
             {
                 _standProgress = 0f;

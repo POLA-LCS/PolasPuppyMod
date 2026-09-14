@@ -15,6 +15,7 @@ public static class PatService
     public const int PatRangeTiles = 3;
     public const int PatBuffTicks = 180;
     public const int PatCooldownTicks = 20;
+    public const int PatWagDurationTicks = 90;
 
     public static readonly SoundPad Pats = SoundPad.LoadCategory("PuppySounds/pat", volume: 0.9f);
 
@@ -37,8 +38,6 @@ public static class PatService
             return;
         puppy.PatterPatTick = (int)Main.GameUpdateCount;
 
-        PlayPatEffects(target);
-
         if (Main.netMode == NetmodeID.MultiplayerClient)
         {
             ModContent.GetInstance<PuppyMod>().RequestPat(target.whoAmI);
@@ -46,11 +45,12 @@ public static class PatService
         else if (Main.netMode == NetmodeID.Server)
         {
             if (CanPat(patter, target) && ApplyPat(target))
-                ModContent.GetInstance<PuppyMod>().BroadcastPat(target.whoAmI, patter.whoAmI);
+                ModContent.GetInstance<PuppyMod>().BroadcastPat(target.whoAmI);
         }
-        else
+        else if (ApplyPat(target))
         {
-            ApplyPat(target);
+            PlayPatEffects(target);
+            target.GetModPlayer<PuppyPlayer>().PatWagTicks = PatWagDurationTicks;
         }
     }
 
@@ -98,6 +98,7 @@ public static class PatService
             return false;
 
         puppy.LastPatTick = (int)Main.GameUpdateCount;
+        puppy.PatWagTicks = PatWagDurationTicks;
         target.AddBuff(ModContent.BuffType<GoodPuppyBuff>(), PatBuffTicks);
         return true;
     }
@@ -116,7 +117,7 @@ public static class PatService
 
             Dust heart = Dust.NewDustPerfect(
                 position,
-                DustID.Enchanted_Pink,
+                DustID.HeartCrystal,
                 new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), -1.2f),
                 0,
                 default,

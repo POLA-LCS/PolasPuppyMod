@@ -166,14 +166,14 @@ public class PuppyMod : Mod
         packet.Send();
     }
 
-    public void BroadcastPat(int targetWho, int ignoreClient)
+    public void BroadcastPat(int targetWho)
     {
         if (Main.netMode != NetmodeID.Server)
             return;
         var packet = GetPacket();
         packet.Write((byte)PuppyPacketType.Pat);
         packet.Write((byte)targetWho);
-        packet.Send(ignoreClient: ignoreClient);
+        packet.Send();
     }
 
     private void HandleServerPat(int patterWho, int targetWho)
@@ -184,7 +184,7 @@ public class PuppyMod : Mod
         Player target = Main.player[targetWho];
         if (!PatService.CanPat(patter, target) || !PatService.ApplyPat(target))
             return;
-        BroadcastPat(targetWho, patterWho);
+        BroadcastPat(targetWho);
     }
 
     /// <summary>Returns whether a packet-supplied player index points at an active player.</summary>
@@ -239,8 +239,11 @@ public class PuppyMod : Mod
                 else
                 {
                     int targetWho = reader.ReadByte();
-                    if (IsValidPlayer(targetWho))
-                        PatService.PlayPatEffects(Main.player[targetWho]);
+                    if (!IsValidPlayer(targetWho))
+                        break;
+                    Player patTarget = Main.player[targetWho];
+                    PatService.PlayPatEffects(patTarget);
+                    patTarget.GetModPlayer<PuppyPlayer>().PatWagTicks = PatService.PatWagDurationTicks;
                 }
                 break;
             case (byte)PuppyPacketType.State:

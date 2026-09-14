@@ -39,6 +39,9 @@ public class PuppyPlayer : ModPlayer
 
     /// <summary>Local tick of the last pat attempt, so holding right-click doesn't spam.</summary>
     public int PatterPatTick = -PatService.PatCooldownTicks;
+
+    /// <summary>Ticks of happy wagging left after being petted, used while transformed.</summary>
+    public int PatWagTicks;
     private PuppyEquipmentSnapshot _equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
     private PuppyEquipmentResolution _equipmentResolution = PuppyEquipmentResolution.Empty;
     private bool _shinyTailFunctional;
@@ -170,6 +173,8 @@ public class PuppyPlayer : ModPlayer
     {
         if (_barkCooldown > 0)
             _barkCooldown--;
+        if (PatWagTicks > 0)
+            PatWagTicks--;
         // ShinyEars light stays an individual effect: full functional, half vanity.
         if (_shinyEarsFunctional || _shinyEarsVanity)
         {
