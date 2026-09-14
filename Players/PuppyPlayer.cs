@@ -6,7 +6,6 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.GameInput;
 using MorphAPI.Core;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
@@ -254,6 +253,22 @@ public class PuppyPlayer : ModPlayer
                 Player.setBonus = AppendSetBonusLine(Player.setBonus, bonusText);
             }
         }
+
+        UpdateTransformation();
+    }
+
+    private void UpdateTransformation()
+    {
+        if (Player.whoAmI != Main.myPlayer)
+            return;
+
+        bool mountEquipped = !Player.miscEquips[3].IsAir;
+        bool shouldTransform = IsPuppy && !mountEquipped && !Player.mount.Active;
+
+        if (shouldTransform && !Player.HasMorph<DogTransformationMorph>())
+            Player.SetMorph(new DogTransformationMorph());
+        else if (!shouldTransform && Player.HasMorph<DogTransformationMorph>())
+            Player.Unmorph();
     }
 
     private static string AppendSetBonusLine(string existing, string line)
@@ -287,21 +302,6 @@ public class PuppyPlayer : ModPlayer
         // Clamp acceleration to max run speed for puppies so sprint dust never triggers.
         if (IsPuppy && Player.accRunSpeed > Player.maxRunSpeed)
             Player.accRunSpeed = Player.maxRunSpeed;
-    }
-
-    public override void ProcessTriggers(TriggersSet triggersSet)
-    {
-        if (!PuppyKeybinds.Transform.JustPressed)
-            return;
-
-        if (Player.HasMorph<DogTransformationMorph>())
-        {
-            Player.Unmorph();
-            return;
-        }
-
-        if (IsPuppy && !Player.HasMorph())
-            Player.ToggleMorph(new DogTransformationMorph());
     }
 
     private void ApplyEquipmentDefense()

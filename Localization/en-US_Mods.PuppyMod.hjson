@@ -100,13 +100,6 @@ Projectiles: {
 	RopeLeashProjectile.DisplayName: Rope Leash
 }
 
-Keybinds: {
-	Transform: {
-		DisplayName: Dog Transformation
-		Tooltip: Turn into your chosen dog breed
-	}
-}
-
 Configs: {
 	PuppyModServerConfig: {
 		DisplayName: Puppy Server Config
