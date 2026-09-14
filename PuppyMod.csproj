@@ -10,6 +10,9 @@
 
 	<!-- References -->
 	<ItemGroup>
-		
+		<Reference Include="MorphAPI">
+			<HintPath>..\ModAssemblies\MorphAPI_v1.0.0.4.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
 	</ItemGroup>
 </Project>
