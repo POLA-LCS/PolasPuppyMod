@@ -1,5 +1,7 @@
+using System;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -44,18 +46,43 @@ public class PuppyMod : Mod
         PuppyPairBonusRegistry.Clear();
     }
 
+    /// <summary>Vertical clearance in tiles needed to turn back into the full-size player.</summary>
+    private const float UntransformClearanceTiles = 2.7f;
+
     /// <summary>The mount key toggles the puppy transformation; with a mount equipped it detransforms and mounts instead.</summary>
     private static void HandleQuickMount(On_Player.orig_QuickMount orig, Player player)
     {
-        if (player.whoAmI == Main.myPlayer)
+        if (player.whoAmI != Main.myPlayer)
         {
-            if (player.GetMorph<DogTransformationMorph>() is not null)
-                player.Unmorph();
-            else if (!HasMountEquipped(player) && player.GetModPlayer<PuppyPlayer>().IsPuppy)
-                player.SetMorph(new DogTransformationMorph());
+            orig(player);
+            return;
+        }
+
+        if (player.GetMorph<DogTransformationMorph>() is not null)
+        {
+            if (!CanReturnToNormalSize(player))
+                return;
+
+            player.Unmorph();
+
+            if (!HasMountEquipped(player))
+                return;
+        }
+        else if (!HasMountEquipped(player) && player.GetModPlayer<PuppyPlayer>().IsPuppy)
+        {
+            player.SetMorph(new DogTransformationMorph());
+            return;
         }
 
         orig(player);
+    }
+
+    /// <summary>Whether the player has enough headroom for the full-size hitbox.</summary>
+    private static bool CanReturnToNormalSize(Player player)
+    {
+        int height = (int)MathF.Round(UntransformClearanceTiles * 16f);
+        Vector2 position = new(player.Bottom.X - Player.defaultWidth / 2f, player.Bottom.Y - height);
+        return !Collision.SolidCollision(position, Player.defaultWidth, height);
     }
 
     private static bool HasMountEquipped(Player player) => !player.miscEquips[3].IsAir;
