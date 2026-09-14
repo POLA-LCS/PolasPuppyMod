@@ -63,8 +63,9 @@ public class DogTransformationMorph : Morph
         Vector2 position = player.Bottom - Main.screenPosition + new Vector2(0f, player.gfxOffY);
         Vector2 origin = new(texture.Width / 2f, FrameBaseline);
         Color color = Lighting.GetColor(player.Center.ToTileCoordinates());
+        SpriteEffects effects = drawInfo.playerEffect ^ SpriteEffects.FlipHorizontally;
 
-        drawInfo.DrawDataCache.Add(new DrawData(texture, position.Floor(), source, color, 0f, origin, 1f, drawInfo.playerEffect, 0));
+        drawInfo.DrawDataCache.Add(new DrawData(texture, position.Floor(), source, color, 0f, origin, 1f, effects, 0));
     }
 
     private int GetFrame(Player player)
