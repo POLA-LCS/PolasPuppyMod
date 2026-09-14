@@ -19,6 +19,11 @@ public class PuppyModClientConfig : ModConfig
     [Slider, DrawTicks]
     [DefaultValue(BarkPitchStyle.Wiggly)]
     public BarkPitchStyle BarkPitch { get; set; } = BarkPitchStyle.Wiggly;
+
+    [Header("Transformation")]
+    [Slider, DrawTicks]
+    [DefaultValue(DogTransformationSkin.Beagle)]
+    public DogTransformationSkin TransformationSkin { get; set; } = DogTransformationSkin.Beagle;
 }
 
 public enum BarkPitchStyle

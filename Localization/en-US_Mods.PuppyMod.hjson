@@ -117,6 +117,7 @@ Configs: {
 		Headers: {
 			PuppySet: Puppy Set
 			Audio: Audio Header
+			Transformation: Transformation
 		}
 
 		StartAsPuppy: {
@@ -132,6 +133,11 @@ Configs: {
 		BarkPitch: {
 			Label: Bark Pitch
 			Tooltip: How you are going to hear your barking
+		}
+
+		TransformationSkin: {
+			Label: Dog transformation skin
+			Tooltip: The dog breed your transformation uses
 		}
 	}
 
@@ -170,6 +176,40 @@ Configs: {
 
 		Squeak: {
 			Label: Squeak
+			Tooltip: ""
+		}
+	}
+
+	DogTransformationSkin: {
+		Tooltip: ""
+
+		Beagle: {
+			Label: Beagle
+			Tooltip: ""
+		}
+
+		Corgi: {
+			Label: Corgi
+			Tooltip: ""
+		}
+
+		Dalmatian: {
+			Label: Dalmatian
+			Tooltip: ""
+		}
+
+		Husky: {
+			Label: Husky
+			Tooltip: ""
+		}
+
+		Labrador: {
+			Label: Labrador
+			Tooltip: ""
+		}
+
+		PitBull: {
+			Label: Pit Bull
 			Tooltip: ""
 		}
 	}
