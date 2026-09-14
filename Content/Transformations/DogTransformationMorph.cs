@@ -59,7 +59,7 @@ public class DogTransformationMorph : Morph
     private const float MoveSpeedThreshold = 0.05f;
 
     /// <summary>Downward speed needed before the falling animation takes over, so the jump apex has a moment of suspension.</summary>
-    private const float FallVelocityThreshold = 0.5f;
+    private const float FallVelocityThreshold = 0.2f;
 
     /// <summary>Dust spawned for the transformation puff.</summary>
     private const int PuffDustCount = 25;
@@ -106,10 +106,10 @@ public class DogTransformationMorph : Morph
         }
     }
 
-    /// <summary>Starts a one-shot emote animation and syncs it in multiplayer.</summary>
+    /// <summary>Starts a one-shot emote animation and syncs it in multiplayer. Ignored while the same emote is already playing.</summary>
     public void PlayEmote(Player player, DogEmote emote)
     {
-        if (emote == DogEmote.None)
+        if (emote == DogEmote.None || _emote == emote)
             return;
 
         _emote = emote;
@@ -118,6 +118,9 @@ public class DogTransformationMorph : Morph
         if (Main.netMode == NetmodeID.MultiplayerClient)
             MorphAPIMod.SendUpdateMorph(player);
     }
+
+    /// <summary>Whether the dog can start an emote right now - emotes only play while grounded and standing still.</summary>
+    public bool CanEmote(Player player) => player.velocity.Y == 0f && Math.Abs(player.velocity.X) <= MoveSpeedThreshold;
 
     public override void Update(Player player)
     {

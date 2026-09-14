@@ -31,6 +31,7 @@ public class PuppyPlayer : ModPlayer
     private const float PitchClampMax = 1f;
 
     private int _barkCooldown = 0;
+    private DogEmote _emoteChoice = DogEmote.None;
     private PuppyEquipmentSnapshot _equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
     private PuppyEquipmentResolution _equipmentResolution = PuppyEquipmentResolution.Empty;
     private bool _shinyTailFunctional;
@@ -277,14 +278,20 @@ public class PuppyPlayer : ModPlayer
         if (!Player.HasMorph<DogTransformationMorph>())
             return;
 
+        if (PuppyKeybinds.Emote.JustPressed)
+            _emoteChoice = Main.rand.NextBool() ? DogEmote.Bend : DogEmote.Scratch;
+
         DogTransformationMorph morph = Player.GetMorph<DogTransformationMorph>();
 
-        if (PuppyKeybinds.Bend.JustPressed)
+        if (!morph.CanEmote(Player))
+            return;
+
+        if (PuppyKeybinds.Bend.Current)
             morph.PlayEmote(Player, DogEmote.Bend);
-        else if (PuppyKeybinds.Scratch.JustPressed)
+        else if (PuppyKeybinds.Scratch.Current)
             morph.PlayEmote(Player, DogEmote.Scratch);
-        else if (PuppyKeybinds.Emote.JustPressed)
-            morph.PlayEmote(Player, Main.rand.NextBool() ? DogEmote.Bend : DogEmote.Scratch);
+        else if (PuppyKeybinds.Emote.Current)
+            morph.PlayEmote(Player, _emoteChoice);
     }
 
     private static string AppendSetBonusLine(string existing, string line)
