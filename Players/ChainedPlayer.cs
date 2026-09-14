@@ -114,7 +114,7 @@ public class ChainedPlayer : ModPlayer
         if (clone.GrabberIndex != GrabberIndex || clone.ActiveLeashItemType != ActiveLeashItemType || clone.ActiveCollarItemType != ActiveCollarItemType)
         {
             ModPacket packet = Mod.GetPacket();
-            packet.Write((byte)LeashPacketType.State);
+            packet.Write((byte)PuppyPacketType.State);
             packet.Write((byte)(GrabberIndex ?? byte.MaxValue));
             packet.Write((byte)Player.whoAmI);
             packet.Write(ActiveLeashItemType);
@@ -127,7 +127,7 @@ public class ChainedPlayer : ModPlayer
     {
         if (Main.netMode == NetmodeID.SinglePlayer) return;
         var packet = Mod.GetPacket();
-        packet.Write((byte)LeashPacketType.State);
+        packet.Write((byte)PuppyPacketType.State);
         packet.Write((byte)(GrabberIndex ?? byte.MaxValue));
         packet.Write((byte)Player.whoAmI);
         packet.Write(ActiveLeashItemType);

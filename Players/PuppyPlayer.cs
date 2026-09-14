@@ -15,6 +15,7 @@ using PuppyMod.Content.Items.Ears;
 using PuppyMod.Content.Items.Tails;
 using PuppyMod.Content.Transformations;
 using PuppyMod.Services.Leash;
+using PuppyMod.Services.Pat;
 using PuppyMod.Services.PuppySets;
 
 namespace PuppyMod.Players;
@@ -32,6 +33,13 @@ public class PuppyPlayer : ModPlayer
 
     private int _barkCooldown = 0;
     private DogEmote _emoteChoice = DogEmote.None;
+    private bool _previousRightClick;
+
+    /// <summary>Server-side tick of the last pat applied, used for the pat cooldown.</summary>
+    public int LastPatTick = -PatService.PatCooldownTicks;
+
+    /// <summary>Local tick of the last pat attempt, so holding right-click doesn't spam.</summary>
+    public int PatterPatTick = -PatService.PatCooldownTicks;
     private PuppyEquipmentSnapshot _equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
     private PuppyEquipmentResolution _equipmentResolution = PuppyEquipmentResolution.Empty;
     private bool _shinyTailFunctional;
@@ -172,6 +180,15 @@ public class PuppyPlayer : ModPlayer
 
         // Ore sight belongs to the Shiny pair bonus and only exists while the matching pair is selected.
         PuppySpelunkerService.Apply(Player);
+
+        if (Player.whoAmI == Main.myPlayer)
+        {
+            bool rightClick = Player.controlUseTile;
+            if (rightClick && !_previousRightClick && PatService.IsPatHand(Player))
+                PatService.TryPat(Player);
+
+            _previousRightClick = rightClick;
+        }
     }
 
     public override void ArmorSetBonusActivated()

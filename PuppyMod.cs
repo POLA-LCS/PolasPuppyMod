@@ -10,14 +10,16 @@ using PuppyMod.Common.PuppySets;
 using PuppyMod.Content.Transformations;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
+using PuppyMod.Services.Pat;
 
 namespace PuppyMod;
 
-public enum LeashPacketType : byte
+public enum PuppyPacketType : byte
 {
     RequestAttach = 1,
     RequestDetach = 2,
-    State = 3
+    State = 3,
+    Pat = 4
 }
 
 public class PuppyMod : Mod
@@ -109,7 +111,7 @@ public class PuppyMod : Mod
         if (Main.netMode != NetmodeID.MultiplayerClient)
             return;
         var packet = GetPacket();
-        packet.Write((byte)LeashPacketType.RequestAttach);
+        packet.Write((byte)PuppyPacketType.RequestAttach);
         packet.Write((byte)targetWho);
         packet.Write(leashItemType);
         packet.Send();
@@ -122,7 +124,7 @@ public class PuppyMod : Mod
         if (Main.netMode != NetmodeID.MultiplayerClient)
             return;
         var packet = GetPacket();
-        packet.Write((byte)LeashPacketType.RequestDetach);
+        packet.Write((byte)PuppyPacketType.RequestDetach);
         packet.Write((byte)targetWho);
         packet.Send();
     }
@@ -132,7 +134,7 @@ public class PuppyMod : Mod
         if (Main.netMode != NetmodeID.Server)
             return;
         var packet = GetPacket();
-        packet.Write((byte)LeashPacketType.State);
+        packet.Write((byte)PuppyPacketType.State);
         packet.Write((byte)ownerWho);
         packet.Write((byte)targetWho);
         packet.Write(leashItemType);
@@ -145,12 +147,44 @@ public class PuppyMod : Mod
         if (Main.netMode != NetmodeID.Server)
             return;
         var packet = GetPacket();
-        packet.Write((byte)LeashPacketType.State);
+        packet.Write((byte)PuppyPacketType.State);
         packet.Write(byte.MaxValue);
         packet.Write((byte)targetWho);
         packet.Write(0);
         packet.Write(0);
         packet.Send();
+    }
+
+    public void RequestPat(int targetWho)
+    {
+        // Client only; the server applies the pat.
+        if (Main.netMode != NetmodeID.MultiplayerClient)
+            return;
+        var packet = GetPacket();
+        packet.Write((byte)PuppyPacketType.Pat);
+        packet.Write((byte)targetWho);
+        packet.Send();
+    }
+
+    public void BroadcastPat(int targetWho, int ignoreClient)
+    {
+        if (Main.netMode != NetmodeID.Server)
+            return;
+        var packet = GetPacket();
+        packet.Write((byte)PuppyPacketType.Pat);
+        packet.Write((byte)targetWho);
+        packet.Send(ignoreClient: ignoreClient);
+    }
+
+    private void HandleServerPat(int patterWho, int targetWho)
+    {
+        if (!IsValidPlayer(patterWho) || !IsValidPlayer(targetWho))
+            return;
+        Player patter = Main.player[patterWho];
+        Player target = Main.player[targetWho];
+        if (!PatService.CanPat(patter, target) || !PatService.ApplyPat(target))
+            return;
+        BroadcastPat(targetWho, patterWho);
     }
 
     /// <summary>Returns whether a packet-supplied player index points at an active player.</summary>
@@ -191,15 +225,25 @@ public class PuppyMod : Mod
         byte type = reader.ReadByte();
         switch (type)
         {
-            case (byte)LeashPacketType.RequestAttach:
+            case (byte)PuppyPacketType.RequestAttach:
                 if (Main.netMode == NetmodeID.Server)
                     HandleServerAttach(whoAmI, reader.ReadByte(), reader.ReadInt32());
                 break;
-            case (byte)LeashPacketType.RequestDetach:
+            case (byte)PuppyPacketType.RequestDetach:
                 if (Main.netMode == NetmodeID.Server)
                     HandleServerDetach(whoAmI, reader.ReadByte());
                 break;
-            case (byte)LeashPacketType.State:
+            case (byte)PuppyPacketType.Pat:
+                if (Main.netMode == NetmodeID.Server)
+                    HandleServerPat(whoAmI, reader.ReadByte());
+                else
+                {
+                    int targetWho = reader.ReadByte();
+                    if (IsValidPlayer(targetWho))
+                        PatService.PlayPatEffects(Main.player[targetWho]);
+                }
+                break;
+            case (byte)PuppyPacketType.State:
                 if (Main.netMode != NetmodeID.Server)
                 {
                     int ownerWho = reader.ReadByte();
