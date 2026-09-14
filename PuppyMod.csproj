@@ -3,6 +3,11 @@
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\tModLoader.targets" />
 
+	<!-- Shared sprite-sheet animation library -->
+	<ItemGroup>
+		<Compile Include="..\SpreadsheetSplit\SpreadsheetSplit\*.cs" LinkBase="SpreadsheetSplit" />
+	</ItemGroup>
+
 	<!-- General -->
 	<PropertyGroup>
 		

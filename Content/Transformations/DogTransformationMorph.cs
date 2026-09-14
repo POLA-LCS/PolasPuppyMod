@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MorphAPI.Core.Morphing;
 using ReLogic.Content;
+using SpreadsheetSplit;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -16,34 +17,13 @@ namespace PuppyMod.Content.Transformations;
 
 public class DogTransformationMorph : Morph
 {
-    /// <summary>Vertical distance between frames in the breed sheets.</summary>
-    private const int FrameHeight = 38;
-
-    /// <summary>Distance from the top of a frame to the dog's feet.</summary>
-    private const int FrameBaseline = 36;
-
-    // Sheet groups as 0-based frame indexes: 0-7 stand still, 8 jump/fall, 9-16 running, 17-22 bend, 23-27 scratch.
-    // Emotes play their first frame once, cycle the middle frames, and play their last frame once when the key is released.
-    private const int StandStart = 0;
-    private const int StandFrameCount = 8;
-    private const int JumpFrameStart = 8;
-    private const int JumpFrameCount = 1;
-    private const int FallFrameStart = 8;
-    private const int FallFrameCount = 1;
-    private const int RunStart = 9;
-    private const int RunFrameCount = 8;
-    private const int BendStart = 17;
-    private const int BendFrameCount = 6;
-    private const int ScratchStart = 23;
-    private const int ScratchFrameCount = 5;
-
     /// <summary>Accumulated horizontal speed needed to advance one running frame.</summary>
     private const float MovementPerFrame = 7f;
 
     /// <summary>Ticks each standing-still frame is shown.</summary>
     private const float StandTicksPerFrame = 10f;
 
-    /// <summary>Ticks each jump/fall frame is shown.</summary>
+    /// <summary>Ticks each jump frame is shown.</summary>
     private const float JumpTicksPerFrame = 8f;
 
     /// <summary>Ticks each falling frame is shown.</summary>
@@ -90,6 +70,13 @@ public class DogTransformationMorph : Morph
     private EmotePhase _emotePhase;
     private bool _emoteHeld;
     private float _hitboxOffsetX;
+
+    private AnimationPlayer _standing;
+    private AnimationPlayer _moving;
+    private AnimationPlayer _jumping;
+    private AnimationPlayer _falling;
+    private AnimationPlayer _bendCycle;
+    private AnimationPlayer _scratchCycle;
 
     public override bool HideDefaultPlayer => true;
 
@@ -145,7 +132,17 @@ public class DogTransformationMorph : Morph
         return !Collision.SolidCollision(position, player.width, player.height);
     }
 
-    public override void OnMorph(Player player) => SpawnPuff(player);
+    public override void OnMorph(Player player)
+    {
+        _standing = DogAnimations.Sheet.PlayAnimation(DogAnimations.Standing);
+        _moving = DogAnimations.Sheet.PlayAnimation(DogAnimations.Moving);
+        _jumping = DogAnimations.Sheet.PlayAnimation(DogAnimations.Jumping);
+        _falling = DogAnimations.Sheet.PlayAnimation(DogAnimations.Falling);
+        _bendCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.BendingCycle);
+        _scratchCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.ScratchingCycle);
+
+        SpawnPuff(player);
+    }
 
     public override void OnUnmorph(Player player)
     {
@@ -230,11 +227,23 @@ public class DogTransformationMorph : Morph
             {
                 _fallProgress += 1f;
                 _jumpProgress = 0f;
+
+                if (_fallProgress >= FallTicksPerFrame)
+                {
+                    _fallProgress = 0f;
+                    _falling.Advance();
+                }
             }
             else
             {
                 _jumpProgress += 1f;
                 _fallProgress = 0f;
+
+                if (_jumpProgress >= JumpTicksPerFrame)
+                {
+                    _jumpProgress = 0f;
+                    _jumping.Advance();
+                }
             }
 
             return;
@@ -244,9 +253,23 @@ public class DogTransformationMorph : Morph
         _fallProgress = 0f;
 
         if (moving)
+        {
             _runProgress += Math.Min(Math.Abs(player.velocity.X), MaxAnimationSpeed);
+            while (_runProgress >= MovementPerFrame)
+            {
+                _runProgress -= MovementPerFrame;
+                _moving.Advance();
+            }
+        }
         else
+        {
             _standProgress += 1f;
+            if (_standProgress >= StandTicksPerFrame)
+            {
+                _standProgress = 0f;
+                _standing.Advance();
+            }
+        }
     }
 
     private void UpdateEmote(Player player)
@@ -256,27 +279,28 @@ public class DogTransformationMorph : Morph
         if (_emoteProgress < EmoteTicksPerFrame)
             return;
 
+        _emoteProgress = 0f;
+
         switch (_emotePhase)
         {
             case EmotePhase.Start:
-                _emoteProgress = 0f;
                 _emotePhase = EmotePhase.Cycle;
+                GetCyclePlayer(_emote).Reset();
                 break;
             case EmotePhase.Cycle:
-                if (_emoteProgress < GetEmoteCycleCount(_emote) * EmoteTicksPerFrame)
-                    break;
-
-                _emoteProgress = 0f;
-
-                if (_emoteHeld)
-                    SendEmoteUpdate(player);
-                else
-                    _emotePhase = EmotePhase.End;
+                AnimationPlayer cycle = GetCyclePlayer(_emote);
+                cycle.Advance();
+                if (cycle.CurrentIndex == 0)
+                {
+                    if (_emoteHeld)
+                        SendEmoteUpdate(player);
+                    else
+                        _emotePhase = EmotePhase.End;
+                }
                 break;
             case EmotePhase.End:
                 _emote = DogEmote.None;
                 _emotePhase = EmotePhase.None;
-                _emoteProgress = 0f;
                 break;
         }
     }
@@ -286,6 +310,7 @@ public class DogTransformationMorph : Morph
         writer.Write((byte)_emote);
         writer.Write((byte)_emotePhase);
         writer.Write((short)_emoteProgress);
+        writer.Write((byte)GetCycleIndex());
     }
 
     public override void NetRecieve(BinaryReader reader)
@@ -293,7 +318,15 @@ public class DogTransformationMorph : Morph
         _emote = (DogEmote)reader.ReadByte();
         _emotePhase = (EmotePhase)reader.ReadByte();
         _emoteProgress = reader.ReadInt16();
+        byte cycleIndex = reader.ReadByte();
+
+        if (_emote != DogEmote.None)
+            GetCyclePlayer(_emote).Seek(cycleIndex);
     }
+
+    private int GetCycleIndex() => _emote == DogEmote.None ? 0 : GetCyclePlayer(_emote).CurrentIndex;
+
+    private AnimationPlayer GetCyclePlayer(DogEmote emote) => emote == DogEmote.Bend ? _bendCycle : _scratchCycle;
 
     private static readonly Dictionary<Texture2D, float[]> FrameAlignment = [];
 
@@ -312,8 +345,8 @@ public class DogTransformationMorph : Morph
         for (int frame = 0; frame < frameCount; frame++)
         {
             int minX = int.MaxValue;
-            int startY = frame * FrameHeight;
-            int endY = Math.Min(startY + FrameHeight, texture.Height);
+            int startY = frame * DogAnimations.SpriteHeight;
+            int endY = Math.Min(startY + DogAnimations.SpriteHeight, texture.Height);
 
             for (int y = startY; y < endY; y++)
             {
@@ -351,58 +384,54 @@ public class DogTransformationMorph : Morph
             AssetUtils.GetTransformationTexturePath(skin.ToString()),
             AssetRequestMode.ImmediateLoad).Value;
 
-        int frameCount = Math.Max(1, texture.Height / FrameHeight);
-        int frame = GetFrame(player) % frameCount;
-        Rectangle source = new(0, frame * FrameHeight, texture.Width, FrameHeight);
+        SpriteSheet sheet = DogAnimations.Sheet;
+        int spriteIndex = GetSpriteIndex(player) % sheet.Count;
+        SpriteBounds bounds = sheet.GetBounds(spriteIndex);
+        Rectangle source = new(bounds.X, bounds.Y, bounds.Width, bounds.Height);
+
         Vector2 position = (player.Bottom - Main.screenPosition + new Vector2(0f, player.gfxOffY)).Floor();
         SpriteEffects effects = drawInfo.playerEffect ^ SpriteEffects.FlipHorizontally;
 
-        float alignment = GetFrameAlignment(texture, frameCount)[frame];
+        float alignment = GetFrameAlignment(texture, sheet.Count)[spriteIndex];
         if ((effects & SpriteEffects.FlipHorizontally) != 0)
             alignment = -alignment;
         position.X += alignment;
 
-        Vector2 origin = new(texture.Width / 2f, FrameBaseline);
+        Vector2 origin = new(DogAnimations.SpriteWidth / 2f, DogAnimations.SpriteBaseline);
         Color color = Lighting.GetColor(player.Center.ToTileCoordinates());
 
         drawInfo.DrawDataCache.Add(new DrawData(texture, position, source, color, 0f, origin, 1f, effects, 0));
     }
 
-    private int GetFrame(Player player)
+    private int GetSpriteIndex(Player player)
     {
         if (player.velocity.Y > FallVelocityThreshold)
-            return FallFrameStart + (int)(_fallProgress / FallTicksPerFrame) % FallFrameCount;
+            return _falling.Current.AbsoluteIndex;
 
         if (player.velocity.Y != 0f)
-            return JumpFrameStart + (int)(_jumpProgress / JumpTicksPerFrame) % JumpFrameCount;
+            return _jumping.Current.AbsoluteIndex;
 
         if (_emote != DogEmote.None)
-            return GetEmoteFrame();
+            return GetEmoteSpriteIndex();
 
         if (Math.Abs(player.velocity.X) > MoveSpeedThreshold)
-            return RunStart + (int)(_runProgress / MovementPerFrame) % RunFrameCount;
+            return _moving.Current.AbsoluteIndex;
 
-        return StandStart + (int)(_standProgress / StandTicksPerFrame) % StandFrameCount;
+        return _standing.Current.AbsoluteIndex;
     }
 
-    private int GetEmoteFrame()
+    private int GetEmoteSpriteIndex()
     {
-        int start = _emote == DogEmote.Bend ? BendStart : ScratchStart;
-        int count = _emote == DogEmote.Bend ? BendFrameCount : ScratchFrameCount;
+        Range whole = DogAnimations.Sheet.Animations[GetEmoteName(_emote)];
 
         return _emotePhase switch
         {
-            EmotePhase.Start => start,
-            EmotePhase.Cycle => start + 1 + (int)(_emoteProgress / EmoteTicksPerFrame) % (count - 2),
-            EmotePhase.End => start + count - 1,
-            _ => start
+            EmotePhase.Start => whole.Start.Value,
+            EmotePhase.Cycle => GetCyclePlayer(_emote).Current.AbsoluteIndex,
+            EmotePhase.End => whole.End.Value - 1,
+            _ => whole.Start.Value
         };
     }
 
-    private static int GetEmoteCycleCount(DogEmote emote) => emote switch
-    {
-        DogEmote.Bend => BendFrameCount - 2,
-        DogEmote.Scratch => ScratchFrameCount - 2,
-        _ => 0
-    };
+    private static string GetEmoteName(DogEmote emote) => emote == DogEmote.Bend ? DogAnimations.Bending : DogAnimations.Scratching;
 }
