@@ -38,8 +38,14 @@ public class PuppyMod : Mod
         EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ReinforcedTailSheet, EquipType.Back, name: PuppyEquipmentTextures.ReinforcedSetTailBack);
     }
 
+    public override void PostSetupContent()
+    {
+        On_Player.ResizeHitbox += RecenterMorphedHitbox;
+    }
+
     public override void Unload()
     {
+        On_Player.ResizeHitbox -= RecenterMorphedHitbox;
         On_Player.QuickMount -= HandleQuickMount;
         PuppyKeybinds.Unload();
         PuppyEquipmentRegistry.Clear();
@@ -86,6 +92,30 @@ public class PuppyMod : Mod
     }
 
     private static bool HasMountEquipped(Player player) => !player.miscEquips[3].IsAir;
+
+    /// <summary>MorphAPI applies the custom width without recentering, so it extends to the right and can embed into walls; this recenters it.</summary>
+    private static void RecenterMorphedHitbox(On_Player.orig_ResizeHitbox orig, Player player)
+    {
+        orig(player);
+
+        if (player.whoAmI != Main.myPlayer || !player.HasMorph())
+            return;
+
+        float extra = player.width - Player.defaultWidth;
+        if (extra <= 0f)
+            return;
+
+        Vector2 centered = player.position - new Vector2(extra / 2f, 0f);
+        if (!Collision.SolidCollision(centered, player.width, player.height))
+        {
+            player.position = centered;
+            return;
+        }
+
+        Vector2 rightAnchored = player.position - new Vector2(extra, 0f);
+        if (!Collision.SolidCollision(rightAnchored, player.width, player.height))
+            player.position = rightAnchored;
+    }
 
     public void RequestLeashAttach(int targetWho, int leashItemType)
     {
