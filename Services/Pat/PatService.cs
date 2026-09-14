@@ -1,4 +1,6 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -16,6 +18,9 @@ public static class PatService
     public const int PatBuffTicks = 180;
     public const int PatCooldownTicks = 20;
     public const int PatWagDurationTicks = 90;
+    public const int PatReachDurationTicks = 30;
+
+    private const string PatHandTexturePath = "PuppyMod/Assets/Pat/PatHand";
 
     public static readonly SoundPad Pats = SoundPad.LoadCategory("PuppySounds/pat", volume: 0.9f);
 
@@ -37,6 +42,10 @@ public static class PatService
         if (Main.GameUpdateCount - puppy.PatterPatTick < PatCooldownTicks)
             return;
         puppy.PatterPatTick = (int)Main.GameUpdateCount;
+
+        // Reach the hand toward the puppy while patting.
+        puppy.PatReachTicks = PatReachDurationTicks;
+        puppy.PatReachTarget = target.whoAmI;
 
         if (Main.netMode == NetmodeID.MultiplayerClient)
         {
@@ -101,6 +110,17 @@ public static class PatService
         puppy.PatWagTicks = PatWagDurationTicks;
         target.AddBuff(ModContent.BuffType<GoodPuppyBuff>(), PatBuffTicks);
         return true;
+    }
+
+    /// <summary>Whether a patting hand texture is available (drop one at Assets/Pat/PatHand.png).</summary>
+    public static bool TryGetPatHandTexture(out Texture2D texture)
+    {
+        texture = null;
+        if (Main.dedServ || !ModContent.HasAsset(PatHandTexturePath))
+            return false;
+
+        texture = ModContent.Request<Texture2D>(PatHandTexturePath, AssetRequestMode.ImmediateLoad).Value;
+        return texture != null;
     }
 
     /// <summary>Hearts and pat sounds around the puppy. Runs on whichever client needs to show it.</summary>

@@ -42,6 +42,12 @@ public class PuppyPlayer : ModPlayer
 
     /// <summary>Ticks of happy wagging left after being petted, used while transformed.</summary>
     public int PatWagTicks;
+
+    /// <summary>Ticks left of the patting hand reach animation.</summary>
+    public int PatReachTicks;
+
+    /// <summary>Player index the patting hand is reaching toward, or -1.</summary>
+    public int PatReachTarget = -1;
     private PuppyEquipmentSnapshot _equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
     private PuppyEquipmentResolution _equipmentResolution = PuppyEquipmentResolution.Empty;
     private bool _shinyTailFunctional;
@@ -175,6 +181,10 @@ public class PuppyPlayer : ModPlayer
             _barkCooldown--;
         if (PatWagTicks > 0)
             PatWagTicks--;
+        if (PatReachTicks > 0)
+            PatReachTicks--;
+        else
+            PatReachTarget = -1;
         // ShinyEars light stays an individual effect: full functional, half vanity.
         if (_shinyEarsFunctional || _shinyEarsVanity)
         {
