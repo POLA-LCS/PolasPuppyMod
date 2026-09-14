@@ -295,6 +295,45 @@ public class DogTransformationMorph : Morph
         _emoteProgress = reader.ReadInt16();
     }
 
+    private static readonly Dictionary<Texture2D, float[]> FrameAlignment = [];
+
+    /// <summary>Per-frame horizontal offsets that center each frame's artwork, so the animation doesn't wobble left and right.</summary>
+    private static float[] GetFrameAlignment(Texture2D texture, int frameCount)
+    {
+        if (FrameAlignment.TryGetValue(texture, out float[] cached))
+            return cached;
+
+        Color[] pixels = new Color[texture.Width * texture.Height];
+        texture.GetData(pixels);
+
+        float[] offsets = new float[frameCount];
+        for (int frame = 0; frame < frameCount; frame++)
+        {
+            int minX = int.MaxValue;
+            int maxX = -1;
+            int startY = frame * FrameHeight;
+            int endY = Math.Min(startY + FrameHeight, texture.Height);
+
+            for (int y = startY; y < endY; y++)
+            {
+                int row = y * texture.Width;
+                for (int x = 0; x < texture.Width; x++)
+                {
+                    if (pixels[row + x].A == 0)
+                        continue;
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                }
+            }
+
+            float contentCenter = maxX >= 0 ? (minX + maxX) / 2f : texture.Width / 2f;
+            offsets[frame] = texture.Width / 2f - contentCenter;
+        }
+
+        FrameAlignment[texture] = offsets;
+        return offsets;
+    }
+
     public override void SetDrawLayers(List<DrawData> oldDrawData, ref PlayerDrawSet drawInfo)
     {
         Player player = drawInfo.drawPlayer;
@@ -306,12 +345,18 @@ public class DogTransformationMorph : Morph
         int frameCount = Math.Max(1, texture.Height / FrameHeight);
         int frame = GetFrame(player) % frameCount;
         Rectangle source = new(0, frame * FrameHeight, texture.Width, FrameHeight);
-        Vector2 position = player.Bottom - Main.screenPosition + new Vector2(0f, player.gfxOffY);
-        Vector2 origin = new(texture.Width / 2f, FrameBaseline);
-        Color color = Lighting.GetColor(player.Center.ToTileCoordinates());
+        Vector2 position = (player.Bottom - Main.screenPosition + new Vector2(0f, player.gfxOffY)).Floor();
         SpriteEffects effects = drawInfo.playerEffect ^ SpriteEffects.FlipHorizontally;
 
-        drawInfo.DrawDataCache.Add(new DrawData(texture, position.Floor(), source, color, 0f, origin, 1f, effects, 0));
+        float alignment = GetFrameAlignment(texture, frameCount)[frame];
+        if ((effects & SpriteEffects.FlipHorizontally) != 0)
+            alignment = -alignment;
+        position.X += alignment;
+
+        Vector2 origin = new(texture.Width / 2f, FrameBaseline);
+        Color color = Lighting.GetColor(player.Center.ToTileCoordinates());
+
+        drawInfo.DrawDataCache.Add(new DrawData(texture, position, source, color, 0f, origin, 1f, effects, 0));
     }
 
     private int GetFrame(Player player)
