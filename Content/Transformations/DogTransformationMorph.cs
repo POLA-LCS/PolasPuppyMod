@@ -13,18 +13,17 @@ namespace PuppyMod.Content.Transformations;
 
 public class DogTransformationMorph : Morph
 {
-    /// <summary>Size of a single frame in the breed sheets.</summary>
-    public const int FrameWidth = 70;
-    public const int FrameHeight = 56;
+    /// <summary>Vertical distance between frames in the breed sheets.</summary>
+    private const int FrameHeight = 38;
 
-    /// <summary>Frames in the breed sheet animation strip.</summary>
-    public const int FrameCount = 19;
+    /// <summary>Distance from the top of a frame to the dog's feet.</summary>
+    private const int FrameBaseline = 36;
 
     /// <summary>Frame shown while standing still.</summary>
     private const int IdleFrame = 0;
 
     /// <summary>Accumulated horizontal speed needed to advance one animation frame.</summary>
-    private const float MovementPerFrame = 8f;
+    private const float MovementPerFrame = 6f;
 
     /// <summary>Cap on how fast the animation can play, so sprinting doesn't blur the frames.</summary>
     private const float MaxAnimationSpeed = 3f;
@@ -58,9 +57,11 @@ public class DogTransformationMorph : Morph
             AssetUtils.GetTransformationTexturePath(skin.ToString()),
             AssetRequestMode.ImmediateLoad).Value;
 
-        Rectangle source = new(0, GetFrame(player) * FrameHeight, FrameWidth, FrameHeight);
+        int frameCount = Math.Max(1, texture.Height / FrameHeight);
+        int frame = GetFrame(player) % frameCount;
+        Rectangle source = new(0, frame * FrameHeight, texture.Width, FrameHeight);
         Vector2 position = player.Bottom - Main.screenPosition + new Vector2(0f, player.gfxOffY);
-        Vector2 origin = new(FrameWidth / 2f, FrameHeight);
+        Vector2 origin = new(texture.Width / 2f, FrameBaseline);
         Color color = Lighting.GetColor(player.Center.ToTileCoordinates());
 
         drawInfo.DrawDataCache.Add(new DrawData(texture, position.Floor(), source, color, 0f, origin, 1f, drawInfo.playerEffect, 0));
@@ -71,6 +72,6 @@ public class DogTransformationMorph : Morph
         if (Math.Abs(player.velocity.X) <= MoveSpeedThreshold)
             return IdleFrame;
 
-        return (int)(_animationProgress / MovementPerFrame) % FrameCount;
+        return (int)(_animationProgress / MovementPerFrame);
     }
 }
