@@ -3,11 +3,6 @@
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\tModLoader.targets" />
 
-	<!-- Shared sprite-sheet animation library -->
-	<ItemGroup>
-		<Compile Include="..\SpreadsheetSplit\SpreadsheetSplit\*.cs" LinkBase="SpreadsheetSplit" />
-	</ItemGroup>
-
 	<!-- General -->
 	<PropertyGroup>
 		
@@ -17,6 +12,10 @@
 	<ItemGroup>
 		<Reference Include="MorphAPI">
 			<HintPath>..\ModAssemblies\MorphAPI_v1.0.0.4.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="SpreadsheetSplit">
+			<HintPath>lib\SpreadsheetSplit.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 	</ItemGroup>

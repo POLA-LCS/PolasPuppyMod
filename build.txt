@@ -2,3 +2,4 @@ displayName = Puppy Mod
 author = POLA
 version = 1.7.1
 modReferences = MorphAPI
+dllReferences = SpreadsheetSplit
