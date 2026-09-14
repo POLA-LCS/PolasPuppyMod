@@ -61,6 +61,9 @@ public class DogTransformationMorph : Morph
     /// <summary>Downward speed needed before the falling animation takes over, so the jump apex has a moment of suspension.</summary>
     private const float FallVelocityThreshold = 0.2f;
 
+    /// <summary>Height of the player's hitbox while transformed, in tiles.</summary>
+    private const float HitboxHeightTiles = 1.8f;
+
     /// <summary>Dust spawned for the transformation puff.</summary>
     private const int PuffDustCount = 25;
 
@@ -87,6 +90,12 @@ public class DogTransformationMorph : Morph
     public override bool HideDefaultPlayer => true;
 
     public override bool CanUseItem(Player player, Item item) => false;
+
+    public override bool ModifyHitbox(Player player, out Point16 size)
+    {
+        size = new Point16(Player.defaultWidth, (int)MathF.Round(HitboxHeightTiles * 16f));
+        return true;
+    }
 
     public override void OnMorph(Player player) => SpawnPuff(player);
 
