@@ -89,6 +89,7 @@ public class DogTransformationMorph : Morph
     private DogEmote _emote;
     private EmotePhase _emotePhase;
     private bool _emoteHeld;
+    private float _hitboxOffsetX;
 
     public override bool HideDefaultPlayer => true;
 
@@ -102,9 +103,56 @@ public class DogTransformationMorph : Morph
         return true;
     }
 
+    /// <summary>Keeps the widened hitbox clear of obstacles without accumulating movement across resizes.</summary>
+    public void ApplyHitboxOffset(Player player)
+    {
+        float extra = player.width - Player.defaultWidth;
+        if (extra <= 0f)
+        {
+            _hitboxOffsetX = 0f;
+            return;
+        }
+
+        // Recover the game's own position before evaluating the offset again.
+        player.position.X -= _hitboxOffsetX;
+
+        float offset = ChooseHitboxOffset(player);
+        player.position.X += offset;
+        _hitboxOffsetX = offset;
+    }
+
+    private float ChooseHitboxOffset(Player player)
+    {
+        // Prefer keeping the current offset so ordinary walking never shifts the player.
+        if (IsHitboxClear(player, _hitboxOffsetX))
+            return _hitboxOffsetX;
+
+        float extra = player.width - Player.defaultWidth;
+        float centered = -extra / 2f;
+        if (IsHitboxClear(player, centered))
+            return centered;
+
+        float rightAnchored = -extra;
+        if (IsHitboxClear(player, rightAnchored))
+            return rightAnchored;
+
+        return 0f;
+    }
+
+    private static bool IsHitboxClear(Player player, float offset)
+    {
+        Vector2 position = player.position + new Vector2(offset, 0f);
+        return !Collision.SolidCollision(position, player.width, player.height);
+    }
+
     public override void OnMorph(Player player) => SpawnPuff(player);
 
-    public override void OnUnmorph(Player player) => SpawnPuff(player);
+    public override void OnUnmorph(Player player)
+    {
+        player.position.X -= _hitboxOffsetX;
+        _hitboxOffsetX = 0f;
+        SpawnPuff(player);
+    }
 
     private static void SpawnPuff(Player player)
     {
