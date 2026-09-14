@@ -281,17 +281,15 @@ public class PuppyPlayer : ModPlayer
         if (PuppyKeybinds.Emote.JustPressed)
             _emoteChoice = Main.rand.NextBool() ? DogEmote.Bend : DogEmote.Scratch;
 
-        DogTransformationMorph morph = Player.GetMorph<DogTransformationMorph>();
-
-        if (!morph.CanEmote(Player))
-            return;
-
+        DogEmote held = DogEmote.None;
         if (PuppyKeybinds.Bend.Current)
-            morph.PlayEmote(Player, DogEmote.Bend);
+            held = DogEmote.Bend;
         else if (PuppyKeybinds.Scratch.Current)
-            morph.PlayEmote(Player, DogEmote.Scratch);
+            held = DogEmote.Scratch;
         else if (PuppyKeybinds.Emote.Current)
-            morph.PlayEmote(Player, _emoteChoice);
+            held = _emoteChoice;
+
+        Player.GetMorph<DogTransformationMorph>().SetEmoteInput(Player, held);
     }
 
     private static string AppendSetBonusLine(string existing, string line)

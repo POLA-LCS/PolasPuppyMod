@@ -22,20 +22,20 @@ public class DogTransformationMorph : Morph
     /// <summary>Distance from the top of a frame to the dog's feet.</summary>
     private const int FrameBaseline = 36;
 
-    // Sheet groups as 0-based frame indexes: 0-8 stand still, 9 jump/fall, 10-17 running, 18-23 bend idle, 24-27 scratch.
-    // Jump and fall are separate ranges so dedicated frames can be split out once the sheets have them.
+    // Sheet groups as 0-based frame indexes: 0-7 stand still, 8 jump/fall, 9-16 running, 17-22 bend, 23-27 scratch.
+    // Emotes play their first frame once, cycle the middle frames, and play their last frame once when the key is released.
     private const int StandStart = 0;
-    private const int StandFrameCount = 9;
-    private const int JumpFrameStart = 9;
+    private const int StandFrameCount = 8;
+    private const int JumpFrameStart = 8;
     private const int JumpFrameCount = 1;
-    private const int FallFrameStart = 9;
+    private const int FallFrameStart = 8;
     private const int FallFrameCount = 1;
-    private const int RunStart = 10;
+    private const int RunStart = 9;
     private const int RunFrameCount = 8;
-    private const int BendStart = 18;
+    private const int BendStart = 17;
     private const int BendFrameCount = 6;
-    private const int ScratchStart = 24;
-    private const int ScratchFrameCount = 4;
+    private const int ScratchStart = 23;
+    private const int ScratchFrameCount = 5;
 
     /// <summary>Accumulated horizontal speed needed to advance one running frame.</summary>
     private const float MovementPerFrame = 7f;
@@ -67,12 +67,22 @@ public class DogTransformationMorph : Morph
     /// <summary>Maximum outward speed of the transformation puff dust.</summary>
     private const float PuffSpeed = 2.2f;
 
+    private enum EmotePhase : byte
+    {
+        None,
+        Start,
+        Cycle,
+        End
+    }
+
     private float _runProgress;
     private float _standProgress;
     private float _jumpProgress;
     private float _fallProgress;
     private float _emoteProgress;
     private DogEmote _emote;
+    private EmotePhase _emotePhase;
+    private bool _emoteHeld;
 
     public override bool HideDefaultPlayer => true;
 
@@ -106,15 +116,25 @@ public class DogTransformationMorph : Morph
         }
     }
 
-    /// <summary>Starts a one-shot emote animation and syncs it in multiplayer. Ignored while the same emote is already playing.</summary>
-    public void PlayEmote(Player player, DogEmote emote)
+    /// <summary>Feeds the emote key state - starts the emote on press and repeats its cycling frames while held.</summary>
+    public void SetEmoteInput(Player player, DogEmote emote)
     {
+        if (!CanEmote(player))
+            emote = DogEmote.None;
+
+        _emoteHeld = emote != DogEmote.None && _emote == emote;
+
         if (emote == DogEmote.None || _emote == emote)
             return;
 
         _emote = emote;
+        _emotePhase = EmotePhase.Start;
         _emoteProgress = 0f;
+        SendEmoteUpdate(player);
+    }
 
+    private static void SendEmoteUpdate(Player player)
+    {
         if (Main.netMode == NetmodeID.MultiplayerClient)
             MorphAPIMod.SendUpdateMorph(player);
     }
@@ -132,17 +152,12 @@ public class DogTransformationMorph : Morph
             if (moving || airborne)
             {
                 _emote = DogEmote.None;
+                _emotePhase = EmotePhase.None;
                 _emoteProgress = 0f;
             }
             else
             {
-                _emoteProgress += 1f;
-                if (_emoteProgress >= GetEmoteFrameCount(_emote) * EmoteTicksPerFrame)
-                {
-                    _emote = DogEmote.None;
-                    _emoteProgress = 0f;
-                }
-
+                UpdateEmote(player);
                 return;
             }
         }
@@ -172,15 +187,49 @@ public class DogTransformationMorph : Morph
             _standProgress += 1f;
     }
 
+    private void UpdateEmote(Player player)
+    {
+        _emoteProgress += 1f;
+
+        if (_emoteProgress < EmoteTicksPerFrame)
+            return;
+
+        switch (_emotePhase)
+        {
+            case EmotePhase.Start:
+                _emoteProgress = 0f;
+                _emotePhase = EmotePhase.Cycle;
+                break;
+            case EmotePhase.Cycle:
+                if (_emoteProgress < GetEmoteCycleCount(_emote) * EmoteTicksPerFrame)
+                    break;
+
+                _emoteProgress = 0f;
+
+                if (_emoteHeld)
+                    SendEmoteUpdate(player);
+                else
+                    _emotePhase = EmotePhase.End;
+                break;
+            case EmotePhase.End:
+                _emote = DogEmote.None;
+                _emotePhase = EmotePhase.None;
+                _emoteProgress = 0f;
+                break;
+        }
+    }
+
     public override void NetSend(BinaryWriter writer)
     {
         writer.Write((byte)_emote);
+        writer.Write((byte)_emotePhase);
         writer.Write((short)_emoteProgress);
     }
 
     public override void NetRecieve(BinaryReader reader)
     {
         _emote = (DogEmote)reader.ReadByte();
+        _emotePhase = (EmotePhase)reader.ReadByte();
         _emoteProgress = reader.ReadInt16();
     }
 
@@ -211,11 +260,8 @@ public class DogTransformationMorph : Morph
         if (player.velocity.Y != 0f)
             return JumpFrameStart + (int)(_jumpProgress / JumpTicksPerFrame) % JumpFrameCount;
 
-        if (_emote == DogEmote.Bend)
-            return BendStart + (int)(_emoteProgress / EmoteTicksPerFrame) % BendFrameCount;
-
-        if (_emote == DogEmote.Scratch)
-            return ScratchStart + (int)(_emoteProgress / EmoteTicksPerFrame) % ScratchFrameCount;
+        if (_emote != DogEmote.None)
+            return GetEmoteFrame();
 
         if (Math.Abs(player.velocity.X) > MoveSpeedThreshold)
             return RunStart + (int)(_runProgress / MovementPerFrame) % RunFrameCount;
@@ -223,10 +269,24 @@ public class DogTransformationMorph : Morph
         return StandStart + (int)(_standProgress / StandTicksPerFrame) % StandFrameCount;
     }
 
-    private static int GetEmoteFrameCount(DogEmote emote) => emote switch
+    private int GetEmoteFrame()
     {
-        DogEmote.Bend => BendFrameCount,
-        DogEmote.Scratch => ScratchFrameCount,
+        int start = _emote == DogEmote.Bend ? BendStart : ScratchStart;
+        int count = _emote == DogEmote.Bend ? BendFrameCount : ScratchFrameCount;
+
+        return _emotePhase switch
+        {
+            EmotePhase.Start => start,
+            EmotePhase.Cycle => start + 1 + (int)(_emoteProgress / EmoteTicksPerFrame) % (count - 2),
+            EmotePhase.End => start + count - 1,
+            _ => start
+        };
+    }
+
+    private static int GetEmoteCycleCount(DogEmote emote) => emote switch
+    {
+        DogEmote.Bend => BendFrameCount - 2,
+        DogEmote.Scratch => ScratchFrameCount - 2,
         _ => 0
     };
 }
