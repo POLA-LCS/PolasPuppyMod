@@ -25,7 +25,7 @@ public sealed class PuppyEquipmentResolution
 
     public static PuppyEquipmentResolution Empty { get; } = new(
         PuppyEquipmentSnapshot.Empty,
-        System.Array.Empty<PuppyEquipmentEntry>(),
+        [],
         null,
         null,
         default);

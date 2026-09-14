@@ -1,15 +1,9 @@
 namespace PuppyMod.Common.PuppySets;
 
-public sealed class PuppyTooltipLineDefinition
+public sealed class PuppyTooltipLineDefinition(string lineName, string localizationKey, bool halveInVanity)
 {
-    public PuppyTooltipLineDefinition(string lineName, string localizationKey, bool halveInVanity)
-    {
-        LineName = lineName;
-        LocalizationKey = localizationKey;
-        HalveInVanity = halveInVanity;
-    }
 
-    public string LineName { get; }
-    public string LocalizationKey { get; }
-    public bool HalveInVanity { get; }
+    public string LineName { get; } = lineName;
+    public string LocalizationKey { get; } = localizationKey;
+    public bool HalveInVanity { get; } = halveInVanity;
 }

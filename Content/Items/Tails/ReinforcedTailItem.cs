@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Tooltip;
+using PuppyMod.Common.Utils;
 
 namespace PuppyMod.Content.Items.Tails;
 
@@ -17,13 +18,13 @@ public class ReinforcedTailItem : ModItem, IPuppyTailItem
         MaxRunSpeed: 0.20f,
         JumpSpeedBoost: 0.6666667f);
 
-    public override string Texture => "PuppyMod/Assets/Armor/ReinforcedDogTailArmor";
+    public override string Texture => AssetUtils.GetItemTexturePathWithFallback(nameof(ReinforcedTailItem));
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
         // CloneDefaults resets backSlot to vanilla DogTail (25); restore the animated equip slot.
-        Item.backSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ReinforcedTailBack, EquipType.Back);
+        Item.backSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ReinforcedSetTailBack, EquipType.Back);
         // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
         Item.accessory = true;

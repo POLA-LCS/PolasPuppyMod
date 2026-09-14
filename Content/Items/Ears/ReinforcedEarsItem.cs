@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Tooltip;
+using PuppyMod.Common.Utils;
 
 namespace PuppyMod.Content.Items.Ears;
 
@@ -15,13 +16,13 @@ public class ReinforcedEarsItem : ModItem, IPuppyEarsItem
         MeleeKnockbackAdditive: 0.25f,
         SummonKnockbackFlat: 0.25f);
 
-    public override string Texture => "PuppyMod/Assets/Armor/ReinforcedDogEarsArmor";
+    public override string Texture => AssetUtils.GetItemTexturePathWithFallback(nameof(ReinforcedEarsItem));
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogEars);
         // CloneDefaults resets headSlot to vanilla DogEars (242); restore the animated equip slot.
-        Item.headSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ReinforcedEarsHead, EquipType.Head);
+        Item.headSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ReinforcedSetEarsHead, EquipType.Head);
         // Defense via central stats; see Puppy-Set-System.md
         Item.defense = 0;
     }

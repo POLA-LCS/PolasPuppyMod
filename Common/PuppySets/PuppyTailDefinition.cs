@@ -2,14 +2,10 @@ using PuppyMod.Common.Interfaces;
 
 namespace PuppyMod.Common.PuppySets;
 
-public sealed class PuppyTailDefinition : PuppyEquipmentDefinition
+public sealed class PuppyTailDefinition(
+    int itemType,
+    PuppyFamily family,
+    IPuppyTailItem provider,
+    PuppyTooltipDefinition tooltip) : PuppyEquipmentDefinition(itemType, PuppyEquipmentKind.Tail, family, provider, tooltip)
 {
-    public PuppyTailDefinition(
-        int itemType,
-        PuppyFamily family,
-        IPuppyTailItem provider,
-        PuppyTooltipDefinition tooltip)
-        : base(itemType, PuppyEquipmentKind.Tail, family, provider, tooltip)
-    {
-    }
 }

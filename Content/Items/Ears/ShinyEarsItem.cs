@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Tooltip;
+using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Ears;
@@ -15,17 +16,15 @@ public class ShinyEarsItem : ModItem, IPuppyEarsItem
     private const float BasePickSpeed = 0.12f;
     public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: BasePickSpeed);
 
-    // Individual light: full intensity functional, half in vanity. Ore sight comes from the Shiny pair bonus.
     private const float BaseLightIntensity = 0.5f;
     private const float BaseLightIntensityVanity = BaseLightIntensity * 0.5f;
 
-    public override string Texture => "PuppyMod/Assets/Armor/ShinyDogEarsArmor";
+    public override string Texture => AssetUtils.GetItemTexturePathWithFallback(nameof(ShinyEarsItem));
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogEars);
-        // CloneDefaults resets headSlot to vanilla DogEars (242); restore the animated equip slot.
-        Item.headSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ShinyEarsHead, EquipType.Head);
+        Item.headSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ShinySetEarsHead, EquipType.Head);
         Item.rare = ItemRarityID.Blue;
         Item.value = Item.sellPrice(gold: 1, silver: 50);
     }

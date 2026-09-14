@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Tooltip;
+using PuppyMod.Common.Utils;
 using PuppyMod.Players;
 
 namespace PuppyMod.Content.Items.Tails;
@@ -16,13 +17,13 @@ public class ShinyTailItem : ModItem, IPuppyTailItem
 
     public PuppyEquipmentStats Stats => new(Defense: 0f);
 
-    public override string Texture => "PuppyMod/Assets/Armor/ShinyDogTailArmor";
+    public override string Texture => AssetUtils.GetItemTexturePathWithFallback(nameof(ShinyTailItem));
 
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.DogTail);
         // CloneDefaults resets backSlot to vanilla DogTail (25); restore the animated equip slot.
-        Item.backSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ShinyTailBack, EquipType.Back);
+        Item.backSlot = EquipLoader.GetEquipSlot(Mod, PuppyEquipmentTextures.ShinySetTailBack, EquipType.Back);
     }
 
     public override void SetStaticDefaults()

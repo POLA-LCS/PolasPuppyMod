@@ -9,7 +9,7 @@ namespace PuppyMod.Common.PuppySets;
 /// </summary>
 public sealed class PuppyEquipmentSnapshot
 {
-    public static PuppyEquipmentSnapshot Empty { get; } = new(Array.Empty<PuppyEquipmentEntry>());
+    public static PuppyEquipmentSnapshot Empty { get; } = new([]);
 
     public PuppyEquipmentSnapshot(IEnumerable<PuppyEquipmentEntry> entries)
     {

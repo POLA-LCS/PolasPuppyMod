@@ -3,12 +3,8 @@ using System.Collections.Generic;
 
 namespace PuppyMod.Common.PuppySets;
 
-public sealed class PuppyTooltipDefinition
+public sealed class PuppyTooltipDefinition(params PuppyTooltipLineDefinition[] lines)
 {
-    public PuppyTooltipDefinition(params PuppyTooltipLineDefinition[] lines)
-    {
-        Lines = Array.AsReadOnly(lines ?? Array.Empty<PuppyTooltipLineDefinition>());
-    }
 
-    public IReadOnlyList<PuppyTooltipLineDefinition> Lines { get; }
+    public IReadOnlyList<PuppyTooltipLineDefinition> Lines { get; } = Array.AsReadOnly(lines ?? []);
 }

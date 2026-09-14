@@ -47,7 +47,7 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
 
     public override bool AltFunctionUse(Player player) => true;
 
-    private void EnsureOriginalCached(Item item)
+    private static void EnsureOriginalCached(Item item)
     {
         var g = item.GetGlobalItem<WeaponLeashGlobalItem>();
         if (g.HasOriginal) return;
@@ -106,7 +106,7 @@ public abstract class BaseWeaponLeashItem : ModItem, ILeashItem, ITooltipProvide
         return true;
     }
 
-    public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod) => Enumerable.Empty<TooltipLine>();
+    public virtual IEnumerable<TooltipLine> GetTooltipLines(Mod mod) => [];
 
     public override void ModifyTooltips(List<TooltipLine> tooltips)
     {

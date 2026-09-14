@@ -1,24 +1,16 @@
 namespace PuppyMod.Common.PuppySets;
 
-public abstract class PuppyEquipmentDefinition
+public abstract class PuppyEquipmentDefinition(
+    int itemType,
+    PuppyEquipmentKind kind,
+    PuppyFamily family,
+    IPuppyEquipmentProvider provider,
+    PuppyTooltipDefinition tooltip)
 {
-    protected PuppyEquipmentDefinition(
-        int itemType,
-        PuppyEquipmentKind kind,
-        PuppyFamily family,
-        IPuppyEquipmentProvider provider,
-        PuppyTooltipDefinition tooltip)
-    {
-        ItemType = itemType;
-        Kind = kind;
-        Family = family;
-        Provider = provider;
-        Tooltip = tooltip;
-    }
 
-    public int ItemType { get; }
-    public PuppyEquipmentKind Kind { get; }
-    public PuppyFamily Family { get; }
-    public IPuppyEquipmentProvider Provider { get; }
-    public PuppyTooltipDefinition Tooltip { get; }
+    public int ItemType { get; } = itemType;
+    public PuppyEquipmentKind Kind { get; } = kind;
+    public PuppyFamily Family { get; } = family;
+    public IPuppyEquipmentProvider Provider { get; } = provider;
+    public PuppyTooltipDefinition Tooltip { get; } = tooltip;
 }
