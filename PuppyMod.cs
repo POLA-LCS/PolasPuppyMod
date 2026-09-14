@@ -93,7 +93,7 @@ public class PuppyMod : Mod
 
     private static bool HasMountEquipped(Player player) => !player.miscEquips[3].IsAir;
 
-    /// <summary>MorphAPI applies the custom width without recentering, so it extends to the right and can embed into walls; this recenters it.</summary>
+    /// <summary>MorphAPI applies the custom width without recentering, so it extends to the right and can embed into walls; this nudges the box out when that happens.</summary>
     private static void RecenterMorphedHitbox(On_Player.orig_ResizeHitbox orig, Player player)
     {
         orig(player);
@@ -105,16 +105,19 @@ public class PuppyMod : Mod
         if (extra <= 0f)
             return;
 
-        Vector2 centered = player.position - new Vector2(extra / 2f, 0f);
-        if (!Collision.SolidCollision(centered, player.width, player.height))
-        {
-            player.position = centered;
+        // Only correct when the widened box actually overlaps tiles, otherwise this would push the player every resize.
+        if (!Collision.SolidCollision(player.position, player.width, player.height))
             return;
-        }
 
-        Vector2 rightAnchored = player.position - new Vector2(extra, 0f);
-        if (!Collision.SolidCollision(rightAnchored, player.width, player.height))
-            player.position = rightAnchored;
+        for (float shift = 0.5f; shift <= extra; shift += 0.5f)
+        {
+            Vector2 candidate = player.position - new Vector2(shift, 0f);
+            if (!Collision.SolidCollision(candidate, player.width, player.height))
+            {
+                player.position = candidate;
+                return;
+            }
+        }
     }
 
     public void RequestLeashAttach(int targetWho, int leashItemType)
