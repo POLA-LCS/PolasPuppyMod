@@ -58,6 +58,9 @@ public class DogTransformationMorph : Morph
     /// <summary>Below this horizontal speed the dog is considered standing still.</summary>
     private const float MoveSpeedThreshold = 0.05f;
 
+    /// <summary>Downward speed needed before the falling animation takes over, so the jump apex has a moment of suspension.</summary>
+    private const float FallVelocityThreshold = 0.5f;
+
     /// <summary>Dust spawned for the transformation puff.</summary>
     private const int PuffDustCount = 25;
 
@@ -143,15 +146,15 @@ public class DogTransformationMorph : Morph
 
         if (airborne)
         {
-            if (player.velocity.Y < 0f)
-            {
-                _jumpProgress += 1f;
-                _fallProgress = 0f;
-            }
-            else
+            if (player.velocity.Y > FallVelocityThreshold)
             {
                 _fallProgress += 1f;
                 _jumpProgress = 0f;
+            }
+            else
+            {
+                _jumpProgress += 1f;
+                _fallProgress = 0f;
             }
 
             return;
@@ -199,11 +202,11 @@ public class DogTransformationMorph : Morph
 
     private int GetFrame(Player player)
     {
-        if (player.velocity.Y < 0f)
-            return JumpFrameStart + (int)(_jumpProgress / JumpTicksPerFrame) % JumpFrameCount;
-
-        if (player.velocity.Y > 0f)
+        if (player.velocity.Y > FallVelocityThreshold)
             return FallFrameStart + (int)(_fallProgress / FallTicksPerFrame) % FallFrameCount;
+
+        if (player.velocity.Y != 0f)
+            return JumpFrameStart + (int)(_jumpProgress / JumpTicksPerFrame) % JumpFrameCount;
 
         if (_emote == DogEmote.Bend)
             return BendStart + (int)(_emoteProgress / EmoteTicksPerFrame) % BendFrameCount;
