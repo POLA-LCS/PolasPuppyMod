@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameInput;
 using MorphAPI.Core;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
@@ -269,6 +270,21 @@ public class PuppyPlayer : ModPlayer
             Player.SetMorph(new DogTransformationMorph());
         else if (!shouldTransform && Player.HasMorph<DogTransformationMorph>())
             Player.Unmorph();
+    }
+
+    public override void ProcessTriggers(TriggersSet triggersSet)
+    {
+        if (!Player.HasMorph<DogTransformationMorph>())
+            return;
+
+        DogTransformationMorph morph = Player.GetMorph<DogTransformationMorph>();
+
+        if (PuppyKeybinds.Bend.JustPressed)
+            morph.PlayEmote(Player, DogEmote.Bend);
+        else if (PuppyKeybinds.Scratch.JustPressed)
+            morph.PlayEmote(Player, DogEmote.Scratch);
+        else if (PuppyKeybinds.Emote.JustPressed)
+            morph.PlayEmote(Player, Main.rand.NextBool() ? DogEmote.Bend : DogEmote.Scratch);
     }
 
     private static string AppendSetBonusLine(string existing, string line)

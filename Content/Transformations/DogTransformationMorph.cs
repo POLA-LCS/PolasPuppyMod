@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MorphAPI.Core.Morphing;
 using ReLogic.Content;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Utils;
+using MorphAPIMod = MorphAPI.MorphAPI;
 
 namespace PuppyMod.Content.Transformations;
 
@@ -19,11 +22,24 @@ public class DogTransformationMorph : Morph
     /// <summary>Distance from the top of a frame to the dog's feet.</summary>
     private const int FrameBaseline = 36;
 
-    /// <summary>Frame shown while standing still.</summary>
-    private const int IdleFrame = 0;
+    // Sheet groups (1-based): 1-8 stand still, 9-19 running, 20-25 bend idle, 26-30 scratch.
+    private const int StandStart = 0;
+    private const int StandFrameCount = 8;
+    private const int RunStart = 8;
+    private const int RunFrameCount = 11;
+    private const int BendStart = 19;
+    private const int BendFrameCount = 6;
+    private const int ScratchStart = 25;
+    private const int ScratchFrameCount = 3;
 
-    /// <summary>Accumulated horizontal speed needed to advance one animation frame.</summary>
-    private const float MovementPerFrame = 6f;
+    /// <summary>Accumulated horizontal speed needed to advance one running frame.</summary>
+    private const float MovementPerFrame = 7f;
+
+    /// <summary>Ticks each standing-still frame is shown.</summary>
+    private const float StandTicksPerFrame = 10f;
+
+    /// <summary>Ticks each emote frame is shown.</summary>
+    private const float EmoteTicksPerFrame = 10f;
 
     /// <summary>Cap on how fast the animation can play, so sprinting doesn't blur the frames.</summary>
     private const float MaxAnimationSpeed = 3f;
@@ -31,22 +47,68 @@ public class DogTransformationMorph : Morph
     /// <summary>Below this horizontal speed the dog is considered standing still.</summary>
     private const float MoveSpeedThreshold = 0.05f;
 
-    private float _animationProgress;
+    private float _runProgress;
+    private float _standProgress;
+    private float _emoteProgress;
+    private DogEmote _emote;
 
     public override bool HideDefaultPlayer => true;
 
     public override bool CanUseItem(Player player, Item item) => false;
 
+    /// <summary>Starts a one-shot emote animation and syncs it in multiplayer.</summary>
+    public void PlayEmote(Player player, DogEmote emote)
+    {
+        if (emote == DogEmote.None)
+            return;
+
+        _emote = emote;
+        _emoteProgress = 0f;
+
+        if (Main.netMode == NetmodeID.MultiplayerClient)
+            MorphAPIMod.SendUpdateMorph(player);
+    }
+
     public override void Update(Player player)
     {
-        float speed = Math.Abs(player.velocity.X);
-        if (speed <= MoveSpeedThreshold)
+        bool moving = Math.Abs(player.velocity.X) > MoveSpeedThreshold;
+
+        if (_emote != DogEmote.None)
         {
-            _animationProgress = 0f;
-            return;
+            if (moving)
+            {
+                _emote = DogEmote.None;
+                _emoteProgress = 0f;
+            }
+            else
+            {
+                _emoteProgress += 1f;
+                if (_emoteProgress >= GetEmoteFrameCount(_emote) * EmoteTicksPerFrame)
+                {
+                    _emote = DogEmote.None;
+                    _emoteProgress = 0f;
+                }
+
+                return;
+            }
         }
 
-        _animationProgress += Math.Min(speed, MaxAnimationSpeed);
+        if (moving)
+            _runProgress += Math.Min(Math.Abs(player.velocity.X), MaxAnimationSpeed);
+        else
+            _standProgress += 1f;
+    }
+
+    public override void NetSend(BinaryWriter writer)
+    {
+        writer.Write((byte)_emote);
+        writer.Write((short)_emoteProgress);
+    }
+
+    public override void NetRecieve(BinaryReader reader)
+    {
+        _emote = (DogEmote)reader.ReadByte();
+        _emoteProgress = reader.ReadInt16();
     }
 
     public override void SetDrawLayers(List<DrawData> oldDrawData, ref PlayerDrawSet drawInfo)
@@ -70,9 +132,22 @@ public class DogTransformationMorph : Morph
 
     private int GetFrame(Player player)
     {
-        if (Math.Abs(player.velocity.X) <= MoveSpeedThreshold)
-            return IdleFrame;
+        if (_emote == DogEmote.Bend)
+            return BendStart + (int)(_emoteProgress / EmoteTicksPerFrame) % BendFrameCount;
 
-        return (int)(_animationProgress / MovementPerFrame);
+        if (_emote == DogEmote.Scratch)
+            return ScratchStart + (int)(_emoteProgress / EmoteTicksPerFrame) % ScratchFrameCount;
+
+        if (Math.Abs(player.velocity.X) > MoveSpeedThreshold)
+            return RunStart + (int)(_runProgress / MovementPerFrame) % RunFrameCount;
+
+        return StandStart + (int)(_standProgress / StandTicksPerFrame) % StandFrameCount;
     }
+
+    private static int GetEmoteFrameCount(DogEmote emote) => emote switch
+    {
+        DogEmote.Bend => BendFrameCount,
+        DogEmote.Scratch => ScratchFrameCount,
+        _ => 0
+    };
 }
