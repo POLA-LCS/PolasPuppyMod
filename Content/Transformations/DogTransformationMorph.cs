@@ -62,7 +62,7 @@ public class DogTransformationMorph : Morph
     private const float FallVelocityThreshold = 0.2f;
 
     /// <summary>Height of the player's hitbox while transformed, in tiles.</summary>
-    private const float HitboxHeightTiles = 1.8f;
+    private const float HitboxHeightTiles = 1.7f;
 
     /// <summary>Dust spawned for the transformation puff.</summary>
     private const int PuffDustCount = 25;
