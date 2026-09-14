@@ -1,25 +1,30 @@
 [h1]Puppy Mod - arf arf! who's a good puppy? YOU are! ૮⸝⸝> ﻌ <⸝⸝ა[/h1]
-[i]a soft, silly mod for wagging, zooming, and getting told you're a very good puppy! *pant pant*[/i]
-
-[b]v1.7.0 | Terraria 1.4.4+ | Multiplayer friendly - woof![/b]
+[i]a cute, silly [b]multiplayer-friendly[/b] mod for wagging, zooming, and getting told you're a very good puppy! *pant pant*[/i]
 
 [hr][/hr]
 [h1]Cute features[/h1]
-[b]Become a puppy![/b] Equip both [b]Dog Ears + Dog Tail[/b] to feel instantly more puppy! You get the set free on a new character if you want it in configs, and you can take them off anytime to be you again. *arf!*
+[b]Become a puppy![/b] Equip any pair of [b]Dog Ears & Dog Tail[/b] (there are a variety of them) to feel instantly more puppy! You get the set free on a new character if you want it in configs. *arf!*
 
-[b]Mix and match![/b] [b]Dog Ears[/b] helps with digging, [b]Dog Tail[/b] gives you zoomies for moving and jumping (both softer in vanity). Equip both for [b]Puppy bonus: Double tap DOWN to bark, arf![/b] even in vanity!
+[b]Mix and match![/b] [b]Dog Ears[/b] helps with digging and detecting, [b]Dog Tail[/b] gives you zoomies for moving and jumping (both softer in vanity). Equip both to unlock barking skills, even in vanity!
 
 [b]Get praised![/b] A non-puppy holding the [b]Clicker[/b] can praise every nearby puppy at once, giving them the [b]Good Puppy![/b] buff for happy zoomies! Puppies can't click, they get to be good. *clack!*
 
-[b]Bark for attention![/b] Double-tap [b]DOWN[/b] to bark whenever you want, and it sounds higher and happier right after you've been praised! *awoo!*
-
-[b]Walkies![/b] If you want, wear a [b]collar[/b]. An owner with a [b]leash or leash weapon[/b] can right-click you to clip on, and you both get a buff while tethered. Right-click again to let go. *wag wag!*
+[b]Be unique![/b] Barking pitch as well as volume can be tweaked inside the client config. So go there and explore your puppy personality! *awoo!*
 
 [hr][/hr]
 [h1]become a real puppy - awoo![/h1]
-With the full set equipped and [b]no mount[/b], press your [b]Quick Mount[/b] key (default [b]R[/b]) to truly transform into a dog! Press again to be you. If you have a mount equipped, the key mounts instead and you happily ride off.
+With any mix of two ears and tails and [b]no mount[/b], press your [b]Quick Mount[/b] key (default [b]R[/b]) to truly transform into a dog which it's breed can be changed inside the configs!
 
-While you're a real puppy items are off, and you stay a puppy in tight spots until there's room to stand back up. *tail wag!*
+While you're a real dog items are off and you can emote:
+Playful invitation (default [b]I[/b]), bend forward and start panting and wagging.
+Scratchy scratches (default [b]O[/b]), get rid of those ticks.
+Random emote (default [b]P[/b])
+
+[hr][/hr]
+[h1]walkies & leashing - woof![/h1]
+Wear a [b]collar[/b] and let an owner take you for walkies! With a [b]rope leash[/b], a [b]chain leash[/b] or a [b]leash weapon[/b], they can right-click a collared puppy to clip on.
+
+Once leashed a rope (or chain) links you together as you trot along, and both sides get rewarded: the [b]collar[/b] buffs the owner and the [b]leash[/b] buffs the puppy. Right-click again to unclip and run free. *wag wag!*
 
 [hr][/hr]
 [h1]good to know - woof?[/h1]
