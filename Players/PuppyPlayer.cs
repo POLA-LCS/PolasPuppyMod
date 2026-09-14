@@ -255,22 +255,6 @@ public class PuppyPlayer : ModPlayer
                 Player.setBonus = AppendSetBonusLine(Player.setBonus, bonusText);
             }
         }
-
-        UpdateTransformation();
-    }
-
-    private void UpdateTransformation()
-    {
-        if (Player.whoAmI != Main.myPlayer)
-            return;
-
-        bool mountEquipped = !Player.miscEquips[3].IsAir;
-        bool shouldTransform = IsPuppy && !mountEquipped && !Player.mount.Active;
-
-        if (shouldTransform && !Player.HasMorph<DogTransformationMorph>())
-            Player.SetMorph(new DogTransformationMorph());
-        else if (!shouldTransform && Player.HasMorph<DogTransformationMorph>())
-            Player.Unmorph();
     }
 
     public override void ProcessTriggers(TriggersSet triggersSet)

@@ -3,7 +3,9 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using MorphAPI.Core;
 using PuppyMod.Common.PuppySets;
+using PuppyMod.Content.Transformations;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
 
@@ -23,22 +25,40 @@ public class PuppyMod : Mod
     public override void Load()
     {
         PuppyKeybinds.Load(this);
+        On_Player.QuickMount += HandleQuickMount;
         PuppyEquipmentRegistry.RegisterDefaults();
         PuppyPairBonusRegistry.RegisterDefaults();
 
         // Animated vanity sheets: 40x1120 equip sheets (20 frames of 40x56) animated by the player's body frame.
-        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ShinyEarsSheet, EquipType.Head, name: PuppyEquipmentTextures.ShinyEarsHead);
-        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ReinforcedEarsSheet, EquipType.Head, name: PuppyEquipmentTextures.ReinforcedEarsHead);
-        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ShinyTailSheet, EquipType.Back, name: PuppyEquipmentTextures.ShinyTailBack);
-        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ReinforcedTailSheet, EquipType.Back, name: PuppyEquipmentTextures.ReinforcedTailBack);
+        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ShinyEarsSheet, EquipType.Head, name: PuppyEquipmentTextures.ShinySetEarsHead);
+        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ReinforcedEarsSheet, EquipType.Head, name: PuppyEquipmentTextures.ReinforcedSetEarsHead);
+        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ShinyTailSheet, EquipType.Back, name: PuppyEquipmentTextures.ShinySetTailBack);
+        EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ReinforcedTailSheet, EquipType.Back, name: PuppyEquipmentTextures.ReinforcedSetTailBack);
     }
 
     public override void Unload()
     {
+        On_Player.QuickMount -= HandleQuickMount;
         PuppyKeybinds.Unload();
         PuppyEquipmentRegistry.Clear();
         PuppyPairBonusRegistry.Clear();
     }
+
+    /// <summary>The mount key toggles the puppy transformation; with a mount equipped it detransforms and mounts instead.</summary>
+    private static void HandleQuickMount(On_Player.orig_QuickMount orig, Player player)
+    {
+        if (player.whoAmI == Main.myPlayer)
+        {
+            if (player.GetMorph<DogTransformationMorph>() is not null)
+                player.Unmorph();
+            else if (!HasMountEquipped(player) && player.GetModPlayer<PuppyPlayer>().IsPuppy)
+                player.SetMorph(new DogTransformationMorph());
+        }
+
+        orig(player);
+    }
+
+    private static bool HasMountEquipped(Player player) => !player.miscEquips[3].IsAir;
 
     public void RequestLeashAttach(int targetWho, int leashItemType)
     {
