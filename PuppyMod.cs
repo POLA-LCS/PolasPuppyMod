@@ -22,6 +22,7 @@ public class PuppyMod : Mod
 
     public override void Load()
     {
+        PuppyKeybinds.Load(this);
         PuppyEquipmentRegistry.RegisterDefaults();
         PuppyPairBonusRegistry.RegisterDefaults();
 
@@ -34,6 +35,7 @@ public class PuppyMod : Mod
 
     public override void Unload()
     {
+        PuppyKeybinds.Unload();
         PuppyEquipmentRegistry.Clear();
         PuppyPairBonusRegistry.Clear();
     }

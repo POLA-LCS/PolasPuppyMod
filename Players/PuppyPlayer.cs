@@ -6,11 +6,14 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameInput;
+using MorphAPI.Core;
 using PuppyMod.Common.PuppySets;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs;
 using PuppyMod.Content.Items.Ears;
 using PuppyMod.Content.Items.Tails;
+using PuppyMod.Content.Transformations;
 using PuppyMod.Services.Leash;
 using PuppyMod.Services.PuppySets;
 
@@ -284,6 +287,12 @@ public class PuppyPlayer : ModPlayer
         // Clamp acceleration to max run speed for puppies so sprint dust never triggers.
         if (IsPuppy && Player.accRunSpeed > Player.maxRunSpeed)
             Player.accRunSpeed = Player.maxRunSpeed;
+    }
+
+    public override void ProcessTriggers(TriggersSet triggersSet)
+    {
+        if (PuppyKeybinds.Transform.JustPressed)
+            Player.ToggleMorph(new DogTransformationMorph());
     }
 
     private void ApplyEquipmentDefense()

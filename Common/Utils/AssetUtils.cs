@@ -10,7 +10,8 @@ public enum AssetCategory
     Weapons,
     Items,
     Projectiles,
-    Buffs
+    Buffs,
+    Transformations
 }
 
 public static class AssetUtils
@@ -26,6 +27,8 @@ public static class AssetUtils
     public static string GetProjectileTexturePath(string name) => GetTexturePath(AssetCategory.Projectiles, name);
 
     public static string GetBuffTexturePath(string name) => GetTexturePath(AssetCategory.Buffs, name);
+
+    public static string GetTransformationTexturePath(string name) => GetTexturePath(AssetCategory.Transformations, name);
 
     public static string GetAccessoryTexturePathWithFallback(string name)
         => HasAsset(AssetCategory.Accessories, name) ? GetAccessoryTexturePath(name) : GetAccessoryTexturePath("DefaultAccessory");
