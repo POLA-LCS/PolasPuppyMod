@@ -64,6 +64,9 @@ public class DogTransformationMorph : Morph
     /// <summary>Height of the player's hitbox while transformed, in tiles.</summary>
     private const float HitboxHeightTiles = 1.7f;
 
+    /// <summary>Extra width added to the player's hitbox while transformed, in tiles.</summary>
+    private const float HitboxExtraWidthTiles = 0.2f;
+
     /// <summary>Dust spawned for the transformation puff.</summary>
     private const int PuffDustCount = 25;
 
@@ -93,7 +96,9 @@ public class DogTransformationMorph : Morph
 
     public override bool ModifyHitbox(Player player, out Point16 size)
     {
-        size = new Point16(Player.defaultWidth, (int)MathF.Round(HitboxHeightTiles * 16f));
+        int width = (int)MathF.Round(Player.defaultWidth + HitboxExtraWidthTiles * 16f);
+        int height = (int)MathF.Round(HitboxHeightTiles * 16f);
+        size = new Point16(width, height);
         return true;
     }
 
