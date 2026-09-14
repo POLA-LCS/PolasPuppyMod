@@ -25,7 +25,8 @@ public class DogTransformationMorph : Morph
     // Sheet groups as 0-based frame indexes: 0-8 stand still, 9 jump/fall, 10-17 running, 18-23 bend idle, 24-27 scratch.
     private const int StandStart = 0;
     private const int StandFrameCount = 9;
-    private const int JumpFrame = 9;
+    private const int JumpFrameStart = 9;
+    private const int JumpFrameCount = 1;
     private const int RunStart = 10;
     private const int RunFrameCount = 8;
     private const int BendStart = 18;
@@ -38,6 +39,9 @@ public class DogTransformationMorph : Morph
 
     /// <summary>Ticks each standing-still frame is shown.</summary>
     private const float StandTicksPerFrame = 10f;
+
+    /// <summary>Ticks each jump/fall frame is shown.</summary>
+    private const float JumpTicksPerFrame = 8f;
 
     /// <summary>Ticks each emote frame is shown.</summary>
     private const float EmoteTicksPerFrame = 10f;
@@ -56,6 +60,7 @@ public class DogTransformationMorph : Morph
 
     private float _runProgress;
     private float _standProgress;
+    private float _jumpProgress;
     private float _emoteProgress;
     private DogEmote _emote;
 
@@ -130,7 +135,12 @@ public class DogTransformationMorph : Morph
         }
 
         if (airborne)
+        {
+            _jumpProgress += 1f;
             return;
+        }
+
+        _jumpProgress = 0f;
 
         if (moving)
             _runProgress += Math.Min(Math.Abs(player.velocity.X), MaxAnimationSpeed);
@@ -172,7 +182,7 @@ public class DogTransformationMorph : Morph
     private int GetFrame(Player player)
     {
         if (player.velocity.Y != 0f)
-            return JumpFrame;
+            return JumpFrameStart + (int)(_jumpProgress / JumpTicksPerFrame) % JumpFrameCount;
 
         if (_emote == DogEmote.Bend)
             return BendStart + (int)(_emoteProgress / EmoteTicksPerFrame) % BendFrameCount;
