@@ -47,6 +47,12 @@ public class DogTransformationMorph : Morph
     /// <summary>Below this horizontal speed the dog is considered standing still.</summary>
     private const float MoveSpeedThreshold = 0.05f;
 
+    /// <summary>Dust spawned for the transformation puff.</summary>
+    private const int PuffDustCount = 25;
+
+    /// <summary>Maximum outward speed of the transformation puff dust.</summary>
+    private const float PuffSpeed = 2.2f;
+
     private float _runProgress;
     private float _standProgress;
     private float _emoteProgress;
@@ -55,6 +61,34 @@ public class DogTransformationMorph : Morph
     public override bool HideDefaultPlayer => true;
 
     public override bool CanUseItem(Player player, Item item) => false;
+
+    public override void OnMorph(Player player) => SpawnPuff(player);
+
+    public override void OnUnmorph(Player player) => SpawnPuff(player);
+
+    private static void SpawnPuff(Player player)
+    {
+        if (Main.dedServ)
+            return;
+
+        for (int i = 0; i < PuffDustCount; i++)
+        {
+            Vector2 offset = new(
+                Main.rand.NextFloat(-player.width, player.width),
+                Main.rand.NextFloat(-player.height * 0.5f, player.height * 0.5f));
+
+            Dust dust = Dust.NewDustPerfect(
+                player.Center + offset,
+                DustID.Cloud,
+                Main.rand.NextVector2Circular(PuffSpeed, PuffSpeed),
+                0,
+                default,
+                Main.rand.NextFloat(1.2f, 1.8f));
+
+            dust.noGravity = true;
+            dust.velocity.Y -= 0.4f;
+        }
+    }
 
     /// <summary>Starts a one-shot emote animation and syncs it in multiplayer.</summary>
     public void PlayEmote(Player player, DogEmote emote)
