@@ -22,15 +22,15 @@ public class DogTransformationMorph : Morph
     /// <summary>Distance from the top of a frame to the dog's feet.</summary>
     private const int FrameBaseline = 36;
 
-    // Sheet groups (1-based): 1-8 stand still, 9-19 running, 20-25 bend idle, 26-30 scratch.
+    // Sheet groups (1-based): 1-8 stand still, 9-17 running, 18-24 bend idle, 25-28 scratch.
     private const int StandStart = 0;
     private const int StandFrameCount = 8;
     private const int RunStart = 8;
-    private const int RunFrameCount = 11;
-    private const int BendStart = 19;
-    private const int BendFrameCount = 6;
-    private const int ScratchStart = 25;
-    private const int ScratchFrameCount = 3;
+    private const int RunFrameCount = 9;
+    private const int BendStart = 17;
+    private const int BendFrameCount = 7;
+    private const int ScratchStart = 24;
+    private const int ScratchFrameCount = 4;
 
     /// <summary>Accumulated horizontal speed needed to advance one running frame.</summary>
     private const float MovementPerFrame = 7f;
