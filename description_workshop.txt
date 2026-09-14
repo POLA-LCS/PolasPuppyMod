@@ -4,27 +4,35 @@
 [b]v1.7.0 | Terraria 1.4.4+ | Multiplayer friendly - woof![/b]
 
 [hr][/hr]
-[h1]what does it do? ฅ•ω•ฅ[/h1]
-Turn your adventure into walkies! This mod lets you be a little more puppy while you dig, fight and explore - with playful praise and cozy owner/puppy moments with friends. It's light, consensual, and you decide when to be puppy and when not. [i]Gentle and SFW - just headpats and happy zoomies![/i]
+[h1]Cute features[/h1]
+[b]Become a puppy![/b] Equip both [b]Dog Ears + Dog Tail[/b] to feel instantly more puppy! You get the set free on a new character if you want it in configs, and you can take them off anytime to be you again. *arf!*
+
+[b]Mix and match![/b] [b]Dog Ears[/b] helps with digging, [b]Dog Tail[/b] gives you zoomies for moving and jumping (both softer in vanity). Equip both for [b]Puppy bonus: Double tap DOWN to bark, arf![/b] even in vanity!
+
+[b]Get praised![/b] A non-puppy holding the [b]Clicker[/b] can praise every nearby puppy at once, giving them the [b]Good Puppy![/b] buff for happy zoomies! Puppies can't click, they get to be good. *clack!*
+
+[b]Bark for attention![/b] Double-tap [b]DOWN[/b] to bark whenever you want, and it sounds higher and happier right after you've been praised! *awoo!*
+
+[b]Walkies![/b] If you want, wear a [b]collar[/b]. An owner with a [b]leash or leash weapon[/b] can right-click you to clip on, and you both get a buff while tethered. Right-click again to let go. *wag wag!*
 
 [hr][/hr]
-[h1]how to be puppy - arf![/h1]
-[list]
-[*][b]Become a puppy -[/b] Equip both [b]Dog Ears + Dog Tail[/b] to feel instantly more puppy! You get the set free on a new character if you want it in configs, and you can take them off anytime to be you again. *arf!*
-[*][b]Mix and match -[/b] [b]Dog Ears[/b] helps with digging, [b]Dog Tail[/b] gives you zoomies for moving and jumping (both softer in vanity). Equip both for [b]Puppy bonus: Double tap DOWN to bark, arf![/b] - even in vanity!
-[*][b]Get praised! -[/b] A non-puppy holding the [b]Clicker[/b] can praise every nearby puppy at once, giving them the [b]Good Puppy![/b] buff for happy zoomies! Puppies can't click - they get to be good. *clack!*
-[*][b]Bark for attention -[/b] Double-tap [b]DOWN[/b] to bark whenever you want - it sounds higher and happier right after you've been praised! *awoo!*
-[*][b]Walkies -[/b] If you want, wear a [b]collar[/b]. An owner with a [b]leash or leash weapon[/b] can right-click you to clip on - you go for walkies together and you both get a buff while tethered. Right-click again to let go. *wag wag!*
-[/list]
+[h1]become a real puppy - awoo![/h1]
+With the full set equipped and [b]no mount[/b], press your [b]Quick Mount[/b] key (default [b]R[/b]) to truly transform into a dog! Press again to be you. If you have a mount equipped, the key mounts instead and you happily ride off.
+
+While you're a real puppy items are off, and you stay a puppy in tight spots until there's room to stand back up. *tail wag!*
 
 [hr][/hr]
 [h1]good to know - woof?[/h1]
 [b]Solo or with friends?[/b] Both work! Be a happy solo pupper, or bring friends to share the fun!
+
 [b]Two puppies?[/b] Yep - the whole pack can be good together!
+
 [b]Can puppies praise themselves?[/b] Nuh-uh - only owners praise, puppies get to be good. That's the fun! :3
 
+[b]Technical woofs![/b] Needs the [b]MorphAPI[/b] library, and tModLoader grabs it for you automatically. Transformation is synced in multiplayer, and all the puppy extras live in [b]Configs[/b]: dog skin, bark volume, pitch and more. If something's off, reload mods and give us a woof.
+
 [hr][/hr]
-[h1]credits - thank you, good puppies! ૮꒰ ྀི >⸝⸝⸝< ྀི꒱ა[/h1]
+[h1]credits - thank you, good puppies! ૮꒰ ྀི >⏝⏝< ྀི꒱ა[/h1]
 Made with lots of wags - every bark, woof and click is a real recording by me, so it feels alive! *woof woof!* :3 I'm searching for community barking too - I bet you guys can emit such cute sounds! *arf!*
 Art mixes vanilla favourites with custom-made goodies.
 Thank you to every puppy who tested and said they felt [i]seen[/i] - you did so good! *headpat!*
