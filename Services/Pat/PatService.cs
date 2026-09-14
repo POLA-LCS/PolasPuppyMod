@@ -14,7 +14,7 @@ public static class PatService
 {
     public const int PatRangeTiles = 3;
     public const int PatBuffTicks = 180;
-    public const int PatCooldownTicks = 30;
+    public const int PatCooldownTicks = 20;
 
     public static readonly SoundPad Pats = SoundPad.LoadCategory("PuppySounds/pat", volume: 0.9f);
 

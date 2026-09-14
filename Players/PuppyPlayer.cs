@@ -33,7 +33,6 @@ public class PuppyPlayer : ModPlayer
 
     private int _barkCooldown = 0;
     private DogEmote _emoteChoice = DogEmote.None;
-    private bool _previousRightClick;
 
     /// <summary>Server-side tick of the last pat applied, used for the pat cooldown.</summary>
     public int LastPatTick = -PatService.PatCooldownTicks;
@@ -184,10 +183,8 @@ public class PuppyPlayer : ModPlayer
         if (Player.whoAmI == Main.myPlayer)
         {
             bool rightClick = Player.controlUseTile;
-            if (rightClick && !_previousRightClick && PatService.IsPatHand(Player))
+            if (rightClick && PatService.IsPatHand(Player))
                 PatService.TryPat(Player);
-
-            _previousRightClick = rightClick;
         }
     }
 
