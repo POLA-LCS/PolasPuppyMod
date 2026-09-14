@@ -291,7 +291,16 @@ public class PuppyPlayer : ModPlayer
 
     public override void ProcessTriggers(TriggersSet triggersSet)
     {
-        if (PuppyKeybinds.Transform.JustPressed)
+        if (!PuppyKeybinds.Transform.JustPressed)
+            return;
+
+        if (Player.HasMorph<DogTransformationMorph>())
+        {
+            Player.Unmorph();
+            return;
+        }
+
+        if (IsPuppy && !Player.HasMorph())
             Player.ToggleMorph(new DogTransformationMorph());
     }
 

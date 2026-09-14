@@ -37,6 +37,8 @@ public class DogTransformationMorph : Morph
 
     public override bool BlockMounts => true;
 
+    public override bool CanUseItem(Player player, Item item) => false;
+
     public override void Update(Player player)
     {
         float speed = Math.Abs(player.velocity.X);
