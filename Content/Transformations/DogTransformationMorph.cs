@@ -297,7 +297,7 @@ public class DogTransformationMorph : Morph
 
     private static readonly Dictionary<Texture2D, float[]> FrameAlignment = [];
 
-    /// <summary>Per-frame horizontal offsets that center each frame's artwork, so the animation doesn't wobble left and right.</summary>
+    /// <summary>Per-frame horizontal offsets that align each frame's front edge, so the body stays put while the tail and legs animate.</summary>
     private static float[] GetFrameAlignment(Texture2D texture, int frameCount)
     {
         if (FrameAlignment.TryGetValue(texture, out float[] cached))
@@ -306,11 +306,12 @@ public class DogTransformationMorph : Morph
         Color[] pixels = new Color[texture.Width * texture.Height];
         texture.GetData(pixels);
 
-        float[] offsets = new float[frameCount];
+        int[] leftEdges = new int[frameCount];
+        int anchor = int.MaxValue;
+
         for (int frame = 0; frame < frameCount; frame++)
         {
             int minX = int.MaxValue;
-            int maxX = -1;
             int startY = frame * FrameHeight;
             int endY = Math.Min(startY + FrameHeight, texture.Height);
 
@@ -321,13 +322,21 @@ public class DogTransformationMorph : Morph
                 {
                     if (pixels[row + x].A == 0)
                         continue;
-                    if (x < minX) minX = x;
-                    if (x > maxX) maxX = x;
+                    if (x < minX)
+                        minX = x;
                 }
             }
 
-            float contentCenter = maxX >= 0 ? (minX + maxX) / 2f : texture.Width / 2f;
-            offsets[frame] = texture.Width / 2f - contentCenter;
+            leftEdges[frame] = minX;
+            if (minX < anchor)
+                anchor = minX;
+        }
+
+        float[] offsets = new float[frameCount];
+        for (int frame = 0; frame < frameCount; frame++)
+        {
+            if (leftEdges[frame] != int.MaxValue)
+                offsets[frame] = anchor - leftEdges[frame];
         }
 
         FrameAlignment[texture] = offsets;
