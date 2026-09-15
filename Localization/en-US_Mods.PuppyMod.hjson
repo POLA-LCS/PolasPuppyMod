@@ -145,7 +145,7 @@ Configs: {
 
 		Headers: {
 			Misc: Misc
-			"Let's bark a lot!": Let's bark a lot!
+			Barking: Let's bark a lot!
 		}
 
 		StartAsPuppy: {

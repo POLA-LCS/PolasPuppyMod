@@ -15,7 +15,7 @@ public class PuppyModClientConfig : ModConfig
     [DefaultValue(DogTransformationSkin.Beagle)]
     public DogTransformationSkin TransformationSkin { get; set; } = DogTransformationSkin.Beagle;
 
-    [Header("Let's bark a lot!")]
+    [Header("Barking")]
     [Range(0f, 1f)]
     [DefaultValue(0.5f)]
     public float BarkVolume { get; set; } = 0.5f;
