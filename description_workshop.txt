@@ -9,6 +9,8 @@
 
 [b]Get praised![/b] A non-puppy holding the [b]Clicker[/b] can praise every nearby puppy at once, giving them the [b]Good Puppy![/b] buff for happy zoomies! Puppies can't click, they get to be good. *clack!*
 
+[b]Pet anyone![/b] Right-click any puppy to give them pets — they’ll wag and get hearts! You can also pet the [b]Zoologist[/b] right from her chat with [b]pet <3[/b]! Thanks to the new [b]PetAnyone[/b] utility, any NPC or puppy-set player can be made pettable. *pat pat!*
+
 [b]Be unique![/b] Barking pitch as well as volume can be tweaked inside the client config. So go there and explore your puppy personality! *awoo!*
 
 [hr][/hr]
