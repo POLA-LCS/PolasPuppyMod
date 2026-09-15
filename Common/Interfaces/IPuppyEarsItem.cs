@@ -1,5 +1,5 @@
 using Terraria;
-using PuppyMod.Common.PuppySets;
+using PuppyMod.Common.PuppySets.Core;
 
 namespace PuppyMod.Common.Interfaces;
 

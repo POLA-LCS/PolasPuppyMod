@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using PuppyMod.Common.PuppySets.Core;
+using PuppyMod.Common.PuppySets.Definitions;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.State;
 
 public static class PuppyEquipmentResolver
 {

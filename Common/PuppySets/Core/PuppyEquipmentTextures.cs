@@ -1,4 +1,4 @@
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Core;
 
 /// <summary>
 /// Animated vanity sheets and their registered equip texture names.

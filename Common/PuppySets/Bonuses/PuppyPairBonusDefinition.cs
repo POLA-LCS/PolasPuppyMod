@@ -1,6 +1,8 @@
 using System;
+using PuppyMod.Common.PuppySets.Core;
+using PuppyMod.Common.PuppySets.Definitions;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Bonuses;
 
 public sealed class PuppyPairBonusDefinition
 {
@@ -46,7 +48,7 @@ public sealed class PuppyPairBonusDefinition
             return default;
         }
 
-        PuppySetPlacement placement = PuppyEquipmentResolution.GetPlacement(selectedEars, selectedTail);
+        PuppySetPlacement placement = PuppySetPlacementHelper.FromEntries(selectedEars, selectedTail);
         int defense = PlacementDefense?.GetDefense(placement) ?? 0;
         float strength = placement == PuppySetPlacement.Therian ? 1f : 0.5f;
         float knockbackMultiplier = 1f - ((1f - FullKnockbackMultiplier) * strength);

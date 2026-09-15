@@ -1,4 +1,6 @@
-namespace PuppyMod.Common.PuppySets;
+using PuppyMod.Common.PuppySets.Core;
+
+namespace PuppyMod.Common.PuppySets.Definitions;
 
 public abstract class PuppyEquipmentDefinition(
     int itemType,

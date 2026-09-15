@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PuppyMod.Common.PuppySets.Core;
+using PuppyMod.Common.PuppySets.Definitions;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.State;
 
 /// <summary>
 /// Immutable view of all recognized Puppy equipment found by the scanner for one tick.

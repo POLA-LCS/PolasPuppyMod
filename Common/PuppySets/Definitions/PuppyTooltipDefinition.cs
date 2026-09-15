@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Definitions;
 
 public sealed class PuppyTooltipDefinition(params PuppyTooltipLineDefinition[] lines)
 {

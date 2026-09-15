@@ -1,6 +1,7 @@
 using PuppyMod.Common.Interfaces;
+using PuppyMod.Common.PuppySets.Core;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Definitions;
 
 public sealed class PuppyEarsDefinition(
     int itemType,

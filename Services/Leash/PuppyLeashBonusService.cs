@@ -1,5 +1,7 @@
 using Terraria;
-using PuppyMod.Common.PuppySets;
+using PuppyMod.Common.PuppySets.Bonuses;
+using PuppyMod.Common.PuppySets.Definitions;
+using PuppyMod.Common.PuppySets.State;
 using PuppyMod.Players;
 
 namespace PuppyMod.Services.Leash;

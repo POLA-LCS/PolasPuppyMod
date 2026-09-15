@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Localization;
+using PuppyMod.Common.PuppySets.Bonuses;
+using PuppyMod.Common.PuppySets.Core;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.State;
 
 public static class PuppySetBonusText
 {

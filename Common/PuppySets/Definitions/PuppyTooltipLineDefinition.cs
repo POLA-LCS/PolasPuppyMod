@@ -1,4 +1,4 @@
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Definitions;
 
 public sealed class PuppyTooltipLineDefinition(string lineName, string localizationKey, bool halveInVanity)
 {

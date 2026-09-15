@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Interfaces;
-using PuppyMod.Common.PuppySets;
+using PuppyMod.Common.PuppySets.Core;
 using PuppyMod.Common.Tooltip;
 using PuppyMod.Common.Utils;
 using PuppyMod.Players;

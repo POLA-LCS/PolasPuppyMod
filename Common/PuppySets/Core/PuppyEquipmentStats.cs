@@ -1,4 +1,4 @@
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Core;
 
 /// <summary>
 /// Immutable additive contribution from one equipped Puppy item, or the aggregate of all

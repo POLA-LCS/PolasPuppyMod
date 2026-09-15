@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using PuppyMod.Common.PuppySets.Core;
+using PuppyMod.Common.PuppySets.Definitions;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.State;
 
 /// <summary>
 /// Scans the player's armor for registered Puppy equipment, including extra accessory slots

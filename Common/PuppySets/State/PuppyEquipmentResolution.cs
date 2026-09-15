@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using PuppyMod.Common.PuppySets.Bonuses;
+using PuppyMod.Common.PuppySets.Core;
+using PuppyMod.Common.PuppySets.Definitions;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.State;
 
 /// <summary>
 /// Immutable result of resolving a Puppy equipment snapshot. SelectedEars determines the
@@ -53,18 +57,10 @@ public sealed class PuppyEquipmentResolution
     /// Placement of the selected pair: both functional → Therian, exactly one functional → Furry,
     /// both vanity → Costume. Based on the selected pair only; duplicate copies don't change it.
     /// </summary>
-    public PuppySetPlacement SelectedPlacement => GetPlacement(SelectedEars, SelectedTail);
+    public PuppySetPlacement SelectedPlacement => PuppySetPlacementHelper.FromEntries(SelectedEars, SelectedTail);
 
-    public static PuppySetPlacement GetPlacement(PuppyEquipmentEntry ears, PuppyEquipmentEntry tail)
-    {
-        int functional = (ears?.IsFunctional == true ? 1 : 0) + (tail?.IsFunctional == true ? 1 : 0);
-        return functional switch
-        {
-            2 => PuppySetPlacement.Therian,
-            1 => PuppySetPlacement.Furry,
-            _ => PuppySetPlacement.Costume
-        };
-    }
+    [Obsolete("Use PuppySetPlacementHelper.FromEntries instead.")]
+    public static PuppySetPlacement GetPlacement(PuppyEquipmentEntry ears, PuppyEquipmentEntry tail) => PuppySetPlacementHelper.FromEntries(ears, tail);
 
     public bool TryGetPairBonus(out PuppyPairBonusDefinition pairBonus)
     {

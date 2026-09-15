@@ -5,7 +5,9 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using PuppyMod.Common.PuppySets;
+using PuppyMod.Common.PuppySets.Core;
+using PuppyMod.Common.PuppySets.Definitions;
+using PuppyMod.Common.PuppySets.State;
 using PuppyMod.Players;
 
 namespace PuppyMod.Common.Tooltip;

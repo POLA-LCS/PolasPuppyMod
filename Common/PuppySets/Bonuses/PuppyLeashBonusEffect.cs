@@ -1,4 +1,4 @@
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Bonuses;
 
 public readonly record struct PuppyLeashBonusEffect(
     int DefenseBonus,

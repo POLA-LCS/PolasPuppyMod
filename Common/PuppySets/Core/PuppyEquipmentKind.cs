@@ -1,4 +1,4 @@
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Core;
 
 public enum PuppyEquipmentKind
 {

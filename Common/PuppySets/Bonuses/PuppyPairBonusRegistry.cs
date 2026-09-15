@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using PuppyMod.Common.PuppySets.Core;
 
-namespace PuppyMod.Common.PuppySets;
+namespace PuppyMod.Common.PuppySets.Bonuses;
 
 public static class PuppyPairBonusRegistry
 {

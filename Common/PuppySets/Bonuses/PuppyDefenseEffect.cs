@@ -1,4 +1,6 @@
-namespace PuppyMod.Common.PuppySets;
+using PuppyMod.Common.PuppySets.Core;
+
+namespace PuppyMod.Common.PuppySets.Bonuses;
 
 /// <summary>Defense granted by a set pair, chosen by the pair's placement state.</summary>
 public readonly record struct PuppyDefenseEffect(
