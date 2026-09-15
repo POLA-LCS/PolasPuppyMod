@@ -1,6 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -19,8 +17,6 @@ public static class PatService
     public const int PatCooldownTicks = 20;
     public const int PatWagDurationTicks = 90;
     public const int PatReachDurationTicks = 30;
-
-    private const string PatHandTexturePath = "PuppyMod/Assets/Pat/PatHand";
 
     public static readonly SoundPad Pats = SoundPad.LoadCategory("PuppySounds/pat", volume: 0.9f);
 
@@ -43,9 +39,10 @@ public static class PatService
             return;
         puppy.PatterPatTick = (int)Main.GameUpdateCount;
 
-        // Reach the hand toward the puppy while patting.
+        // Reach the arm toward the puppy while patting.
         puppy.PatReachTicks = PatReachDurationTicks;
         puppy.PatReachTarget = target.whoAmI;
+        patter.direction = target.Center.X >= patter.Center.X ? 1 : -1;
 
         if (Main.netMode == NetmodeID.MultiplayerClient)
         {
@@ -54,7 +51,7 @@ public static class PatService
         else if (Main.netMode == NetmodeID.Server)
         {
             if (CanPat(patter, target) && ApplyPat(target))
-                ModContent.GetInstance<PuppyMod>().BroadcastPat(target.whoAmI);
+                ModContent.GetInstance<PuppyMod>().BroadcastPat(patter.whoAmI, target.whoAmI);
         }
         else if (ApplyPat(target))
         {
@@ -110,17 +107,6 @@ public static class PatService
         puppy.PatWagTicks = PatWagDurationTicks;
         target.AddBuff(ModContent.BuffType<GoodPuppyBuff>(), PatBuffTicks);
         return true;
-    }
-
-    /// <summary>Whether a patting hand texture is available (drop one at Assets/Pat/PatHand.png).</summary>
-    public static bool TryGetPatHandTexture(out Texture2D texture)
-    {
-        texture = null;
-        if (Main.dedServ || !ModContent.HasAsset(PatHandTexturePath))
-            return false;
-
-        texture = ModContent.Request<Texture2D>(PatHandTexturePath, AssetRequestMode.ImmediateLoad).Value;
-        return texture != null;
     }
 
     /// <summary>Hearts and pat sounds around the puppy. Runs on whichever client needs to show it.</summary>

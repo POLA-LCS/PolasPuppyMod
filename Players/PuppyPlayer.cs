@@ -181,10 +181,16 @@ public class PuppyPlayer : ModPlayer
             _barkCooldown--;
         if (PatWagTicks > 0)
             PatWagTicks--;
+
         if (PatReachTicks > 0)
+        {
             PatReachTicks--;
+            UpdatePatReachArm();
+        }
         else
+        {
             PatReachTarget = -1;
+        }
         // ShinyEars light stays an individual effect: full functional, half vanity.
         if (_shinyEarsFunctional || _shinyEarsVanity)
         {
@@ -303,6 +309,18 @@ public class PuppyPlayer : ModPlayer
             held = _emoteChoice;
 
         Player.GetMorph<DogTransformationMorph>().SetEmoteInput(Player, held);
+    }
+
+    /// <summary>Extends the arm toward the puppy being petted, with the same bobbing pose vanilla uses when petting town pets.</summary>
+    private void UpdatePatReachArm()
+    {
+        Player target = PatReachTarget >= 0 && PatReachTarget < Main.player.Length ? Main.player[PatReachTarget] : null;
+        if (target == null || !target.active || target.dead)
+            return;
+
+        int stretch = (Main.GameUpdateCount % 14) / 7 == 1 ? 0 : 3;
+        float angle = target.HasMorph<DogTransformationMorph>() ? 0.2f : 0.3f;
+        Player.SetCompositeArmBack(true, (Player.CompositeArmStretchAmount)stretch, angle * -MathHelper.TwoPi * Player.direction);
     }
 
     private static string AppendSetBonusLine(string existing, string line)

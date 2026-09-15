@@ -166,12 +166,13 @@ public class PuppyMod : Mod
         packet.Send();
     }
 
-    public void BroadcastPat(int targetWho)
+    public void BroadcastPat(int patterWho, int targetWho)
     {
         if (Main.netMode != NetmodeID.Server)
             return;
         var packet = GetPacket();
         packet.Write((byte)PuppyPacketType.Pat);
+        packet.Write((byte)patterWho);
         packet.Write((byte)targetWho);
         packet.Send();
     }
@@ -184,7 +185,7 @@ public class PuppyMod : Mod
         Player target = Main.player[targetWho];
         if (!PatService.CanPat(patter, target) || !PatService.ApplyPat(target))
             return;
-        BroadcastPat(targetWho);
+        BroadcastPat(patterWho, targetWho);
     }
 
     /// <summary>Returns whether a packet-supplied player index points at an active player.</summary>
@@ -235,15 +236,25 @@ public class PuppyMod : Mod
                 break;
             case (byte)PuppyPacketType.Pat:
                 if (Main.netMode == NetmodeID.Server)
+                {
                     HandleServerPat(whoAmI, reader.ReadByte());
+                }
                 else
                 {
+                    int patterWho = reader.ReadByte();
                     int targetWho = reader.ReadByte();
-                    if (!IsValidPlayer(targetWho))
-                        break;
-                    Player patTarget = Main.player[targetWho];
-                    PatService.PlayPatEffects(patTarget);
-                    patTarget.GetModPlayer<PuppyPlayer>().PatWagTicks = PatService.PatWagDurationTicks;
+                    if (IsValidPlayer(targetWho))
+                    {
+                        Player patTarget = Main.player[targetWho];
+                        PatService.PlayPatEffects(patTarget);
+                        patTarget.GetModPlayer<PuppyPlayer>().PatWagTicks = PatService.PatWagDurationTicks;
+                    }
+                    if (IsValidPlayer(patterWho) && patterWho != targetWho)
+                    {
+                        var patter = Main.player[patterWho].GetModPlayer<PuppyPlayer>();
+                        patter.PatReachTicks = PatService.PatReachDurationTicks;
+                        patter.PatReachTarget = targetWho;
+                    }
                 }
                 break;
             case (byte)PuppyPacketType.State:
