@@ -82,6 +82,9 @@ public class DogTransformationMorph : Morph
     private AnimationPlayer _bendCycle;
     private AnimationPlayer _scratchCycle;
 
+    /// <summary>Synced breed skin; local owner's config is copied on morph and propagated via NetSend/NetRecieve.</summary>
+    public DogTransformationSkin Skin { get; private set; } = DogTransformationSkin.Beagle;
+
     public override bool HideDefaultPlayer => true;
 
     public override bool CanUseItem(Player player, Item item) => false;
@@ -145,6 +148,19 @@ public class DogTransformationMorph : Morph
         _bendCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.BendingCycle);
         _scratchCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.ScratchingCycle);
 
+        // Capture owner's chosen breed for sync. Remote clients keep the value received via NetRecieve.
+        if (player.whoAmI == Main.myPlayer)
+        {
+            try
+            {
+                Skin = ModContent.GetInstance<PuppyModClientConfig>().TransformationSkin;
+            }
+            catch
+            {
+                // Fallback to current value if config not available (e.g., dedicated server)
+            }
+        }
+
         SpawnPuff(player);
     }
 
@@ -207,6 +223,24 @@ public class DogTransformationMorph : Morph
 
     public override void Update(Player player)
     {
+        // Keep skin in sync if local owner changes config while morphed.
+        if (player.whoAmI == Main.myPlayer)
+        {
+            try
+            {
+                DogTransformationSkin configSkin = ModContent.GetInstance<PuppyModClientConfig>().TransformationSkin;
+                if (configSkin != Skin)
+                {
+                    Skin = configSkin;
+                    MorphAPIMod.SendUpdateMorph(player);
+                }
+            }
+            catch
+            {
+                // Ignore config lookup failures on server
+            }
+        }
+
         bool moving = Math.Abs(player.velocity.X) > MoveSpeedThreshold;
         bool airborne = player.velocity.Y != 0f;
 
@@ -317,6 +351,7 @@ public class DogTransformationMorph : Morph
         writer.Write((byte)_emotePhase);
         writer.Write((short)_emoteProgress);
         writer.Write((byte)GetCycleIndex());
+        writer.Write((byte)Skin);
     }
 
     public override void NetRecieve(BinaryReader reader)
@@ -328,6 +363,16 @@ public class DogTransformationMorph : Morph
 
         if (_emote != DogEmote.None)
             GetCyclePlayer(_emote).Seek(cycleIndex);
+
+        // Backward-compatible: skin byte appended at end; old packets won't have it.
+        if (reader.BaseStream.Position < reader.BaseStream.Length)
+        {
+            DogTransformationSkin received = (DogTransformationSkin)reader.ReadByte();
+            if (Enum.IsDefined(typeof(DogTransformationSkin), received))
+                Skin = received;
+            else
+                Skin = DogTransformationSkin.Beagle;
+        }
     }
 
     private int GetCycleIndex() => _emote == DogEmote.None ? 0 : GetCyclePlayer(_emote).CurrentIndex;
@@ -385,7 +430,18 @@ public class DogTransformationMorph : Morph
     public override void SetDrawLayers(List<DrawData> oldDrawData, ref PlayerDrawSet drawInfo)
     {
         Player player = drawInfo.drawPlayer;
-        DogTransformationSkin skin = ModContent.GetInstance<PuppyModClientConfig>().TransformationSkin;
+        DogTransformationSkin skin = Skin;
+        if (!Enum.IsDefined(typeof(DogTransformationSkin), skin))
+        {
+            try
+            {
+                skin = ModContent.GetInstance<PuppyModClientConfig>().TransformationSkin;
+            }
+            catch
+            {
+                skin = DogTransformationSkin.Beagle;
+            }
+        }
         Texture2D texture = ModContent.Request<Texture2D>(
             AssetUtils.GetTransformationTexturePath(skin.ToString()),
             AssetRequestMode.ImmediateLoad).Value;
