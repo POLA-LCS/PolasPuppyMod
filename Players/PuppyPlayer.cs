@@ -33,6 +33,7 @@ public class PuppyPlayer : ModPlayer
     private const float PitchClampMax = 1f;
 
     private int _barkCooldown = 0;
+    private int _lastPredictedBarkTick = -10000;
     private DogEmote _emoteChoice = DogEmote.None;
 
     /// <summary>Ticks of happy wagging left after being petted, used while transformed.</summary>
@@ -68,6 +69,7 @@ public class PuppyPlayer : ModPlayer
     {
         var config = ModContent.GetInstance<PuppyModClientConfig>();
         // Apply client-chosen volume/pitch; GoodPuppy buff +0.3 pitch
+        // Keep for compat: plays only for local player with self volume.
         float targetPitch = GetPitch(config.BarkPitch) + (pitched ? BarkPitchIncrease : 0f);
         SoundStyle bark = sound with { Pitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax), Volume = sound.Volume * config.BarkVolume };
         if (Player.whoAmI == Main.myPlayer)
@@ -90,18 +92,135 @@ public class PuppyPlayer : ModPlayer
     public static readonly SoundPad Cries = SoundPad.LoadCategory("PuppySounds/cry");
     public static readonly SoundPad Growls = SoundPad.LoadCategory("PuppySounds/growl");
 
+    // --- Bark helpers (hybrid ownership) ---
+    internal void SetServerBarkCooldown() => _barkCooldown = BarkCooldownTicks;
+    internal bool ShouldSuppressBroadcastBark() => _lastPredictedBarkTick >= 0 && Main.GameUpdateCount - _lastPredictedBarkTick < BarkCooldownTicks + 5 && _barkCooldown > 0;
+    internal void TriggerRemoteBarkVisual() => NotifyEarsBark();
+    internal bool HasShinyEars() => _shinyEarsFunctional || _shinyEarsVanity;
+
+    private SoundStyle PrepareBarkSound(SoundStyle baseSound, BarkPitchStyle style, bool pitched, bool isSelf)
+    {
+        float targetPitch = GetPitch(style) + (pitched ? BarkPitchIncrease : 0f);
+        targetPitch = MathHelper.Clamp(targetPitch, PitchClampMin, PitchClampMax);
+        var config = ModContent.GetInstance<PuppyModClientConfig>();
+        float volumeScale = isSelf ? config.BarkVolume : config.OtherBarkVolume;
+        return baseSound with { Pitch = targetPitch, Volume = baseSound.Volume * volumeScale, PitchVariance = 0f };
+    }
+
+    private SoundPad GetPadForKind(byte kind) => kind switch
+    {
+        0 => Barks,
+        1 => Cries,
+        2 => Growls,
+        _ => Barks
+    };
+
+    private void PlayBarkCore(byte kind, int index, BarkPitchStyle style, bool pitched, Vector2 pos, bool isSelf)
+    {
+        SoundPad pad = GetPadForKind(kind);
+        if (pad.Count == 0)
+            return;
+        index %= pad.Count;
+        SoundStyle baseSound = pad.GetByIndex(index);
+        SoundStyle toPlay = PrepareBarkSound(baseSound, style, pitched, isSelf);
+        if (toPlay.Volume <= 0.001f)
+        {
+            // Still trigger visual even if muted? Keep visual.
+            NotifyEarsBark();
+            return;
+        }
+        // Global playback: position matters for attenuation, but we always play.
+        SoundEngine.PlaySound(toPlay, pos);
+        NotifyEarsBark();
+    }
+
+    private bool CanBark()
+    {
+        if (!IsPuppy) return false;
+        if (Player.dead) return false;
+        if (_barkCooldown > 0) return false;
+        return true;
+    }
+
+    private void SendOrPlayBark(byte kind, int index, BarkPitchStyle style, bool pitched, Vector2 pos)
+    {
+        if (Main.netMode == NetmodeID.SinglePlayer)
+        {
+            PlayBarkCore(kind, index, style, pitched, pos, isSelf: true);
+            _barkCooldown = BarkCooldownTicks;
+        }
+        else if (Main.netMode == NetmodeID.MultiplayerClient)
+        {
+            if (Player.whoAmI != Main.myPlayer)
+                return;
+            // Predictive local playback for zero-latency feedback for self.
+            PlayBarkCore(kind, index, style, pitched, pos, isSelf: true);
+            _barkCooldown = BarkCooldownTicks;
+            _lastPredictedBarkTick = (int)Main.GameUpdateCount;
+            ModContent.GetInstance<PuppyMod>().RequestBark(kind, (byte)index, (byte)style, pitched, pos);
+        }
+        else if (Main.netMode == NetmodeID.Server)
+        {
+            var serverConfig = ModContent.GetInstance<PuppyModServerConfig>();
+            if (!serverConfig.BarkEnabled)
+                return;
+            ModContent.GetInstance<PuppyMod>().BroadcastBark((byte)Player.whoAmI, kind, (byte)index, (byte)style, pitched, pos);
+            _barkCooldown = BarkCooldownTicks;
+        }
+    }
+
+    internal bool TryRequestBark(bool forcePitch = false)
+    {
+        if (!CanBark())
+            return false;
+        if (Barks.Count == 0)
+            return false;
+        int index = Main.rand.Next(Barks.Count);
+        BarkPitchStyle style = ModContent.GetInstance<PuppyModClientConfig>().BarkPitch;
+        bool pitched = forcePitch || Player.HasBuff(ModContent.BuffType<GoodPuppyBuff>());
+        Vector2 pos = Player.Center;
+        SendOrPlayBark(0, index, style, pitched, pos);
+        return true;
+    }
+
+    internal bool TryRequestHurtBark(ref Player.HurtInfo info)
+    {
+        if (!CanBark())
+            return false;
+        byte kind;
+        SoundPad pad;
+        if (Player.statLife - info.Damage <= 0)
+        {
+            kind = 1;
+            pad = Cries;
+        }
+        else if (Main.rand.Next(RandomChanceMax) < GrowlChanceThreshold)
+        {
+            kind = 2;
+            pad = Growls;
+        }
+        else
+        {
+            kind = 1;
+            pad = Cries;
+        }
+        if (pad.Count == 0)
+            return false;
+        int index = Main.rand.Next(pad.Count);
+        BarkPitchStyle style = ModContent.GetInstance<PuppyModClientConfig>().BarkPitch;
+        bool pitched = false; // Hurt sounds not pitched, keeps original feel; could also use GoodPuppy but preserve vanilla
+        Vector2 pos = Player.Center;
+        SendOrPlayBark(kind, index, style, pitched, pos);
+        return true;
+    }
+
     public void PlayRandomBark(bool forcePitch = false)
     {
-        if (Barks.Count == 0)
-            return;
-        var bark = Barks.GetRandom();
-        bool isGoodPuppy = Player.HasBuff(ModContent.BuffType<GoodPuppyBuff>());
-        if (forcePitch || isGoodPuppy)
-            Bark(bark, pitched: true);
-        else
-            Bark(bark);
-
-        NotifyEarsBark();
+        // Keep original behavior but route through network-aware path for global barking.
+        // For callers that directly want local random bark without networking, they can still use TryRequestBark.
+        // Preserve backward compat: PlayRandomBark now uses TryRequestBark which handles SP/MP branching.
+        // If TryRequestBark fails due to cooldown/etc, no sound.
+        TryRequestBark(forcePitch);
     }
 
     private void NotifyEarsBark()
@@ -186,12 +305,7 @@ public class PuppyPlayer : ModPlayer
 
     public override void ArmorSetBonusActivated()
     {
-        if (!IsPuppy)
-            return;
-        if (_barkCooldown > 0)
-            return;
-        PlayRandomBark();
-        _barkCooldown = BarkCooldownTicks;
+        TryRequestBark();
     }
 
     public override void ModifyHurt(ref Player.HurtModifiers modifiers)
@@ -206,34 +320,7 @@ public class PuppyPlayer : ModPlayer
         modifiers.DisableSound();
         modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) =>
         {
-            // Hurt cries share the bark cooldown so they can't overlap a set-bonus bark.
-            if (_barkCooldown > 0)
-                return;
-            if (Player.statLife - info.Damage <= 0)
-            {
-                if (Cries.Count != 0)
-                {
-                    Bark(Cries.GetRandom());
-                    _barkCooldown = BarkCooldownTicks;
-                }
-                return;
-            }
-            if (Main.rand.Next(RandomChanceMax) < GrowlChanceThreshold)
-            {
-                if (Growls.Count != 0)
-                {
-                    Bark(Growls.GetRandom());
-                    _barkCooldown = BarkCooldownTicks;
-                }
-            }
-            else
-            {
-                if (Cries.Count != 0)
-                {
-                    Bark(Cries.GetRandom());
-                    _barkCooldown = BarkCooldownTicks;
-                }
-            }
+            TryRequestHurtBark(ref info);
         };
     }
 

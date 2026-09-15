@@ -10,4 +10,12 @@ public class PuppyModServerConfig : ModConfig
     [Header("PuppySet")]
     [DefaultValue(true)]
     public bool EnableStartingPuppies { get; set; } = true;
+
+    [Header("Bark")]
+    [DefaultValue(true)]
+    public bool BarkEnabled { get; set; } = true;
+
+    [Range(0, 100)]
+    [DefaultValue(0)]
+    public int BarkRangeTiles { get; set; } = 0;
 }

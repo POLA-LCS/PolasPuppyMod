@@ -118,11 +118,25 @@ Keybinds: {
 Configs: {
 	PuppyModServerConfig: {
 		DisplayName: Puppy Server Config
-		Headers.PuppySet: Puppy Set
+
+		Headers: {
+			PuppySet: Puppy Set
+			Bark: Bark
+		}
 
 		EnableStartingPuppies: {
 			Label: Puppy start enabled :3
 			Tooltip: Lets new pups join with ears & tail ready! *wag* :3
+		}
+
+		BarkEnabled: {
+			Label: Bark Enabled
+			Tooltip: Whether puppy barking is enabled server-wide
+		}
+
+		BarkRangeTiles: {
+			Label: Bark Range (Tiles)
+			Tooltip: Maximum distance to hear barks (0 = infinite/global)
 		}
 	}
 
@@ -142,7 +156,12 @@ Configs: {
 
 		BarkVolume: {
 			Label: Bark Volume
-			Tooltip: ""
+			Tooltip: How loud you hear your own barks
+		}
+
+		OtherBarkVolume: {
+			Label: Other Puppies' Bark Volume
+			Tooltip: How loud you hear other puppies
 		}
 
 		BarkPitch: {

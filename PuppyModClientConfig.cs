@@ -16,6 +16,10 @@ public class PuppyModClientConfig : ModConfig
     [DefaultValue(0.5f)]
     public float BarkVolume { get; set; } = 0.5f;
 
+    [Range(0f, 1f)]
+    [DefaultValue(0.5f)]
+    public float OtherBarkVolume { get; set; } = 0.5f;
+
     [Slider, DrawTicks]
     [DefaultValue(BarkPitchStyle.Wiggly)]
     public BarkPitchStyle BarkPitch { get; set; } = BarkPitchStyle.Wiggly;

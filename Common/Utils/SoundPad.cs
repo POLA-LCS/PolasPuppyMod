@@ -115,6 +115,15 @@ public sealed class SoundPad
 
     public int Count => _sounds.Count;
 
+    public SoundStyle GetByIndex(int index)
+    {
+        if (_sounds.Count == 0)
+            return default;
+        int clamped = index % _sounds.Count;
+        if (clamped < 0) clamped += _sounds.Count;
+        return _sounds[clamped];
+    }
+
     public SoundStyle GetRandom(int minIndex = 0)
     {
         if (_sounds.Count == 0)

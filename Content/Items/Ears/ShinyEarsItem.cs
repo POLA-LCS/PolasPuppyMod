@@ -88,7 +88,7 @@ public class ShinyEarsItem : ModItem, IPuppyEarsItem
         Lighting.AddLight(player.Center, new Vector3(i, i * 0.85f, i * 0.35f));
     }
 
-    private static void SpawnStarBurst(Player player)
+    internal static void SpawnStarBurst(Player player)
     {
         Vector2 mouth = player.Center + new Vector2(player.direction * 6f, -14f);
         for (int i = 0; i < 20; i++)

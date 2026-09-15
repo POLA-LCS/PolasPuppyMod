@@ -33,8 +33,11 @@ public class DogTransformationMorph : Morph
     /// <summary>Ticks each emote frame is shown.</summary>
     private const float EmoteTicksPerFrame = 10f;
 
-    /// <summary>Ticks each scratch frame is shown - the scratch cycles faster than the other emotes.</summary>
-    private const float ScratchTicksPerFrame = 7f;
+    /// <summary>Ticks each scratch frame is shown when not fast.</summary>
+    private const float NormalScratchTicksPerFrame = 8.5f;
+
+    /// <summary>Ticks each scratch frame is shown when fast (50% chance).</summary>
+    private const float FastScratchTicksPerFrame = 5.5f;
 
     /// <summary>Cap on how fast the animation can play, so sprinting doesn't blur the frames.</summary>
     private const float MaxAnimationSpeed = 3f;
@@ -317,7 +320,9 @@ public class DogTransformationMorph : Morph
     {
         _emoteProgress += 1f;
 
-        float ticksPerFrame = _emote == DogEmote.Scratch && _scratchIsFast ? ScratchTicksPerFrame : EmoteTicksPerFrame;
+        float ticksPerFrame = _emote == DogEmote.Scratch
+            ? (_scratchIsFast ? FastScratchTicksPerFrame : NormalScratchTicksPerFrame)
+            : EmoteTicksPerFrame;
         if (_emoteProgress < ticksPerFrame)
             return;
 
