@@ -5,7 +5,7 @@ Items: {
 	}
 
 	// TODO: Future collar/leash variants tracked separately – see dev backlog / GitHub issue. Removed commented blocks from shipped hjson to reduce size (M13).
-
+	
 	ChainLeashItem: {
 		DisplayName: Chain Leash
 		Tooltip: ""

@@ -183,7 +183,18 @@ public class PuppyMod : Mod
             return;
         Player patter = Main.player[patterWho];
         Player target = Main.player[targetWho];
-        if (!PatService.CanPat(patter, target) || !PatService.ApplyPat(target))
+        if (patter.dead)
+            return;
+        if (!PatService.CanPat(patter, target))
+            return;
+        // Server-side throttle: bypassCooldown would otherwise allow spam every tick from a modified client.
+        // Clamp to PatBuffRefreshTicks (10) which matches the legitimate hold interval.
+        var puppy = target.GetModPlayer<PuppyPlayer>();
+        if (Main.GameUpdateCount - puppy.LastPatTick < PatService.PatBuffRefreshTicks)
+            return;
+        // Continuous hold bypasses the 20-tick tap cooldown (PatCooldownTicks). Single-tap spam is still
+        // throttled client-side via PatterPatTick; hold refresh sends every PatBuffRefreshTicks (10).
+        if (!PatService.ApplyPat(target, bypassCooldown: true))
             return;
         BroadcastPat(patterWho, targetWho);
     }
@@ -247,7 +258,14 @@ public class PuppyMod : Mod
                     {
                         Player patTarget = Main.player[targetWho];
                         PatService.PlayPatEffects(patTarget);
+                        // Hearts are rate-limited per puppy so hold refresh/broadcast don't flood them.
+                        PatService.PlayPatHeartSynced(patTarget);
                         patTarget.GetModPlayer<PuppyPlayer>().PatWagTicks = PatService.PatWagDurationTicks;
+                        if (!Main.dedServ)
+                        {
+                            // Ensure GoodPuppyBuff syncs immediately on all clients, not just via delayed PlayerInfo.
+                            PatService.ApplyPatHold(patTarget);
+                        }
                     }
                     if (IsValidPlayer(patterWho) && patterWho != targetWho)
                     {

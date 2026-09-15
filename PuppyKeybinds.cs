@@ -11,7 +11,7 @@ public static class PuppyKeybinds
 
     internal static void Load(Mod mod)
     {
-        Bend = KeybindLoader.RegisterKeybind(mod, nameof(Bend), Keys.N);
+        Bend = KeybindLoader.RegisterKeybind(mod, nameof(Bend), Keys.I);
         Scratch = KeybindLoader.RegisterKeybind(mod, nameof(Scratch), Keys.O);
         Emote = KeybindLoader.RegisterKeybind(mod, nameof(Emote), Keys.P);
     }

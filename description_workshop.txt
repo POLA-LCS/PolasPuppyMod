@@ -21,10 +21,10 @@ Scratchy scratches (default [b]O[/b]), get rid of those ticks.
 Random emote (default [b]P[/b])
 
 [hr][/hr]
-[h1]walkies & leashing - woof![/h1]
-Wear a [b]collar[/b] and let an owner take you for walkies! With a [b]rope leash[/b], a [b]chain leash[/b] or a [b]leash weapon[/b], they can right-click a collared puppy to clip on.
+[h1]walkies & leashing - wraf! arf! zoooooom!!![/h1]
+Wear a [b]collar[/b] and let an owner take you for walkies! With any [b]leash weapon[/b], they can right-click a collared puppy to clip on.
 
-Once leashed a rope (or chain) links you together as you trot along, and both sides get rewarded: the [b]collar[/b] buffs the owner and the [b]leash[/b] buffs the puppy. Right-click again to unclip and run free. *wag wag!*
+Once leashed links you together as you trot along, and both sides get rewarded: the [b]collar[/b] buffs the owner and the [b]leash[/b] buffs the puppy. Right-click again to unclip and run free. *wag wag!*
 
 [hr][/hr]
 [h1]good to know - woof?[/h1]
@@ -38,9 +38,9 @@ Once leashed a rope (or chain) links you together as you trot along, and both si
 
 [hr][/hr]
 [h1]credits - thank you, good puppies! ૮꒰ ྀི >⏝⏝< ྀི꒱ა[/h1]
-Made with lots of wags - every bark, woof and click is a real recording by me, so it feels alive! *woof woof!* :3 I'm searching for community barking too - I bet you guys can emit such cute sounds! *arf!*
-Art mixes vanilla favourites with custom-made goodies.
+Made with lots of wags - every bark, woof and click is a real recording by me, so it feels alive! *woof woof!* :3 I'm searching for community barking too - I bet you guys can emit such cute noises! *arf!*
 Thank you to every puppy who tested and said they felt [i]seen[/i] - you did so good! *headpat!*
 
 [hr][/hr]
 [i]Equip, wag, zoom - be a puppy for five minutes or the whole playthrough. You're a good puppy either way. Now go get praised! arf arf! ฅ>ω<ฅ[/i]
+[i]And you my owners, go have some fun trying to control this cute zooming beast! >:3[/i]

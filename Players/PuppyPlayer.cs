@@ -48,6 +48,9 @@ public class PuppyPlayer : ModPlayer
 
     /// <summary>Player index the patting hand is reaching toward, or -1.</summary>
     public int PatReachTarget = -1;
+
+    /// <summary>Timer for refreshing the buff while holding right-click. Hearts are throttled in PatService.</summary>
+    public int PatHoldBuffTimer;
     private PuppyEquipmentSnapshot _equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
     private PuppyEquipmentResolution _equipmentResolution = PuppyEquipmentResolution.Empty;
     private bool _shinyTailFunctional;
@@ -205,7 +208,69 @@ public class PuppyPlayer : ModPlayer
         {
             bool rightClick = Player.controlUseTile;
             if (rightClick && PatService.IsPatHand(Player))
-                PatService.TryPat(Player);
+            {
+                Player target = PatService.FindPuppyUnderCursor(Player);
+                bool isHoldingPat = target != null && PatService.CanPat(Player, target);
+                if (isHoldingPat)
+                {
+                    // Initial tap respects 20-tick cooldown via TryPat; hold refresh bypasses it
+                    int patTickBefore = PatterPatTick;
+                    PatService.TryPat(Player);
+                    bool tryPatJustSucceeded = PatterPatTick != patTickBefore;
+                    if (tryPatJustSucceeded)
+                        PatHoldBuffTimer = 0; // avoid double packet same tick as TryPat
+
+                    PatHoldBuffTimer++;
+
+                    if (PatHoldBuffTimer >= PatService.PatBuffRefreshTicks)
+                    {
+                        PatHoldBuffTimer = 0;
+                        if (PatService.CanPat(Player, target))
+                        {
+                            if (Main.netMode == NetmodeID.MultiplayerClient)
+                            {
+                                ModContent.GetInstance<PuppyMod>().RequestPat(target.whoAmI);
+                                // Local prediction for responsiveness
+                                PatService.ApplyPatHold(target);
+                                PatReachTicks = PatService.PatReachDurationTicks;
+                                PatReachTarget = target.whoAmI;
+                                Player.direction = target.Center.X >= Player.Center.X ? 1 : -1;
+                            }
+                            else if (Main.netMode == NetmodeID.Server)
+                            {
+                                if (PatService.ApplyPatHold(target))
+                                    ModContent.GetInstance<PuppyMod>().BroadcastPat(Player.whoAmI, target.whoAmI);
+                                PatReachTicks = PatService.PatReachDurationTicks;
+                                PatReachTarget = target.whoAmI;
+                                Player.direction = target.Center.X >= Player.Center.X ? 1 : -1;
+                            }
+                            else
+                            {
+                                PatService.ApplyPatHold(target);
+                                PatReachTicks = PatService.PatReachDurationTicks;
+                                PatReachTarget = target.whoAmI;
+                                Player.direction = target.Center.X >= Player.Center.X ? 1 : -1;
+                            }
+                        }
+                    }
+
+                    if (PatService.CanPat(Player, target))
+                    {
+                        // PatService throttles to one heart per PatHeartIntervalTicks.
+                        PatService.PlayPatHeartSynced(target);
+                    }
+                }
+                else
+                {
+                    PatHoldBuffTimer = 0;
+                    if (target == null)
+                        PatService.TryPat(Player);
+                }
+            }
+            else
+            {
+                PatHoldBuffTimer = 0;
+            }
         }
     }
 
@@ -319,7 +384,7 @@ public class PuppyPlayer : ModPlayer
             return;
 
         int stretch = (Main.GameUpdateCount % 14) / 7 == 1 ? 0 : 3;
-        float angle = target.HasMorph<DogTransformationMorph>() ? 0.2f : 0.3f;
+        float angle = target.HasMorph<DogTransformationMorph>() ? PatService.PatAngleMorphed : PatService.PatAngleVanilla;
         Player.SetCompositeArmBack(true, (Player.CompositeArmStretchAmount)stretch, angle * -MathHelper.TwoPi * Player.direction);
     }
 
