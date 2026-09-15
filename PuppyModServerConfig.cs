@@ -17,6 +17,6 @@ public class PuppyModServerConfig : ModConfig
 
     [Range(0, 100)]
     [Increment(5)]
-    [DefaultValue(0)]
-    public int BarkRangeTiles { get; set; } = 0;
+    [DefaultValue(75)]
+    public int BarkRangeTiles { get; set; } = 75;
 }
