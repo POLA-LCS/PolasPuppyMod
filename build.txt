@@ -1,5 +1,5 @@
 displayName = Puppy Mod
 author = POLA
-version = 1.8.2
+version = 1.8.3
 modReferences = MorphAPI
 dllReferences = SpreadsheetSplit, PetAnyone
