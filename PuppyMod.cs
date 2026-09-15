@@ -371,6 +371,20 @@ public class PuppyMod : Mod
         var clientConfig = ModContent.GetInstance<PuppyModClientConfig>();
         SoundStyle baseSound = pad.GetByIndex(index);
         float effVolume = baseSound.Volume * (isSelf ? clientConfig.BarkVolume : clientConfig.OtherBarkVolume);
+
+        // Linear distance attenuation: current volume is close-range, full close is a little louder.
+        var serverConfig = ModContent.GetInstance<PuppyModServerConfig>();
+        if (serverConfig.BarkRangeTiles > 0)
+        {
+            float distTiles = Vector2.Distance(pos, Main.LocalPlayer.Center) / 16f;
+            float atten = 1f - (distTiles / serverConfig.BarkRangeTiles);
+            atten = MathHelper.Clamp(atten, 0f, 1f);
+            const float closeBoost = 1.15f;
+            atten *= closeBoost;
+            effVolume *= atten;
+            effVolume = MathHelper.Clamp(effVolume, 0f, 1f);
+        }
+
         // Zero volume = muted, but still do burst for observers if they have ears? Skip sound only.
         if (effVolume > 0.001f)
         {
