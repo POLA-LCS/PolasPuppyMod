@@ -13,17 +13,8 @@ using Terraria.UI.Chat;
 namespace PuppyMod.Services.Petting;
 
 /// <summary>
-/// Chat-button glue for NPC petting. Hooks the private static
-/// Terraria.Main.DrawNPCChatButtons via MonoMod (TerrariaHooks) and draws an
-/// extra "pet <3" (or per-NPC custom) button after all vanilla buttons.
-/// Position is rebuilt from the local IL so we do not pull external sources.
-///
-/// Layout (from IL):
-///   float y = 130 + numLines*30f;
-///   float x = 180 + (Main.screenWidth-800)/2f;
-///   Adv(string t) => (size.X capped at 260 +30);
-///   x += Adv(focusText); x += Adv(Lang.inter[52].Value); x += Adv(focusText3); x += Adv(Happiness) if present;
-///   our button at (x,y) with label = def.ButtonText.
+/// Draws a "pet" button in the town NPC chat panel after the vanilla buttons.
+/// Follows vanilla layout and hover visuals for consistency.
 /// </summary>
 internal sealed class PetNpcChatButtonSystem : ModSystem
 {
@@ -61,7 +52,7 @@ internal sealed class PetNpcChatButtonSystem : ModSystem
         if (!PetRegistry.TryGetNpcDefinition(npc, out var def) || def == null || !def.ShowChatButton)
             return;
 
-        // Rebuild vanilla layout exactly from local IL.
+        // Position after vanilla buttons.
         float y = 130f + numLines * 30f;
         float x = 180f + (Main.screenWidth - 800) / 2f;
         var font = FontAssets.MouseText.Value;
@@ -96,13 +87,10 @@ internal sealed class PetNpcChatButtonSystem : ModSystem
             grow.X = 260f / size.X;
 
         Vector2 mouse = new(Main.mouseX, Main.mouseY);
-        // hover rect = pos .. pos + size*scale09*grow
         Vector2 hoverSize = size * scale09 * grow;
-        // grow is Vec( X scale, 1 ) so hoverSize.Y = size.Y*0.9*1, X = size.X*0.9*grow.X
         bool hovered = Utils.Between(mouse, pos, pos + hoverSize);
 
         bool wasHovered = _hovered;
-        // We'll need a mutable scale for hover enlarge; keep base scale09 unchanged for size calc above
         Vector2 drawScale = scale09 * grow;
         Color shadow = Color.Black;
         // drawScale will be enlarged on hover
@@ -129,12 +117,9 @@ internal sealed class PetNpcChatButtonSystem : ModSystem
             shadow = Color.Black;
         }
 
-        // Draw at centered origin like vanilla (pos + size*grow*0.5 with origin size*0.5)
         SpriteBatch sb = Main.spriteBatch;
         Vector2 origin = size * 0.5f;
         Vector2 drawPos = pos + size * grow * 0.5f;
-        // Reuse hover enlarged drawScale if hovered, else base
-        // drawScale already reflects hover 1.2x
         ChatManager.DrawColorCodedStringWithShadow(sb, font, label, drawPos, chatColor, shadow, 0f, origin, drawScale, -1f, 2f);
     }
 
