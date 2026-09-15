@@ -21,7 +21,7 @@ flowchart TB
     end
 
     subgraph OwnerSide[Owner Player - !IsPuppy]
-        Leash[BaseWeapon / BaseUtility<br/>ILeashItem<br/>AffectPuppy]
+        Leash[BaseWeaponLeashItem<br/>ILeashItem<br/>AffectPuppy]
         OwnerMP[OwnerPlayer<br/>PostUpdateEquips scan]
         OwnerBuffs{Owner Buffs}
     end
