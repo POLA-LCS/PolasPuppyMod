@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MorphAPI.Core.Morphing;
+using TransformAPI.Core.Morphing;
 using ReLogic.Content;
 using SpreadsheetSplit;
 using Terraria;
@@ -12,7 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Utils;
 using PuppyMod.Players;
-using MorphAPIMod = MorphAPI.MorphAPI;
+using TransformAPIMod = TransformAPI.TransformAPI;
 
 namespace PuppyMod.Content.Transformations;
 
@@ -232,7 +232,7 @@ public class DogTransformationMorph : Morph
     private static void SendEmoteUpdate(Player player)
     {
         if (Main.netMode == NetmodeID.MultiplayerClient)
-            MorphAPIMod.SendUpdateMorph(player);
+            TransformAPIMod.SendUpdateMorph(player);
     }
 
     /// <summary>Whether the dog can start an emote right now - emotes only play while grounded and standing still.</summary>
@@ -249,7 +249,7 @@ public class DogTransformationMorph : Morph
                 if (configSkin != Skin)
                 {
                     Skin = configSkin;
-                    MorphAPIMod.SendUpdateMorph(player);
+                    TransformAPIMod.SendUpdateMorph(player);
                 }
             }
             catch

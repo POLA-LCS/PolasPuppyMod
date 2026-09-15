@@ -6,4 +6,4 @@ Become a puppy with any recognized Puppy Ears + any accessory Puppy Tail (functi
 
 Owners praise puppies with a Clicker for the Good Puppy buff. Leash system: wear a collar - when leashed, the collar buffs the owner and the leash buffs the puppy. Right-click a collared puppy with a leash to tether, right-click again to release.
 
-Opt-in, multiplayer friendly. Requires the MorphAPI library mod.
+Opt-in, multiplayer friendly. Requires the TransformAPI library mod.

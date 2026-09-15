@@ -7,7 +7,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.GameInput;
-using MorphAPI.Core;
+using TransformAPI.Core;
 using PuppyMod.Common.PuppySets.Core;
 using PuppyMod.Common.PuppySets.Definitions;
 using PuppyMod.Common.PuppySets.State;

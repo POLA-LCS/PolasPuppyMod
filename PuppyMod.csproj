@@ -10,8 +10,8 @@
 
 	<!-- References -->
 	<ItemGroup>
-		<Reference Include="MorphAPI">
-			<HintPath>lib\MorphAPI.dll</HintPath>
+		<Reference Include="TransformAPI">
+			<HintPath>lib\TransformAPI.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="SpreadsheetSplit">

@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using MorphAPI.Core;
+using TransformAPI.Core;
 using PetAnyone;
 using PuppyMod.Common.PuppySets.Bonuses;
 using PuppyMod.Common.PuppySets.Core;
@@ -110,7 +110,7 @@ public class PuppyMod : Mod
 
     private static bool HasMountEquipped(Player player) => !player.miscEquips[3].IsAir;
 
-    /// <summary>MorphAPI applies the custom width without recentering, so it can embed into walls; the morph keeps it clear of obstacles.</summary>
+    /// <summary>TransformAPI applies the custom width without recentering, so it can embed into walls; the morph keeps it clear of obstacles.</summary>
     private static void RecenterMorphedHitbox(On_Player.orig_ResizeHitbox orig, Player player)
     {
         orig(player);
