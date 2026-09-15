@@ -21,7 +21,7 @@ namespace PuppyMod.Services.Petting;
 public static class PuppyPettingPlugin
 {
     /// <summary>Duration of the Good Puppy buff granted by petting.</summary>
-    public const int PetBuffTicks = 180;
+    public const int PetBuffTicks = 60;
 
     /// <summary>Duration of the happy tail wag after being petted, read by the dog morph.</summary>
     public const int PetWagDurationTicks = 90;
