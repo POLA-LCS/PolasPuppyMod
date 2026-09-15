@@ -7,7 +7,7 @@ public class PuppyModServerConfig : ModConfig
 {
     public override ConfigScope Mode => ConfigScope.ServerSide;
 
-    [Header("PuppySet")]
+    [Header("Misc")]
     [DefaultValue(true)]
     public bool EnableStartingPuppies { get; set; } = true;
 
@@ -16,6 +16,7 @@ public class PuppyModServerConfig : ModConfig
     public bool BarkEnabled { get; set; } = true;
 
     [Range(0, 100)]
+    [Increment(5)]
     [DefaultValue(0)]
     public int BarkRangeTiles { get; set; } = 0;
 }

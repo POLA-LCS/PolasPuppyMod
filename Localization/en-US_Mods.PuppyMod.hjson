@@ -120,7 +120,7 @@ Configs: {
 		DisplayName: Puppy Server Config
 
 		Headers: {
-			PuppySet: Puppy Set
+			Misc: Misc
 			Bark: Bark
 		}
 
@@ -144,9 +144,8 @@ Configs: {
 		DisplayName: Puppy Client Config
 
 		Headers: {
-			PuppySet: Puppy Set
-			Audio: Audio Header
-			Transformation: Transformation
+			Misc: Misc
+			"Let's bark a lot!": Let's bark a lot!
 		}
 
 		StartAsPuppy: {

@@ -7,11 +7,15 @@ public class PuppyModClientConfig : ModConfig
 {
     public override ConfigScope Mode => ConfigScope.ClientSide;
 
-    [Header("PuppySet")]
+    [Header("Misc")]
     [DefaultValue(true)]
     public bool StartAsPuppy { get; set; } = true;
 
-    [Header("Audio")]
+    [Slider, DrawTicks]
+    [DefaultValue(DogTransformationSkin.Beagle)]
+    public DogTransformationSkin TransformationSkin { get; set; } = DogTransformationSkin.Beagle;
+
+    [Header("Let's bark a lot!")]
     [Range(0f, 1f)]
     [DefaultValue(0.5f)]
     public float BarkVolume { get; set; } = 0.5f;
@@ -23,11 +27,6 @@ public class PuppyModClientConfig : ModConfig
     [Slider, DrawTicks]
     [DefaultValue(BarkPitchStyle.Wiggly)]
     public BarkPitchStyle BarkPitch { get; set; } = BarkPitchStyle.Wiggly;
-
-    [Header("Transformation")]
-    [Slider, DrawTicks]
-    [DefaultValue(DogTransformationSkin.Beagle)]
-    public DogTransformationSkin TransformationSkin { get; set; } = DogTransformationSkin.Beagle;
 }
 
 public enum BarkPitchStyle
