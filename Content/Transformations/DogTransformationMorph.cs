@@ -81,6 +81,7 @@ public class DogTransformationMorph : Morph
     private AnimationPlayer _falling;
     private AnimationPlayer _bendCycle;
     private AnimationPlayer _scratchCycle;
+    private bool _scratchIsFast;
 
     /// <summary>Synced breed skin; local owner's config is copied on morph and propagated via NetSend/NetRecieve.</summary>
     public DogTransformationSkin Skin { get; private set; } = DogTransformationSkin.Beagle;
@@ -209,6 +210,7 @@ public class DogTransformationMorph : Morph
         _emote = emote;
         _emotePhase = EmotePhase.Start;
         _emoteProgress = 0f;
+        _scratchIsFast = emote == DogEmote.Scratch && Main.rand.NextBool();
         SendEmoteUpdate(player);
     }
 
@@ -315,7 +317,7 @@ public class DogTransformationMorph : Morph
     {
         _emoteProgress += 1f;
 
-        float ticksPerFrame = _emote == DogEmote.Scratch ? ScratchTicksPerFrame : EmoteTicksPerFrame;
+        float ticksPerFrame = _emote == DogEmote.Scratch && _scratchIsFast ? ScratchTicksPerFrame : EmoteTicksPerFrame;
         if (_emoteProgress < ticksPerFrame)
             return;
 
@@ -352,6 +354,7 @@ public class DogTransformationMorph : Morph
         writer.Write((short)_emoteProgress);
         writer.Write((byte)GetCycleIndex());
         writer.Write((byte)Skin);
+        writer.Write(_scratchIsFast);
     }
 
     public override void NetRecieve(BinaryReader reader)
@@ -364,7 +367,7 @@ public class DogTransformationMorph : Morph
         if (_emote != DogEmote.None)
             GetCyclePlayer(_emote).Seek(cycleIndex);
 
-        // Backward-compatible: skin byte appended at end; old packets won't have it.
+        // Backward-compatible: skin and fast flag appended at end.
         if (reader.BaseStream.Position < reader.BaseStream.Length)
         {
             DogTransformationSkin received = (DogTransformationSkin)reader.ReadByte();
@@ -373,6 +376,9 @@ public class DogTransformationMorph : Morph
             else
                 Skin = DogTransformationSkin.Beagle;
         }
+
+        if (reader.BaseStream.Position < reader.BaseStream.Length)
+            _scratchIsFast = reader.ReadBoolean();
     }
 
     private int GetCycleIndex() => _emote == DogEmote.None ? 0 : GetCyclePlayer(_emote).CurrentIndex;
