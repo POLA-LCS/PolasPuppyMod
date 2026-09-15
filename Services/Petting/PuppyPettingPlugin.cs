@@ -23,7 +23,7 @@ public static class PuppyPettingPlugin
     /// <summary>Duration of the Good Puppy buff granted by petting.</summary>
     public const int PetBuffTicks = 60;
 
-    /// <summary>Duration of the happy tail wag after being petted, read by the dog morph.</summary>
+    /// <summary>Duration of the happy tail wag after being petted, read by the dog transform.</summary>
     public const int PetWagDurationTicks = 90;
 
     /// <summary>Pat sound. Lives here, not in the utility library, because the asset belongs to this mod.</summary>
@@ -72,11 +72,11 @@ public static class PuppyPettingPlugin
         target.AddBuff(ModContent.BuffType<GoodPuppyBuff>(), PetBuffTicks);
     }
 
-    /// <summary>Morphed dogs keep the tighter pat reach angle they had before the API split.</summary>
+    /// <summary>Transformed dogs keep the tighter pat reach angle they had before the API split.</summary>
     private static float? GetPuppyReachAngle(PetTarget target)
     {
         if (!target.IsPlayer || !target.TryGetPlayer(out Player player))
             return null;
-        return player.HasMorph<DogTransformationMorph>() ? PetService.PetAngleMorphed : (float?)null;
+        return player.HasTransform<DogTransformation>() ? PetService.PetAngleMorphed : (float?)null;
     }
 }

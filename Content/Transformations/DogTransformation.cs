@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using TransformAPI.Core.Morphing;
+using TransformAPI.Core.Transforming;
 using ReLogic.Content;
 using SpreadsheetSplit;
 using Terraria;
@@ -16,7 +16,7 @@ using TransformAPIMod = TransformAPI.TransformAPI;
 
 namespace PuppyMod.Content.Transformations;
 
-public class DogTransformationMorph : Morph
+public class DogTransformation : Transform
 {
     /// <summary>Accumulated horizontal speed needed to advance one running frame.</summary>
     private const float MovementPerFrame = 7f;
@@ -86,7 +86,7 @@ public class DogTransformationMorph : Morph
     private AnimationPlayer _scratchCycle;
     private bool _scratchIsFast;
 
-    /// <summary>Synced breed skin; local owner's config is copied on morph and propagated via NetSend/NetRecieve.</summary>
+    /// <summary>Synced breed skin; local owner's config is copied on transform and propagated via NetSend/NetRecieve.</summary>
     public DogTransformationSkin Skin { get; private set; } = DogTransformationSkin.Beagle;
 
     public override bool HideDefaultPlayer => true;
@@ -143,7 +143,7 @@ public class DogTransformationMorph : Morph
         return !Collision.SolidCollision(position, player.width, player.height);
     }
 
-    public override void OnMorph(Player player)
+    public override void OnTransform(Player player)
     {
         EnsureAnimationPlayers();
 
@@ -165,7 +165,7 @@ public class DogTransformationMorph : Morph
 
     /// <summary>
     /// Creates the shared animation players once. Join sync runs <see cref="NetRecieve(BinaryReader)"/> on a fresh
-    /// clone before <see cref="OnMorph(Player)"/>, so the cycle players must already exist for <c>Seek</c> to work.
+    /// clone before <see cref="OnTransform(Player)"/>, so the cycle players must already exist for <c>Seek</c> to work.
     /// </summary>
     private void EnsureAnimationPlayers()
     {
@@ -180,7 +180,7 @@ public class DogTransformationMorph : Morph
         _scratchCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.ScratchingCycle);
     }
 
-    public override void OnUnmorph(Player player)
+    public override void OnUntransform(Player player)
     {
         player.position.X -= _hitboxOffsetX;
         _hitboxOffsetX = 0f;
@@ -232,7 +232,7 @@ public class DogTransformationMorph : Morph
     private static void SendEmoteUpdate(Player player)
     {
         if (Main.netMode == NetmodeID.MultiplayerClient)
-            TransformAPIMod.SendUpdateMorph(player);
+            TransformAPIMod.SendUpdateTransform(player);
     }
 
     /// <summary>Whether the dog can start an emote right now - emotes only play while grounded and standing still.</summary>
@@ -240,7 +240,7 @@ public class DogTransformationMorph : Morph
 
     public override void Update(Player player)
     {
-        // Keep skin in sync if local owner changes config while morphed.
+        // Keep skin in sync if local owner changes config while transformed.
         if (player.whoAmI == Main.myPlayer)
         {
             try
@@ -249,7 +249,7 @@ public class DogTransformationMorph : Morph
                 if (configSkin != Skin)
                 {
                     Skin = configSkin;
-                    TransformAPIMod.SendUpdateMorph(player);
+                    TransformAPIMod.SendUpdateTransform(player);
                 }
             }
             catch
@@ -376,7 +376,7 @@ public class DogTransformationMorph : Morph
 
     public override void NetRecieve(BinaryReader reader)
     {
-        // Join sync delivers NetRecieve on a fresh clone before OnMorph, so make sure the cycle players exist.
+        // Join sync delivers NetRecieve on a fresh clone before OnTransform, so make sure the cycle players exist.
         EnsureAnimationPlayers();
 
         _emote = (DogEmote)reader.ReadByte();

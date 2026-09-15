@@ -57,12 +57,12 @@ public class PuppyMod : Mod
 
     public override void PostSetupContent()
     {
-        On_Player.ResizeHitbox += RecenterMorphedHitbox;
+        On_Player.ResizeHitbox += RecenterTransformedHitbox;
     }
 
     public override void Unload()
     {
-        On_Player.ResizeHitbox -= RecenterMorphedHitbox;
+        On_Player.ResizeHitbox -= RecenterTransformedHitbox;
         On_Player.QuickMount -= HandleQuickMount;
         PuppyKeybinds.Unload();
         PuppyEquipmentRegistry.Clear();
@@ -81,19 +81,19 @@ public class PuppyMod : Mod
             return;
         }
 
-        if (player.GetMorph<DogTransformationMorph>() is not null)
+        if (player.GetTransform<DogTransformation>() is not null)
         {
             if (!CanReturnToNormalSize(player))
                 return;
 
-            player.Unmorph();
+            player.Untransform();
 
             if (!HasMountEquipped(player))
                 return;
         }
         else if (!HasMountEquipped(player) && player.GetModPlayer<PuppyPlayer>().IsPuppy)
         {
-            player.SetMorph(new DogTransformationMorph());
+            player.SetTransform(new DogTransformation());
             return;
         }
 
@@ -110,13 +110,13 @@ public class PuppyMod : Mod
 
     private static bool HasMountEquipped(Player player) => !player.miscEquips[3].IsAir;
 
-    /// <summary>TransformAPI applies the custom width without recentering, so it can embed into walls; the morph keeps it clear of obstacles.</summary>
-    private static void RecenterMorphedHitbox(On_Player.orig_ResizeHitbox orig, Player player)
+    /// <summary>TransformAPI applies the custom width without recentering, so it can embed into walls; the transform keeps it clear of obstacles.</summary>
+    private static void RecenterTransformedHitbox(On_Player.orig_ResizeHitbox orig, Player player)
     {
         orig(player);
 
         if (player.whoAmI == Main.myPlayer)
-            player.GetMorph<DogTransformationMorph>()?.ApplyHitboxOffset(player);
+            player.GetTransform<DogTransformation>()?.ApplyHitboxOffset(player);
     }
 
     public void RequestLeashAttach(int targetWho, int leashItemType)

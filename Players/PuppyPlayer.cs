@@ -356,7 +356,7 @@ public class PuppyPlayer : ModPlayer
 
     public override void ProcessTriggers(TriggersSet triggersSet)
     {
-        if (!Player.HasMorph<DogTransformationMorph>())
+        if (!Player.HasTransform<DogTransformation>())
             return;
 
         if (PuppyKeybinds.Emote.JustPressed)
@@ -370,7 +370,7 @@ public class PuppyPlayer : ModPlayer
         else if (PuppyKeybinds.Emote.Current)
             held = _emoteChoice;
 
-        Player.GetMorph<DogTransformationMorph>().SetEmoteInput(Player, held);
+        Player.GetTransform<DogTransformation>().SetEmoteInput(Player, held);
     }
 
     private static string AppendSetBonusLine(string existing, string line)
