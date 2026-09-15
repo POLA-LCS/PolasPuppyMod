@@ -37,7 +37,7 @@ public abstract class BaseClickerItem : ModItem, IWithRange, ITooltipProvider
     public override bool CanUseItem(Player player)
     {
         if (player.controlUseTile)
-            return false; // right-click is reserved for patting puppies
+            return false; // right-click is reserved for petting
 
         var puppy = player.GetModPlayer<PuppyPlayer>();
         if (puppy.IsPuppy)

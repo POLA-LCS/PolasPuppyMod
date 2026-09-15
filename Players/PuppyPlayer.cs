@@ -8,14 +8,15 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.GameInput;
 using MorphAPI.Core;
-using PuppyMod.Common.PuppySets;
+using PuppyMod.Common.PuppySets.Core;
+using PuppyMod.Common.PuppySets.Definitions;
+using PuppyMod.Common.PuppySets.State;
 using PuppyMod.Common.Utils;
 using PuppyMod.Content.Buffs;
 using PuppyMod.Content.Items.Ears;
 using PuppyMod.Content.Items.Tails;
 using PuppyMod.Content.Transformations;
 using PuppyMod.Services.Leash;
-using PuppyMod.Services.Pat;
 using PuppyMod.Services.PuppySets;
 
 namespace PuppyMod.Players;
@@ -34,23 +35,8 @@ public class PuppyPlayer : ModPlayer
     private int _barkCooldown = 0;
     private DogEmote _emoteChoice = DogEmote.None;
 
-    /// <summary>Server-side tick of the last pat applied, used for the pat cooldown.</summary>
-    public int LastPatTick = -PatService.PatCooldownTicks;
-
-    /// <summary>Local tick of the last pat attempt, so holding right-click doesn't spam.</summary>
-    public int PatterPatTick = -PatService.PatCooldownTicks;
-
     /// <summary>Ticks of happy wagging left after being petted, used while transformed.</summary>
     public int PatWagTicks;
-
-    /// <summary>Ticks left of the patting hand reach animation.</summary>
-    public int PatReachTicks;
-
-    /// <summary>Player index the patting hand is reaching toward, or -1.</summary>
-    public int PatReachTarget = -1;
-
-    /// <summary>Timer for refreshing the buff while holding right-click. Hearts are throttled in PatService.</summary>
-    public int PatHoldBuffTimer;
     private PuppyEquipmentSnapshot _equipmentSnapshot = PuppyEquipmentSnapshot.Empty;
     private PuppyEquipmentResolution _equipmentResolution = PuppyEquipmentResolution.Empty;
     private bool _shinyTailFunctional;
@@ -182,18 +168,11 @@ public class PuppyPlayer : ModPlayer
     {
         if (_barkCooldown > 0)
             _barkCooldown--;
+
+        // Petting input, reach animation and network flow live in PettingPlayer/PetService.
         if (PatWagTicks > 0)
             PatWagTicks--;
 
-        if (PatReachTicks > 0)
-        {
-            PatReachTicks--;
-            UpdatePatReachArm();
-        }
-        else
-        {
-            PatReachTarget = -1;
-        }
         // ShinyEars light stays an individual effect: full functional, half vanity.
         if (_shinyEarsFunctional || _shinyEarsVanity)
         {
@@ -203,75 +182,6 @@ public class PuppyPlayer : ModPlayer
 
         // Ore sight belongs to the Shiny pair bonus and only exists while the matching pair is selected.
         PuppySpelunkerService.Apply(Player);
-
-        if (Player.whoAmI == Main.myPlayer)
-        {
-            bool rightClick = Player.controlUseTile;
-            if (rightClick && PatService.IsPatHand(Player))
-            {
-                Player target = PatService.FindPuppyUnderCursor(Player);
-                bool isHoldingPat = target != null && PatService.CanPat(Player, target);
-                if (isHoldingPat)
-                {
-                    // Initial tap respects 20-tick cooldown via TryPat; hold refresh bypasses it
-                    int patTickBefore = PatterPatTick;
-                    PatService.TryPat(Player);
-                    bool tryPatJustSucceeded = PatterPatTick != patTickBefore;
-                    if (tryPatJustSucceeded)
-                        PatHoldBuffTimer = 0; // avoid double packet same tick as TryPat
-
-                    PatHoldBuffTimer++;
-
-                    if (PatHoldBuffTimer >= PatService.PatBuffRefreshTicks)
-                    {
-                        PatHoldBuffTimer = 0;
-                        if (PatService.CanPat(Player, target))
-                        {
-                            if (Main.netMode == NetmodeID.MultiplayerClient)
-                            {
-                                ModContent.GetInstance<PuppyMod>().RequestPat(target.whoAmI);
-                                // Local prediction for responsiveness
-                                PatService.ApplyPatHold(target);
-                                PatReachTicks = PatService.PatReachDurationTicks;
-                                PatReachTarget = target.whoAmI;
-                                Player.direction = target.Center.X >= Player.Center.X ? 1 : -1;
-                            }
-                            else if (Main.netMode == NetmodeID.Server)
-                            {
-                                if (PatService.ApplyPatHold(target))
-                                    ModContent.GetInstance<PuppyMod>().BroadcastPat(Player.whoAmI, target.whoAmI);
-                                PatReachTicks = PatService.PatReachDurationTicks;
-                                PatReachTarget = target.whoAmI;
-                                Player.direction = target.Center.X >= Player.Center.X ? 1 : -1;
-                            }
-                            else
-                            {
-                                PatService.ApplyPatHold(target);
-                                PatReachTicks = PatService.PatReachDurationTicks;
-                                PatReachTarget = target.whoAmI;
-                                Player.direction = target.Center.X >= Player.Center.X ? 1 : -1;
-                            }
-                        }
-                    }
-
-                    if (PatService.CanPat(Player, target))
-                    {
-                        // PatService throttles to one heart per PatHeartIntervalTicks.
-                        PatService.PlayPatHeartSynced(target);
-                    }
-                }
-                else
-                {
-                    PatHoldBuffTimer = 0;
-                    if (target == null)
-                        PatService.TryPat(Player);
-                }
-            }
-            else
-            {
-                PatHoldBuffTimer = 0;
-            }
-        }
     }
 
     public override void ArmorSetBonusActivated()
@@ -374,18 +284,6 @@ public class PuppyPlayer : ModPlayer
             held = _emoteChoice;
 
         Player.GetMorph<DogTransformationMorph>().SetEmoteInput(Player, held);
-    }
-
-    /// <summary>Extends the arm toward the puppy being petted, with the same bobbing pose vanilla uses when petting town pets.</summary>
-    private void UpdatePatReachArm()
-    {
-        Player target = PatReachTarget >= 0 && PatReachTarget < Main.player.Length ? Main.player[PatReachTarget] : null;
-        if (target == null || !target.active || target.dead)
-            return;
-
-        int stretch = (Main.GameUpdateCount % 14) / 7 == 1 ? 0 : 3;
-        float angle = target.HasMorph<DogTransformationMorph>() ? PatService.PatAngleMorphed : PatService.PatAngleVanilla;
-        Player.SetCompositeArmBack(true, (Player.CompositeArmStretchAmount)stretch, angle * -MathHelper.TwoPi * Player.direction);
     }
 
     private static string AppendSetBonusLine(string existing, string line)

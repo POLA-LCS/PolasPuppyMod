@@ -18,5 +18,9 @@
 			<HintPath>lib\SpreadsheetSplit.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="PetAnyone">
+			<HintPath>lib\PetAnyone.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
 	</ItemGroup>
 </Project>

@@ -1,3 +1,4 @@
+#nullable enable
 using PuppyMod.Common.PuppySets.Definitions;
 
 namespace PuppyMod.Common.PuppySets.Core;

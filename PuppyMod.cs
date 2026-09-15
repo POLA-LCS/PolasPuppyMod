@@ -6,11 +6,14 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using MorphAPI.Core;
-using PuppyMod.Common.PuppySets;
+using PetAnyone;
+using PuppyMod.Common.PuppySets.Bonuses;
+using PuppyMod.Common.PuppySets.Core;
+using PuppyMod.Common.PuppySets.Definitions;
 using PuppyMod.Content.Transformations;
 using PuppyMod.Players;
 using PuppyMod.Services.Leash;
-using PuppyMod.Services.Pat;
+using PuppyMod.Services.Petting;
 
 namespace PuppyMod;
 
@@ -19,12 +22,16 @@ public enum PuppyPacketType : byte
     RequestAttach = 1,
     RequestDetach = 2,
     State = 3,
-    Pat = 4
+    Pat = 4, // player petting; wire layout unchanged
+    PetNpc = 5 // NPC petting via chat button
 }
 
 public class PuppyMod : Mod
 {
     public override uint ExtraPlayerBuffSlots => 1;
+
+    /// <summary>Public mod-call surface for the generic petting API.</summary>
+    public override object Call(params object[] args) => PettingApi.Call(args);
 
     public override void Load()
     {
@@ -32,6 +39,7 @@ public class PuppyMod : Mod
         On_Player.QuickMount += HandleQuickMount;
         PuppyEquipmentRegistry.RegisterDefaults();
         PuppyPairBonusRegistry.RegisterDefaults();
+        PuppyPettingPlugin.Load(this);
 
         // Animated vanity sheets: 40x1120 equip sheets (20 frames of 40x56) animated by the player's body frame.
         EquipLoader.AddEquipTexture(this, PuppyEquipmentTextures.ShinyEarsSheet, EquipType.Head, name: PuppyEquipmentTextures.ShinySetEarsHead);
@@ -155,9 +163,9 @@ public class PuppyMod : Mod
         packet.Send();
     }
 
-    public void RequestPat(int targetWho)
+    public void RequestPet(int targetWho)
     {
-        // Client only; the server applies the pat.
+        // Client only; the server applies the pet.
         if (Main.netMode != NetmodeID.MultiplayerClient)
             return;
         var packet = GetPacket();
@@ -166,7 +174,7 @@ public class PuppyMod : Mod
         packet.Send();
     }
 
-    public void BroadcastPat(int patterWho, int targetWho)
+    public void BroadcastPet(int patterWho, int targetWho)
     {
         if (Main.netMode != NetmodeID.Server)
             return;
@@ -177,26 +185,71 @@ public class PuppyMod : Mod
         packet.Send();
     }
 
-    private void HandleServerPat(int patterWho, int targetWho)
+    public void RequestPetNpc(int npcWhoAmI)
+    {
+        if (Main.netMode != NetmodeID.MultiplayerClient)
+            return;
+        var packet = GetPacket();
+        packet.Write((byte)PuppyPacketType.PetNpc);
+        packet.Write((byte)npcWhoAmI);
+        packet.Send();
+    }
+
+    public void BroadcastPetNpc(int patterWho, int npcWhoAmI)
+    {
+        if (Main.netMode != NetmodeID.Server)
+            return;
+        var packet = GetPacket();
+        packet.Write((byte)PuppyPacketType.PetNpc);
+        packet.Write((byte)patterWho);
+        packet.Write((byte)npcWhoAmI);
+        packet.Send();
+    }
+
+    private void HandleServerPet(int patterWho, int targetWho)
     {
         if (!IsValidPlayer(patterWho) || !IsValidPlayer(targetWho))
             return;
         Player patter = Main.player[patterWho];
-        Player target = Main.player[targetWho];
+        PetTarget target = PetTarget.FromPlayer(Main.player[targetWho]);
         if (patter.dead)
             return;
-        if (!PatService.CanPat(patter, target))
+        if (!PetService.CanPet(patter, target))
             return;
-        // Server-side throttle: bypassCooldown would otherwise allow spam every tick from a modified client.
-        // Clamp to PatBuffRefreshTicks (10) which matches the legitimate hold interval.
-        var puppy = target.GetModPlayer<PuppyPlayer>();
-        if (Main.GameUpdateCount - puppy.LastPatTick < PatService.PatBuffRefreshTicks)
+        // Server-side throttle: bypassCooldown would otherwise allow spam every tick from a modified
+        // client. Clamp to PetRefreshTicks (10) which matches the legitimate hold interval.
+        if (Main.GameUpdateCount - PetService.GetTargetLastPetTick(target) < PetService.PetRefreshTicks)
             return;
-        // Continuous hold bypasses the 20-tick tap cooldown (PatCooldownTicks). Single-tap spam is still
-        // throttled client-side via PatterPatTick; hold refresh sends every PatBuffRefreshTicks (10).
-        if (!PatService.ApplyPat(target, bypassCooldown: true))
+        // Continuous hold bypasses the 20-tick tap cooldown (PetCooldownTicks). Single-tap spam is
+        // still throttled client-side via PatterPetTick; hold refresh sends every PetRefreshTicks (10).
+        if (!PetService.ApplyPetCore(patter, target, bypassCooldown: true))
             return;
-        BroadcastPat(patterWho, targetWho);
+        BroadcastPet(patterWho, targetWho);
+    }
+
+    private void HandleServerPetNpc(int patterWho, int npcWhoAmI)
+    {
+        if (!IsValidPlayer(patterWho) || !IsValidNpc(npcWhoAmI))
+            return;
+        Player patter = Main.player[patterWho];
+        NPC npc = Main.npc[npcWhoAmI];
+        if (patter.dead || npc == null || !npc.active)
+            return;
+        if (!PetRegistry.IsNpcPettable(npc))
+            return;
+        PetTarget target = PetTarget.FromNpc(npc);
+        if (!PetService.CanPet(patter, target))
+            return;
+        if (Main.GameUpdateCount - PetService.GetTargetLastPetTick(target) < PetService.PetRefreshTicks)
+            return;
+        if (!PetService.ApplyPetCore(patter, target, bypassCooldown: true))
+            return;
+        BroadcastPetNpc(patterWho, npcWhoAmI);
+    }
+
+    private static bool IsValidNpc(int npcIndex)
+    {
+        return npcIndex >= 0 && npcIndex < Main.npc.Length && Main.npc[npcIndex] != null && Main.npc[npcIndex].active;
     }
 
     /// <summary>Returns whether a packet-supplied player index points at an active player.</summary>
@@ -248,7 +301,7 @@ public class PuppyMod : Mod
             case (byte)PuppyPacketType.Pat:
                 if (Main.netMode == NetmodeID.Server)
                 {
-                    HandleServerPat(whoAmI, reader.ReadByte());
+                    HandleServerPet(whoAmI, reader.ReadByte());
                 }
                 else
                 {
@@ -256,22 +309,27 @@ public class PuppyMod : Mod
                     int targetWho = reader.ReadByte();
                     if (IsValidPlayer(targetWho))
                     {
-                        Player patTarget = Main.player[targetWho];
-                        PatService.PlayPatEffects(patTarget);
-                        // Hearts are rate-limited per puppy so hold refresh/broadcast don't flood them.
-                        PatService.PlayPatHeartSynced(patTarget);
-                        patTarget.GetModPlayer<PuppyPlayer>().PatWagTicks = PatService.PatWagDurationTicks;
-                        if (!Main.dedServ)
-                        {
-                            // Ensure GoodPuppyBuff syncs immediately on all clients, not just via delayed PlayerInfo.
-                            PatService.ApplyPatHold(patTarget);
-                        }
+                        Player patter = IsValidPlayer(patterWho) ? Main.player[patterWho] : null;
+                        PetTarget target = PetTarget.FromPlayer(Main.player[targetWho]);
+                        // Utility applies shared hearts/events; glue adds this mod's sound and reach.
+                        PettingPlayer.ApplySyncedPet(patter, target);
                     }
-                    if (IsValidPlayer(patterWho) && patterWho != targetWho)
+                }
+                break;
+            case (byte)PuppyPacketType.PetNpc:
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    HandleServerPetNpc(whoAmI, reader.ReadByte());
+                }
+                else
+                {
+                    int patterWho2 = reader.ReadByte();
+                    int npcWho = reader.ReadByte();
+                    if (IsValidNpc(npcWho))
                     {
-                        var patter = Main.player[patterWho].GetModPlayer<PuppyPlayer>();
-                        patter.PatReachTicks = PatService.PatReachDurationTicks;
-                        patter.PatReachTarget = targetWho;
+                        Player patter2 = IsValidPlayer(patterWho2) ? Main.player[patterWho2] : null;
+                        PetTarget target2 = PetTarget.FromNpc(Main.npc[npcWho]);
+                        PettingPlayer.ApplySyncedPet(patter2, target2);
                     }
                 }
                 break;
