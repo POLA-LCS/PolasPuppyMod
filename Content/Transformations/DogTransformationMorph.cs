@@ -145,12 +145,7 @@ public class DogTransformationMorph : Morph
 
     public override void OnMorph(Player player)
     {
-        _standing = DogAnimations.Sheet.PlayAnimation(DogAnimations.Standing);
-        _moving = DogAnimations.Sheet.PlayAnimation(DogAnimations.Moving);
-        _jumping = DogAnimations.Sheet.PlayAnimation(DogAnimations.Jumping);
-        _falling = DogAnimations.Sheet.PlayAnimation(DogAnimations.Falling);
-        _bendCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.BendingCycle);
-        _scratchCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.ScratchingCycle);
+        EnsureAnimationPlayers();
 
         // Capture owner's chosen breed for sync. Remote clients keep the value received via NetRecieve.
         if (player.whoAmI == Main.myPlayer)
@@ -166,6 +161,23 @@ public class DogTransformationMorph : Morph
         }
 
         SpawnPuff(player);
+    }
+
+    /// <summary>
+    /// Creates the shared animation players once. Join sync runs <see cref="NetRecieve(BinaryReader)"/> on a fresh
+    /// clone before <see cref="OnMorph(Player)"/>, so the cycle players must already exist for <c>Seek</c> to work.
+    /// </summary>
+    private void EnsureAnimationPlayers()
+    {
+        if (_standing is not null)
+            return;
+
+        _standing = DogAnimations.Sheet.PlayAnimation(DogAnimations.Standing);
+        _moving = DogAnimations.Sheet.PlayAnimation(DogAnimations.Moving);
+        _jumping = DogAnimations.Sheet.PlayAnimation(DogAnimations.Jumping);
+        _falling = DogAnimations.Sheet.PlayAnimation(DogAnimations.Falling);
+        _bendCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.BendingCycle);
+        _scratchCycle = DogAnimations.Sheet.PlayAnimation(DogAnimations.ScratchingCycle);
     }
 
     public override void OnUnmorph(Player player)
@@ -364,6 +376,9 @@ public class DogTransformationMorph : Morph
 
     public override void NetRecieve(BinaryReader reader)
     {
+        // Join sync delivers NetRecieve on a fresh clone before OnMorph, so make sure the cycle players exist.
+        EnsureAnimationPlayers();
+
         _emote = (DogEmote)reader.ReadByte();
         _emotePhase = (EmotePhase)reader.ReadByte();
         _emoteProgress = reader.ReadInt16();
