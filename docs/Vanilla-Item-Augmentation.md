@@ -50,4 +50,4 @@ flowchart TB
 3. **Player equips or vanity-wears recognized entries** - the Puppy scanner records the armor slots and the resolver aggregates the individual effects with the functional/vanity multiplier.
 4. **A valid Puppy state appears** - any recognized Ears plus any recognized accessory Tail enables the bark set state, regardless of family match.
 5. **Dynamic set text is written** - `PuppyPlayer` appends the localized bark line, and any selected pair line, through `Player.setBonus`.
-6. **Player uses the set bonus** - on the next allowed double-tap, the player barks. Bark audio and cosmetic reactions are handled locally.
+6. **Player uses the set bonus** - on the next allowed double-tap, the player barks. Bark audio is handled through the networked bark path: a local prediction, server validation and broadcast, and per-listener volume with distance falloff. Cosmetic reactions such as the Shiny Ears star burst remain client-side visuals.

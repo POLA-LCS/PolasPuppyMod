@@ -2,7 +2,7 @@
 
 This document describes the intended behavior of the clicker praise system. No implementation details are listed here - only the conceptual relationships and the order in which things happen.
 
-A clicker is an item held by an owner. When used, it praises every nearby puppy at once. Praised puppies receive a temporary happy buff. The clicker is the only way for an owner to grant this buff.
+A clicker is an item held by an owner. When used, it praises every nearby puppy at once. Praised puppies receive a temporary happy buff. The clicker is one way an owner can grant this buff; petting a puppy applies the same buff, as described in [Petting System](Petting-System.md).
 
 ```mermaid
 flowchart TB
@@ -34,6 +34,7 @@ flowchart TB
 - The **click signal** is a short window of time during which the clicker is considered to have just been used. The window is short enough that successive clicks do not stack, but long enough that the buff can be applied to all puppies in range before the signal expires.
 - **Range** is set by the clicker item itself. Each clicker variant has its own range. Puppies outside that range are not affected.
 - The **Good Puppy buff** is what the clicker grants. While the buff is active, the puppy's stats are slightly improved and any bark the puppy makes is rendered at a higher pitch to express happiness.
+- The same buff is also granted by **petting**. A petted puppy receives the Good Puppy buff for as long as the petting continues; the full interaction is described in [Petting System](Petting-System.md).
 - **Puppy detection** is based on the resolved Puppy set. A player counts as a puppy when any recognized Ears and any recognized Tail in an accessory location are present; the families do not have to match. The buff is applied only to those who are puppies at the moment the signal is processed.
 - The clicker is **automatic and inclusive** - one click praises every puppy in range. There is no per-puppy targeting; the owner does not need to aim at any individual puppy.
 - Puppies do not need to acknowledge the praise. The buff is applied silently through the network state and only manifests later through stat changes and bark pitch.

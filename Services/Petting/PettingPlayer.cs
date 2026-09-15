@@ -72,8 +72,7 @@ public class PettingPlayer : ModPlayer
             return;
         }
 
-        // World right-click petting for NPCs is deferred; chat button is the only
-        // affordance in this pass. Respect AllowWorldPet for future registrations.
+        // NPC world petting requires the registration to opt in.
         if (target.IsNpc)
         {
             if (!target.TryGetNpc(out NPC n) || !PetRegistry.TryGetNpcDefinition(n, out var def) || def == null || !def.AllowWorldPet)

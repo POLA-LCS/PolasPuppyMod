@@ -14,8 +14,9 @@ The current registry contains the vanilla `DogEars` and `DogTail`, `ReinforcedEa
 | Functional accessory | 3-9 |
 | Vanity head | 10 |
 | Vanity accessory | 13-19 |
+| Extra accessory | 20+ |
 
-An entry is recognized only when its item type is registered as Puppy Ears or Tail. A player is a puppy when the resolution contains **any recognized Ears and any recognized Tail in a functional or vanity accessory location**. The two items do not have to belong to the same family. This `IsPuppy` state enables the bark set bonus.
+An entry is recognized only when its item type is registered as Puppy Ears or Tail. Extra accessory slots beyond the vanilla array (20+) are read as functional accessories, so expanded accessory slots contribute at full strength and can be selected for the pair. A player is a puppy when the resolution contains **any recognized Ears and any recognized Tail in a functional or vanity accessory location**. The two items do not have to belong to the same family. This `IsPuppy` state enables the bark set bonus.
 
 The set state therefore does not require a matching pair. A nonmatching Tail can still make a player a puppy; it simply cannot provide the selected Ears family's pair effect.
 
@@ -95,4 +96,4 @@ Equipment is resolved from the current armor slots on each simulation; the Puppy
 
 Leash attachment is explicitly server-authoritative. A multiplayer client requests attach/detach, the server validates the owner, target, collar, held leash, and range, then broadcasts the owner, target, leash, and collar state. Clients apply the broadcast for their local view. If an attachment becomes invalid, the server broadcasts the detach state; a client does not authoritatively create the connection.
 
-Audio and cosmetic effects stay local: bark audio is played only for the local player, and Shiny Ears lighting/star bursts plus Shiny Tail platform dust are skipped on dedicated servers and multiplayer servers. The carpet movement, equipment stats, set-state checks, and attached defense/knockback effects remain gameplay state rather than client-only decoration.
+Bark audio is networked: in multiplayer the emitting client sends a bark request and plays a local prediction, the server validates and broadcasts it, and every client in hearing range plays the same clip. The pitch belongs to the sender, while volume and distance falloff are applied by each listener. Shiny Ears lighting and star bursts (including the burst observers see when a puppy barks) plus Shiny Tail platform dust remain client-side cosmetics skipped on dedicated servers. The carpet movement, equipment stats, set-state checks, and attached defense/knockback effects remain gameplay state rather than client-only decoration.
