@@ -36,8 +36,8 @@ public static class PuppyPettingPlugin
         PetEvents.RegisterOnPetHold(mod, ApplyPuppyPet);
         PetEvents.RegisterReachAngle(mod, GetPuppyReachAngle);
         PetRegistry.RegisterPetHandItem(mod, IsClicker);
-        // Zoologist petting via chat button; label is API-driven ("pet <3").
-        PetRegistry.RegisterNpc(ModContent.GetInstance<PuppyMod>(), NPCID.BestiaryGirl, new PetNpcDefinition(showChatButton: true, allowWorldPet: false, buttonText: "pet <3"));
+        // Zoologist petting via chat button; label is API-driven ("Pet <3").
+        PetRegistry.RegisterNpc(ModContent.GetInstance<PuppyMod>(), NPCID.BestiaryGirl, new PetNpcDefinition(showChatButton: true, allowWorldPet: false, buttonText: "Pet <3"));
         // Players are pettable only when they satisfy the puppy set condition.
         // Allow-list: all requirements must pass (additive with veto RegisterPlayerRule).
         PetRegistry.RegisterPlayerRequirement(ModContent.GetInstance<PuppyMod>(), static p => p.GetModPlayer<PuppyPlayer>().IsPuppy);

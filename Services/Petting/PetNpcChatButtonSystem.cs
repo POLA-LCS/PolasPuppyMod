@@ -80,7 +80,7 @@ internal sealed class PetNpcChatButtonSystem : ModSystem
             x += Adv(Language.GetTextValue("UI.NPCCheckHappiness"));
 
         Vector2 pos = new(x, y);
-        string label = def.ButtonText; // already fallback to "pet <3"
+        string label = def.ButtonText; // already fallback to "Pet <3"
         Vector2 size = ChatManager.GetStringSize(font, label, scale09, -1f);
         Vector2 grow = Vector2.One;
         if (size.X > 260f)
