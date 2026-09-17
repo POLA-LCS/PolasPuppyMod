@@ -6,8 +6,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using TransformLib;
-using TransformLib.Core;
+using TransLib;
+using TransLib.Core;
 using PetAnyone;
 using PuppyMod.Common.PuppySets.Bonuses;
 using PuppyMod.Common.PuppySets.Core;
@@ -31,7 +31,7 @@ public enum PuppyPacketType : byte
     Bark = 6, // RequestBark client->server
     RequestBark = 6,
     BarkBroadcast = 7, // server->all
-    Transform = 8 // bundled TransformLib library protocol
+    Transform = 8 // bundled TransLib library protocol
 }
 
 public class PuppyMod : Mod
@@ -44,7 +44,7 @@ public class PuppyMod : Mod
     public override void Load()
     {
         PuppyKeybinds.Load(this);
-        // The bundled TransformLib library is passive: the host mod initializes its runtime and detours.
+        // The bundled TransLib library is passive: the host mod initializes its runtime and detours.
         TransformRuntime.Initialize(this, static p => p.GetModPlayer<PuppyTransformPlayer>());
         TransformHooks.Load();
         On_Player.QuickMount += HandleQuickMount;
@@ -104,7 +104,7 @@ public class PuppyMod : Mod
         orig(player);
     }
 
-    /// <summary>TransformLib applies the custom width without recentering, so it can embed into walls; the transform keeps it clear of obstacles.</summary>
+    /// <summary>TransLib applies the custom width without recentering, so it can embed into walls; the transform keeps it clear of obstacles.</summary>
     private static void RecenterTransformedHitbox(On_Player.orig_ResizeHitbox orig, Player player)
     {
         orig(player);
