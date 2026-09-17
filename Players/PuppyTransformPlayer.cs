@@ -1,4 +1,5 @@
 #nullable enable
+using PuppyMod.Content.Transformations;
 using TransLib.Core;
 using TransLib.Core.Transforming;
 using Terraria;
@@ -32,6 +33,10 @@ public class PuppyTransformPlayer : ModPlayer, ITransformHolder
         if (ActiveTransform is { } transform)
             TransformRuntime.RunModifyDrawInfo(transform, ref drawInfo);
     }
+
+    // Dogs have paws, not hands: while the dog transform is active, items can't be used.
+    // This is a PuppyMod rule, not a TransLib one (TransLib only provides the transform state).
+    public override bool CanUseItem(Item item) => ActiveTransform is not DogTransformation;
 
     public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
     {
