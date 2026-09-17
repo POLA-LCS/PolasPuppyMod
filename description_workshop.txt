@@ -15,7 +15,7 @@
 
 [hr][/hr]
 [h1]become a real puppy - awoo![/h1]
-With any mix of two ears and tails and [b]no mount[/b], press your [b]Quick Mount[/b] key (default [b]R[/b]) to truly transform into a dog which it's breed can be changed inside the configs!
+With any mix of two ears and tails and [b]no mount[/b], press your [b]Quick Mount[/b] key (default [b]R[/b]) to truly transform into a dog which it's breed can be changed inside the configs! Or press your dedicated [b]Dog Transformation[/b] key (default [b]T[/b]) — that one works even while a mount is equipped! *bark!*
 
 While you're a real dog items are off and you can emote:
 Playful invitation (default [b]I[/b]), bend forward and start panting and wagging.

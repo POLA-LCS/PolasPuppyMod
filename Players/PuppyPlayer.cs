@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -343,19 +342,15 @@ public class PuppyPlayer : ModPlayer
         ApplyEquipmentKnockback();
         // Attached pair defense is applied with the other equipment stats.
         PuppyLeashBonusService.ApplyDefenseForPlayer(Player);
-        // Reset setBonus each tick before appending the active lines.
-        Player.setBonus = string.Empty;
-        if (IsPuppy)
-        {
-            foreach (string bonusText in PuppySetBonusText.GetActiveLines(_equipmentResolution, forTooltip: false))
-            {
-                Player.setBonus = AppendSetBonusLine(Player.setBonus, bonusText);
-            }
-        }
+        // Player.setBonus is vanilla's armor set bonus display text and must not be touched here;
+        // the puppy bonus is shown in the item tooltips instead (see TooltipExtensions).
     }
 
     public override void ProcessTriggers(TriggersSet triggersSet)
     {
+        if (PuppyKeybinds.Transform.JustPressed)
+            DogTransformController.Toggle(Player);
+
         if (!Player.HasTransform<DogTransformation>())
             return;
 
@@ -371,18 +366,6 @@ public class PuppyPlayer : ModPlayer
             held = _emoteChoice;
 
         Player.GetTransform<DogTransformation>().SetEmoteInput(Player, held);
-    }
-
-    private static string AppendSetBonusLine(string existing, string line)
-    {
-        if (string.IsNullOrEmpty(line))
-            return existing;
-        // Exact line check via split instead of substring Contains to avoid fragile false positives.
-        if (!string.IsNullOrEmpty(existing) && existing.Split('\n').Contains(line))
-            return existing;
-        if (string.IsNullOrWhiteSpace(existing))
-            return line;
-        return existing + "\n" + line;
     }
 
     public override void PostUpdateMiscEffects()

@@ -32,7 +32,7 @@ flowchart TB
     subgraph Equipment[Derived Puppy state]
         Armor[Current armor slots]
         Resolution[Local snapshot/resolution]
-        SetText[Dynamic Player.setBonus]
+        Tooltip[Item-tooltip bonus lines]
     end
 
     ReqAttach --> Validate
@@ -46,7 +46,7 @@ flowchart TB
     Broadcast --> Recv
     Broadcast --> Recv2
     Armor --> Resolution
-    Resolution --> SetText
+    Resolution --> Tooltip
 ```
 
 ### Concepts
@@ -66,7 +66,7 @@ flowchart TB
 
 ### Work Sequence
 
-1. **Equipment is resolved** - each side scans its current armor slots, aggregates recognized Puppy effects, derives `IsPuppy`, and builds the local dynamic set text. No Puppy equipment packet is exchanged.
+1. **Equipment is resolved** - each side scans its current armor slots, aggregates recognized Puppy effects, derives `IsPuppy`, and exposes puppy bonus lines for the item tooltips. No Puppy equipment packet is exchanged.
 2. **Owner right-clicks a puppy with a leash** - on the owner client, a request to attach is built. The request names the target puppy and the held leash type.
 3. **Request is sent to the server** - the owner client transmits the request.
 4. **Server receives the request** - the server runs the leash's validation rules against the requester, the target, and the leash.

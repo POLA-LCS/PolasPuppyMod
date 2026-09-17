@@ -113,6 +113,11 @@ Keybinds: {
 		DisplayName: Emote
 		Tooltip: Randomly bend or scratch
 	}
+
+	Transform: {
+		DisplayName: Dog Transformation
+		Tooltip: Transform into a dog (works even while a mount is equipped)
+	}
 }
 
 Configs: {

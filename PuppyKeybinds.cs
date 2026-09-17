@@ -8,12 +8,14 @@ public static class PuppyKeybinds
     public static ModKeybind Bend { get; private set; }
     public static ModKeybind Scratch { get; private set; }
     public static ModKeybind Emote { get; private set; }
+    public static ModKeybind Transform { get; private set; }
 
     internal static void Load(Mod mod)
     {
         Bend = KeybindLoader.RegisterKeybind(mod, nameof(Bend), Keys.I);
         Scratch = KeybindLoader.RegisterKeybind(mod, nameof(Scratch), Keys.O);
         Emote = KeybindLoader.RegisterKeybind(mod, nameof(Emote), Keys.P);
+        Transform = KeybindLoader.RegisterKeybind(mod, nameof(Transform), Keys.T);
     }
 
     internal static void Unload()
@@ -21,5 +23,6 @@ public static class PuppyKeybinds
         Bend = null;
         Scratch = null;
         Emote = null;
+        Transform = null;
     }
 }

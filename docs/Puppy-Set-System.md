@@ -84,11 +84,11 @@ The leash bonus service applies the defense to both sides of a valid attachment 
 - **Shiny Ears** provide their digging stat and a warm light in both functional and vanity use (vanity halves the light intensity). When the Puppy barks, Shiny Ears can add a local yellow star burst. Ore sight is not part of the item anymore: it belongs to the Shiny pair bonus.
 - **Shiny Tail** sets the vanilla carpet flag, creating a star-particle hover platform using vanilla carpet movement. A functional Shiny Tail allows up to **30 ticks (0.5 seconds)** of hover; a vanity Shiny Tail allows **15 ticks (0.25 seconds)**. If both forms are active, the functional duration is used. Star dust beneath the player is visual feedback while the carpet is active.
 
-## Vanilla item augmentation and set text
+## Vanilla item augmentation and bonus text
 
 Vanilla `DogEars` and `DogTail` remain vanilla item instances with their original item types and defaults. `DogEarsGlobalItem` and `DogTailGlobalItem` route their tooltip changes through the shared Puppy tooltip helper; the registry separately supplies their Puppy stats and family identity. The mod does not replace either vanilla item.
 
-The displayed set text is a dynamic fake armor-set display rather than a registered Terraria armor set. While `IsPuppy` is true, `PuppyPlayer` appends localized bark text, and any available selected-pair text, to `Player.setBonus` each equipment update. The same active lines can be inserted into the relevant item tooltip for the local player. The bark line is available for any recognized Ears plus any valid Tail, even when the families do not match.
+The puppy bonus text is not a registered Terraria armor set, and the mod never writes `Player.setBonus`, which is vanilla's armor set bonus display text and must stay untouched. While `IsPuppy` is true, the active puppy bonus lines are only inserted into the relevant item tooltip for the local player (`PuppySetBonusText.GetActiveLines(..., forTooltip: true)` via `TooltipExtensions.ApplyPuppyEquipmentTooltip`). The bark line is available for any recognized Ears plus any valid Tail, even when the families do not match.
 
 ## Authority and visual effects
 
