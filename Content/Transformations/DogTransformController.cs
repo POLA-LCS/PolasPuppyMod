@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Terraria;
-using TransformAPI.Core;
+using TransformLib.Core;
 using PuppyMod.Players;
 
 namespace PuppyMod.Content.Transformations;

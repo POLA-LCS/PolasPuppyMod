@@ -1,6 +1,6 @@
 #nullable enable
-using TransformAPI.Core;
-using TransformAPI.Core.Transforming;
+using TransformLib.Core;
+using TransformLib.Core.Transforming;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace PuppyMod.Players;
 
 /// <summary>
-/// Hosts the bundled TransformAPI transform state for every player and forwards the hooks the library needs.
+/// Hosts the bundled TransformLib transform state for every player and forwards the hooks the library needs.
 /// The API ships as a private library DLL (dllReferences), so its content is never autoloaded: this bridge owns it.
 /// </summary>
 public class PuppyTransformPlayer : ModPlayer, ITransformHolder

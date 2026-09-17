@@ -10,8 +10,8 @@
 
 	<!-- References -->
 	<ItemGroup>
-		<Reference Include="TransformAPI">
-			<HintPath>lib\TransformAPI.dll</HintPath>
+		<Reference Include="TransformLib">
+			<HintPath>lib\TransformLib.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="SpreadsheetSplit">
