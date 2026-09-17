@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TransformAPI;
 using TransformAPI.Core;
 using PetAnyone;
 using PuppyMod.Common.PuppySets.Bonuses;
@@ -30,7 +31,8 @@ public enum PuppyPacketType : byte
     PetNpc = 5, // NPC petting via chat button
     Bark = 6, // RequestBark client->server
     RequestBark = 6,
-    BarkBroadcast = 7 // server->all
+    BarkBroadcast = 7, // server->all
+    Transform = 8 // bundled TransformAPI library protocol
 }
 
 public class PuppyMod : Mod
@@ -43,6 +45,9 @@ public class PuppyMod : Mod
     public override void Load()
     {
         PuppyKeybinds.Load(this);
+        // The bundled TransformAPI library is passive: the host mod initializes its runtime and detours.
+        TransformRuntime.Initialize(this, static p => p.GetModPlayer<PuppyTransformPlayer>());
+        TransformHooks.Load();
         On_Player.QuickMount += HandleQuickMount;
         PuppyEquipmentRegistry.RegisterDefaults();
         PuppyPairBonusRegistry.RegisterDefaults();
@@ -67,6 +72,9 @@ public class PuppyMod : Mod
         PuppyKeybinds.Unload();
         PuppyEquipmentRegistry.Clear();
         PuppyPairBonusRegistry.Clear();
+        TransformHooks.Unload();
+        TransformRuntime.Unload();
+        DogTransformation.ClearStaticCaches();
     }
 
     /// <summary>Vertical clearance in tiles needed to turn back into the full-size player.</summary>
@@ -582,6 +590,9 @@ public class PuppyMod : Mod
             case (byte)PuppyPacketType.BarkBroadcast:
                 if (Main.netMode != NetmodeID.Server)
                     HandleClientBarkBroadcast(reader);
+                break;
+            case (byte)PuppyPacketType.Transform:
+                TransformRuntime.HandlePacket(reader, whoAmI);
                 break;
         }
     }

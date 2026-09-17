@@ -36,7 +36,7 @@ Once leashed links you together as you trot along, and both sides get rewarded: 
 
 [b]Can puppies praise themselves?[/b] Nuh-uh - only owners praise, puppies get to be good. That's the fun! :3
 
-[b]Technical woofs![/b] Needs the [b]TransformAPI[/b] library, and tModLoader grabs it for you automatically. Transformation is synced in multiplayer, and all the puppy extras live in [b]Configs[/b]: dog skin, bark volume, pitch and more. If something's off, reload mods and give us a woof.
+[b]Technical woofs![/b] Transformation is built in and synced in multiplayer — no extra downloads. All the puppy extras live in [b]Configs[/b]: dog skin, bark volume, pitch and more. If something's off, reload mods and give us a woof.
 
 [hr][/hr]
 [h1]credits - thank you, good puppies! ૮꒰ ྀི >⏝⏝< ྀི꒱ა[/h1]

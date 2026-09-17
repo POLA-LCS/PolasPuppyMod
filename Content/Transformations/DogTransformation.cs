@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TransformAPI.Core;
 using TransformAPI.Core.Transforming;
 using ReLogic.Content;
 using SpreadsheetSplit;
@@ -12,7 +13,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using PuppyMod.Common.Utils;
 using PuppyMod.Players;
-using TransformAPIMod = TransformAPI.TransformAPI;
 
 namespace PuppyMod.Content.Transformations;
 
@@ -232,7 +232,7 @@ public class DogTransformation : Transform
     private static void SendEmoteUpdate(Player player)
     {
         if (Main.netMode == NetmodeID.MultiplayerClient)
-            TransformAPIMod.SendUpdateTransform(player);
+            TransformRuntime.SendUpdateTransform(player);
     }
 
     /// <summary>Whether the dog can start an emote right now - emotes only play while grounded and standing still.</summary>
@@ -249,7 +249,7 @@ public class DogTransformation : Transform
                 if (configSkin != Skin)
                 {
                     Skin = configSkin;
-                    TransformAPIMod.SendUpdateTransform(player);
+                    TransformRuntime.SendUpdateTransform(player);
                 }
             }
             catch
@@ -379,13 +379,25 @@ public class DogTransformation : Transform
         // Join sync delivers NetRecieve on a fresh clone before OnTransform, so make sure the cycle players exist.
         EnsureAnimationPlayers();
 
-        _emote = (DogEmote)reader.ReadByte();
-        _emotePhase = (EmotePhase)reader.ReadByte();
-        _emoteProgress = reader.ReadInt16();
-        byte cycleIndex = reader.ReadByte();
+        // Length guard: emote(1) + phase(1) + progress(2) + cycle(1); never throw on a truncated packet.
+        if (reader.BaseStream.Position + 5 > reader.BaseStream.Length)
+            return;
 
+        byte emoteValue = reader.ReadByte();
+        _emote = Enum.IsDefined(typeof(DogEmote), (DogEmote)emoteValue) ? (DogEmote)emoteValue : DogEmote.None;
+
+        byte phaseValue = reader.ReadByte();
+        _emotePhase = Enum.IsDefined(typeof(EmotePhase), (EmotePhase)phaseValue) ? (EmotePhase)phaseValue : EmotePhase.None;
+
+        _emoteProgress = Math.Max(0f, reader.ReadInt16());
+
+        byte cycleIndex = reader.ReadByte();
         if (_emote != DogEmote.None)
-            GetCyclePlayer(_emote).Seek(cycleIndex);
+        {
+            AnimationPlayer cycle = GetCyclePlayer(_emote);
+            if (cycleIndex < cycle.FrameCount)
+                cycle.Seek(cycleIndex);
+        }
 
         // Backward-compatible: skin and fast flag appended at end.
         if (reader.BaseStream.Position < reader.BaseStream.Length)
@@ -405,14 +417,64 @@ public class DogTransformation : Transform
 
     private AnimationPlayer GetCyclePlayer(DogEmote emote) => emote == DogEmote.Bend ? _bendCycle : _scratchCycle;
 
-    private static readonly Dictionary<Texture2D, float[]> FrameAlignment = [];
+    /// <summary>Cached transformation textures keyed by skin, requested once instead of per draw.</summary>
+    private static readonly Dictionary<DogTransformationSkin, Asset<Texture2D>> SkinTextures = [];
+
+    /// <summary>Per-frame horizontal offsets keyed by skin, so the cache survives asset reloads and does not retain textures.</summary>
+    private static readonly Dictionary<DogTransformationSkin, float[]> FrameAlignment = [];
+
+    /// <summary>Clears both static caches; called from the mod's Unload so nothing survives a reload.</summary>
+    public static void ClearStaticCaches()
+    {
+        SkinTextures.Clear();
+        FrameAlignment.Clear();
+    }
+
+    /// <summary>Returns the skin's texture, or null when the asset is not loaded; never requests assets per draw.</summary>
+    private static Texture2D GetSkinTexture(DogTransformationSkin skin)
+    {
+        if (!SkinTextures.TryGetValue(skin, out Asset<Texture2D> asset))
+        {
+            try
+            {
+                asset = ModContent.Request<Texture2D>(
+                    AssetUtils.GetTransformationTexturePath(skin.ToString()),
+                    AssetRequestMode.ImmediateLoad);
+            }
+            catch
+            {
+                // Never throw from the draw hook: skip this frame and retry on a later one instead of caching the failure.
+                return null;
+            }
+
+            SkinTextures[skin] = asset;
+        }
+
+        return asset.IsLoaded ? asset.Value : null;
+    }
 
     /// <summary>Per-frame horizontal offsets that align each frame's front edge, so the body stays put while the tail and legs animate.</summary>
-    private static float[] GetFrameAlignment(Texture2D texture, int frameCount)
+    private static float[] GetFrameAlignment(DogTransformationSkin skin, Texture2D texture, int frameCount)
     {
-        if (FrameAlignment.TryGetValue(texture, out float[] cached))
+        if (FrameAlignment.TryGetValue(skin, out float[] cached))
             return cached;
 
+        try
+        {
+            float[] offsets = ComputeFrameAlignment(texture, frameCount);
+            FrameAlignment[skin] = offsets;
+            return offsets;
+        }
+        catch
+        {
+            // Never throw from the draw hook: fall back to no alignment and do not cache the failure.
+            return new float[frameCount];
+        }
+    }
+
+    /// <summary>Scans each frame's left edge so the front of the dog stays anchored between frames.</summary>
+    private static float[] ComputeFrameAlignment(Texture2D texture, int frameCount)
+    {
         Color[] pixels = new Color[texture.Width * texture.Height];
         texture.GetData(pixels);
 
@@ -449,7 +511,6 @@ public class DogTransformation : Transform
                 offsets[frame] = anchor - leftEdges[frame];
         }
 
-        FrameAlignment[texture] = offsets;
         return offsets;
     }
 
@@ -468,9 +529,9 @@ public class DogTransformation : Transform
                 skin = DogTransformationSkin.Beagle;
             }
         }
-        Texture2D texture = ModContent.Request<Texture2D>(
-            AssetUtils.GetTransformationTexturePath(skin.ToString()),
-            AssetRequestMode.ImmediateLoad).Value;
+        Texture2D texture = GetSkinTexture(skin);
+        if (texture is null)
+            return;
 
         SpriteSheet sheet = DogAnimations.Sheet;
         int spriteIndex = GetSpriteIndex(player) % sheet.Count;
@@ -480,7 +541,7 @@ public class DogTransformation : Transform
         Vector2 position = (player.Bottom - Main.screenPosition + new Vector2(0f, player.gfxOffY)).Floor();
         SpriteEffects effects = drawInfo.playerEffect ^ SpriteEffects.FlipHorizontally;
 
-        float alignment = GetFrameAlignment(texture, sheet.Count)[spriteIndex];
+        float alignment = GetFrameAlignment(skin, texture, sheet.Count)[spriteIndex];
         if ((effects & SpriteEffects.FlipHorizontally) != 0)
             alignment = -alignment;
         position.X += alignment;

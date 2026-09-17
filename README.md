@@ -1,9 +1,9 @@
 # Puppy Mod - arf arf! ૮⸝⸝> ﻌ <⸝⸝ა
 
-v1.8.8 - Terraria 1.4.4+
+v1.8.9 - Terraria 1.4.4+
 
 Become a puppy with any recognized Puppy Ears + any accessory Puppy Tail (functional or vanity). Double-tap to bark!
 
 Owners praise puppies with a Clicker for the Good Puppy buff. Leash system: wear a collar - when leashed, the collar buffs the owner and the leash buffs the puppy. Right-click a collared puppy with a leash to tether, right-click again to release.
 
-Opt-in, multiplayer friendly. Requires the TransformAPI library mod.
+Opt-in, multiplayer friendly. Transformation is built in — no extra library mod required.
