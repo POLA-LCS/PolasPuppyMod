@@ -33,8 +33,6 @@ public class PuppyTransformPlayer : ModPlayer, ITransformHolder
             TransformRuntime.RunModifyDrawInfo(transform, ref drawInfo);
     }
 
-    public override bool CanUseItem(Item item) => ActiveTransform is not { } transform || transform.CanUseItem(Player, item);
-
     public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
     {
         if (Main.netMode != NetmodeID.Server || ActiveTransform is not { } transform)

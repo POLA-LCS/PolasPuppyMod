@@ -91,8 +91,6 @@ public class DogTransformation : Transform
 
     public override bool HideDefaultPlayer => true;
 
-    public override bool CanUseItem(Player player, Item item) => false;
-
     public override bool ModifyHitbox(Player player, out Point16 size)
     {
         int width = (int)MathF.Round(Player.defaultWidth + HitboxExtraWidthTiles * 16f);
