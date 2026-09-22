@@ -25,17 +25,15 @@ public static class DogAnimations
 
     private static SpriteSheet Create()
     {
-        SpriteSheet sheet = new(70, 1064, SpriteWidth, SpriteHeight);
-
-        sheet.Animations[Standing] = 0..8;
-        sheet.Animations[Jumping] = 8..9;
-        sheet.Animations[Falling] = 8..9;
-        sheet.Animations[Moving] = 9..17;
-        sheet.Animations[Bending] = 17..23;
-        sheet.Animations[BendingCycle] = 18..22;
-        sheet.Animations[Scratching] = 23..28;
-        sheet.Animations[ScratchingCycle] = 24..27;
-
-        return sheet;
+        return new SpriteSheet(70, 1064, SpriteWidth, SpriteHeight)
+            .WithAnimations(
+                (Standing, 0..8),
+                (Jumping, 8..9),
+                (Falling, 8..9),
+                (Moving, 9..17),
+                (Bending, 17..23),
+                (BendingCycle, 18..22),
+                (Scratching, 23..28),
+                (ScratchingCycle, 24..27));
     }
 }
