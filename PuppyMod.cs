@@ -419,13 +419,11 @@ public class PuppyMod : Mod
             return;
         if (!PetService.CanPet(patter, target))
             return;
-        // Server-side throttle: bypassCooldown would otherwise allow spam every tick from a modified
-        // client. Clamp to PetRefreshTicks (10) which matches the legitimate hold interval.
+        // Server-side throttle: the API hold branch has no cooldown, so a modified client could
+        // otherwise apply every tick. Clamp to PetRefreshTicks (10), the legitimate hold interval.
         if (Main.GameUpdateCount - PetService.GetTargetLastPetTick(target) < PetService.PetRefreshTicks)
             return;
-        // Continuous hold bypasses the 20-tick tap cooldown (PetCooldownTicks). Single-tap spam is
-        // still throttled client-side via PatterPetTick; hold refresh sends every PetRefreshTicks (10).
-        if (!PetService.ApplyPetCore(patter, target, bypassCooldown: true))
+        if (!PetService.TryApplyPet(patter, target, PetApplyMode.Hold, PetEventSource.Local).IsApplied)
             return;
         BroadcastPet(patterWho, targetWho);
     }
@@ -445,7 +443,7 @@ public class PuppyMod : Mod
             return;
         if (Main.GameUpdateCount - PetService.GetTargetLastPetTick(target) < PetService.PetRefreshTicks)
             return;
-        if (!PetService.ApplyPetCore(patter, target, bypassCooldown: true))
+        if (!PetService.TryApplyPet(patter, target, PetApplyMode.Hold, PetEventSource.Local).IsApplied)
             return;
         BroadcastPetNpc(patterWho, npcWhoAmI);
     }
@@ -522,7 +520,7 @@ public class PuppyMod : Mod
                     {
                         Player patter = IsValidPlayer(patterWho) ? Main.player[patterWho] : null;
                         PetTarget target = PetTarget.FromPlayer(Main.player[targetWho]);
-                        // Utility applies shared hearts/events; glue adds this mod's sound and reach.
+                        // The API raises the synced session hooks that drive this mod's hearts; glue adds sound and reach.
                         PettingPlayer.ApplySyncedPet(patter, target);
                     }
                 }

@@ -45,7 +45,7 @@ public class PettingPlayer : ModPlayer
             return;
 
         PuppyPettingPlugin.PlayPatSound(target);
-        PetService.HandleSyncedPet(patter, target);
+        PetService.TryApplyPet(patter, target, PetApplyMode.Hold, PetEventSource.Synced);
 
         if (patter != null && patter.active && !(target.IsPlayer && patter.whoAmI == target.Index))
             patter.GetModPlayer<PettingPlayer>().SetReach(target);
@@ -101,10 +101,6 @@ public class PettingPlayer : ModPlayer
             PetRefreshTimer = 0;
             HoldPet(target);
         }
-
-        // The service throttles to one heart per PetHeartIntervalTicks and target.
-        if (PetService.CanPet(Player, target))
-            PetService.PlayPetHeartSynced(target);
     }
 
     private bool TryPet(PetTarget target)
@@ -130,20 +126,22 @@ public class PettingPlayer : ModPlayer
             return true;
         }
 
+        PetApplyResult result = PetService.TryApplyPet(Player, target, PetApplyMode.Tap, PetEventSource.Local);
+        if (!result.IsApplied)
+            return false;
+
         if (Main.netMode == NetmodeID.Server)
         {
-            if (PetService.ApplyPetCore(Player, target, bypassCooldown: false))
-            {
-                if (target.IsPlayer)
-                    ModContent.GetInstance<PuppyMod>().BroadcastPet(Player.whoAmI, target.Index);
-                else if (target.IsNpc)
-                    ModContent.GetInstance<PuppyMod>().BroadcastPetNpc(Player.whoAmI, target.Index);
-            }
-            return true;
+            if (target.IsPlayer)
+                ModContent.GetInstance<PuppyMod>().BroadcastPet(Player.whoAmI, target.Index);
+            else if (target.IsNpc)
+                ModContent.GetInstance<PuppyMod>().BroadcastPetNpc(Player.whoAmI, target.Index);
+        }
+        else
+        {
+            PuppyPettingPlugin.PlayPatSound(target);
         }
 
-        if (PetService.ApplyPetCore(Player, target, bypassCooldown: false))
-            PuppyPettingPlugin.PlayPatSound(target);
         return true;
     }
 
@@ -161,13 +159,13 @@ public class PettingPlayer : ModPlayer
             else if (target.IsNpc)
                 ModContent.GetInstance<PuppyMod>().RequestPetNpc(target.Index);
             // Local prediction for responsiveness; the server broadcast stays authoritative.
-            PetService.ApplyPetCore(Player, target, bypassCooldown: true);
+            PetService.TryApplyPet(Player, target, PetApplyMode.Hold, PetEventSource.Local);
             return true;
         }
 
         if (Main.netMode == NetmodeID.Server)
         {
-            if (PetService.ApplyPetCore(Player, target, bypassCooldown: true))
+            if (PetService.TryApplyPet(Player, target, PetApplyMode.Hold, PetEventSource.Local).IsApplied)
             {
                 if (target.IsPlayer)
                     ModContent.GetInstance<PuppyMod>().BroadcastPet(Player.whoAmI, target.Index);
@@ -177,7 +175,7 @@ public class PettingPlayer : ModPlayer
             return true;
         }
 
-        PetService.ApplyPetCore(Player, target, bypassCooldown: true);
+        PetService.TryApplyPet(Player, target, PetApplyMode.Hold, PetEventSource.Local);
         return true;
     }
 
@@ -186,7 +184,7 @@ public class PettingPlayer : ModPlayer
         if (_activePetTarget == PetTarget.None)
             return;
 
-        PetEvents.RaisePetEnd(new PetContext(Player, _activePetTarget));
+        PetService.EndPet(Player, _activePetTarget, PetEndReason.Released, PetEventSource.Local);
         _activePetTarget = PetTarget.None;
     }
 

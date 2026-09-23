@@ -140,16 +140,12 @@ internal sealed class PetNpcChatButtonSystem : ModSystem
             return;
 
         PetTarget target = PetTarget.FromNpc(npc);
-        if (!PetService.CanPet(local, target))
+
+        // The API raises the start hook, which applies this mod's puppy effects and hearts.
+        PetApplyResult result = PetService.TryApplyPet(local, target, PetApplyMode.Tap, PetEventSource.Local);
+        if (!result.IsApplied)
             return;
 
-        // Local prediction: apply core, hearts, sound, reach.
-        bool applied = PetService.ApplyPetCore(local, target, bypassCooldown: false);
-        if (!applied)
-            return;
-
-        // Spawn heart respecting interval (HandleSynced also does, but we want immediate heart)
-        PetService.PlayPetHeartSynced(target);
         PuppyPettingPlugin.PlayPatSound(target);
         local.GetModPlayer<PettingPlayer>().SetReach(target);
 

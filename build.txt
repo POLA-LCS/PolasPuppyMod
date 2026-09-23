@@ -1,4 +1,5 @@
 displayName = Puppy Mod
 author = POLA
 version = 1.9.0
-dllReferences = SpreadsheetSplit, PetAnyone, TransLib
+dllReferences = SpreadsheetSplit, TransLib
+modReferences = PetAnyoneAPI

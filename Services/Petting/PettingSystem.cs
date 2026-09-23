@@ -4,15 +4,14 @@ using Terraria.ModLoader;
 namespace PuppyMod.Services.Petting;
 
 /// <summary>
-/// Clears the utility's registrations and per-target state when the mod unloads. Registrations
-/// owned by other mods are pruned lazily through <see cref="PetRegistry.IsOwnerLoaded"/>.
+/// Owner scoped cleanup of this mod's registrations and subscriptions on unload. The API mod
+/// clears its own global state on unload, so only this mod's entries are removed here.
 /// </summary>
 internal sealed class PettingSystem : ModSystem
 {
     public override void Unload()
     {
-        PetEvents.Clear();
-        PetRegistry.Clear();
-        PetService.Clear();
+        PetEvents.ClearOwner(Mod);
+        PetRegistry.ClearOwner(Mod);
     }
 }
