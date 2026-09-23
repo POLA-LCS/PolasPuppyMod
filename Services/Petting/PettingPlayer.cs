@@ -8,8 +8,8 @@ namespace PuppyMod.Services.Petting;
 
 /// <summary>
 /// tModLoader glue for the generic petting API: owns the right-click hold loop, the per-player
-/// reach animation state and every netmode branch. The shared rules and visuals live in the
-/// PetAnyone utility library; puppy-specific effects are applied by <see cref="PuppyPettingPlugin"/>.
+/// reach animation state and every netmode branch. The shared rules and sessions live in the
+/// PetAnyoneAPI dependency; puppy effects and visuals are applied by <see cref="PuppyPettingPlugin"/>.
 /// </summary>
 public class PettingPlayer : ModPlayer
 {
