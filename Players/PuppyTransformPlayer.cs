@@ -40,9 +40,11 @@ public class PuppyTransformPlayer : ModPlayer, ITransformHolder
 
     public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
     {
-        if (Main.netMode != NetmodeID.Server || ActiveTransform is not { } transform)
+        // Join sync is the host mod's job. The library owns the packet format and re-sends the
+        // server's own clone with NetSend, so custom transform state reaches the joiner.
+        if (Main.netMode != NetmodeID.Server)
             return;
 
-        TransformRuntime.SendSetTransform(transform, Player, toWho, fromWho);
+        TransformRuntime.SendJoinSync(Player, toWho, fromWho);
     }
 }

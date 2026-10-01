@@ -23,15 +23,17 @@ namespace PuppyMod;
 
 public enum PuppyPacketType : byte
 {
-    RequestAttach = 1,
-    RequestDetach = 2,
-    State = 3,
-    Pat = 4, // player petting; wire layout unchanged
-    PetNpc = 5, // NPC petting via chat button
-    Bark = 6, // RequestBark client->server
-    RequestBark = 6,
-    BarkBroadcast = 7, // server->all
-    Transform = 8 // bundled TransLib library protocol
+    // Values 0 through 2 are reserved for the bundled TransLib wire ids owned by
+    // TransformRuntime.MessageID (SetTransform 0, UpdateTransform 1, Untransform 2). The library
+    // writes that id at payload byte zero, so any PuppyMod value below 16 would collide with it.
+    RequestAttach = 16,
+    RequestDetach = 17,
+    State = 18,
+    Pat = 19, // player petting; wire layout unchanged
+    PetNpc = 20, // NPC petting via chat button
+    Bark = 21, // RequestBark client->server
+    RequestBark = 21,
+    BarkBroadcast = 22 // server->all
 }
 
 public class PuppyMod : Mod
@@ -459,6 +461,48 @@ public class PuppyMod : Mod
         return playerIndex >= 0 && playerIndex < Main.player.Length && Main.player[playerIndex] != null && Main.player[playerIndex].active;
     }
 
+    private bool _loggedListenServerTransformSyncWarning;
+
+    /// <summary>Returns whether this peer runs the world itself while also being a player.</summary>
+    /// <remarks>
+    /// A listen server host and a remote client are both <see cref="NetmodeID.MultiplayerClient"/>
+    /// with <c>Main.dedServ</c> false, so the net mode alone cannot tell them apart. Only the
+    /// listening side ever has a connected client, so an active entry in
+    /// <see cref="Netplay.Clients"/> is the host test. <c>Netplay.IsListening</c> is deliberately
+    /// not used: it initialises to true and is only cleared by a connection, so it reads as true
+    /// on a client too.
+    /// </remarks>
+    private static bool IsListenServerHost()
+    {
+        if (Main.netMode != NetmodeID.MultiplayerClient || Main.dedServ)
+            return false;
+
+        RemoteClient[] clients = Netplay.Clients;
+        if (clients == null)
+            return false;
+
+        foreach (RemoteClient client in clients)
+        {
+            if (client != null && client.IsActive)
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>Warns once per session that transform sync only works on a dedicated server.</summary>
+    private void WarnListenServerTransformSync()
+    {
+        // A listen server (host is also a player) cannot relay transform state to its own clients,
+        // because the bundled library only writes the player index byte on a dedicated server.
+        // Logged once so a normal session does not repeat it on every transform packet.
+        if (Main.dedServ || !IsListenServerHost() || _loggedListenServerTransformSyncWarning)
+            return;
+
+        _loggedListenServerTransformSyncWarning = true;
+        Logger.Warn("PuppyMod: dog transform sync does not work when you host a world yourself. Other players will not see you as a dog. Use a dedicated server for transform sync.");
+    }
+
     private void HandleServerAttach(int ownerWho, int targetWho, int leashItemType)
     {
         if (!IsValidPlayer(ownerWho) || !IsValidPlayer(targetWho))
@@ -488,7 +532,24 @@ public class PuppyMod : Mod
 
     public override void HandlePacket(BinaryReader reader, int whoAmI)
     {
+        if (reader.BaseStream.Position >= reader.BaseStream.Length)
+            return;
+
+        long payloadStart = reader.BaseStream.Position;
         byte type = reader.ReadByte();
+
+        // Bytes 0 through 2 are the bundled TransLib protocol (TransformRuntime.MessageID). The
+        // library re-reads the message id itself, so the reader must be rewound to payload
+        // position zero before delegating. The stream is seekable: the guards below already read
+        // Position and Length on it.
+        if (type <= (byte)TransformRuntime.MessageID.Untransform)
+        {
+            WarnListenServerTransformSync();
+            reader.BaseStream.Position = payloadStart;
+            TransformRuntime.HandlePacket(reader, whoAmI);
+            return;
+        }
+
         switch (type)
         {
             case (byte)PuppyPacketType.RequestAttach:
@@ -574,9 +635,6 @@ public class PuppyMod : Mod
             case (byte)PuppyPacketType.BarkBroadcast:
                 if (Main.netMode != NetmodeID.Server)
                     HandleClientBarkBroadcast(reader);
-                break;
-            case (byte)PuppyPacketType.Transform:
-                TransformRuntime.HandlePacket(reader, whoAmI);
                 break;
         }
     }
