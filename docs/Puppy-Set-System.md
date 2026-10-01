@@ -62,11 +62,13 @@ The current full-strength functional contributions are:
 | Item | Individual contribution or effect |
 | --- | --- |
 | Vanilla Dog Ears | `pickSpeed -= 0.10` (faster digging) |
-| Vanilla Dog Tail | `moveSpeed += 0.30`, `accRunSpeed += 0.45`, `maxRunSpeed += 0.30`, `jumpSpeedBoost += 1.0` |
+| Vanilla Dog Tail | `moveSpeed += 0.30`, `accRunSpeed += 0.45`, `maxRunSpeed += 0.30`, `runAcceleration *= 1.30`, `jumpSpeedBoost += 1.0` |
 | Reinforced Ears | `+2` defense; `+0.25` melee knockback; `+0.25` flat summon knockback |
-| Reinforced Tail | `+2` defense; `moveSpeed += 0.20`, `accRunSpeed += 0.30`, `maxRunSpeed += 0.20`, `jumpSpeedBoost += 0.6666667` |
+| Reinforced Tail | `+2` defense; `moveSpeed += 0.20`, `accRunSpeed += 0.30`, `maxRunSpeed += 0.20`, `runAcceleration *= 1.20`, `jumpSpeedBoost += 0.6666667` |
 | Shiny Ears | `pickSpeed -= 0.12`; also emits a warm light |
 | Shiny Tail | No registered stat contribution; enables the carpet hover described below |
+
+`moveSpeed` is written in `PuppyPlayer.PostUpdateMiscEffects` because vanilla consumes it earlier in the tick through `runAcceleration *= moveSpeed` and `maxRunSpeed *= moveSpeed`, so a write in `PostUpdateRunSpeeds` would be inert. `accRunSpeed` and `maxRunSpeed` are only ever added to and never assigned an absolute value, so boots and wings stack on top of the tail bonus instead of being overwritten by it.
 
 The Reinforced Ears knockback values are outgoing effects: they are added to the player's melee and summon knockback. In vanity, the individual values are halved just like the other centralized equipment stats.
 

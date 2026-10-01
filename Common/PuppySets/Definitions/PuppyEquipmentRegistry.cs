@@ -112,12 +112,12 @@ public static class PuppyEquipmentRegistry
 
     private sealed class VanillaDogTailProvider : IPuppyTailItem
     {
-        // Acceleration above max run speed is clamped in PuppyPlayer.PostUpdateRunSpeeds to avoid sprint dust.
         public PuppyEquipmentStats Stats => new(
             Defense: 0f,
             MoveSpeed: 0.30f,
             AccRunSpeed: 0.45f,
             MaxRunSpeed: 0.30f,
+            RunAccelerationPercent: 0.30f,
             JumpSpeedBoost: 1.0f);
     }
 

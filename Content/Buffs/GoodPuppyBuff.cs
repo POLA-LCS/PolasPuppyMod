@@ -31,8 +31,5 @@ public class GoodPuppyBuff : ModBuff
         player.accRunSpeed += AccRunSpeed;
         player.maxRunSpeed += MaxRunSpeed;
         player.jumpSpeedBoost += JumpBoost;
-        // Keep acceleration equal to max run speed to avoid sprint dust.
-        if (player.accRunSpeed > player.maxRunSpeed)
-            player.accRunSpeed = player.maxRunSpeed;
     }
 }

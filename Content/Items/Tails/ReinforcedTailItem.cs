@@ -16,6 +16,7 @@ public class ReinforcedTailItem : ModItem, IPuppyTailItem
         MoveSpeed: 0.20f,
         AccRunSpeed: 0.30f,
         MaxRunSpeed: 0.20f,
+        RunAccelerationPercent: 0.20f,
         JumpSpeedBoost: 0.6666667f);
 
     public override string Texture => AssetUtils.GetItemTexturePathWithFallback(nameof(ReinforcedTailItem));

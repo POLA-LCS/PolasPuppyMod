@@ -371,6 +371,9 @@ public class PuppyPlayer : ModPlayer
     public override void PostUpdateMiscEffects()
     {
         PuppyEquipmentStats stats = _equipmentResolution.Stats;
+        // Vanilla consumes moveSpeed through "runAcceleration *= moveSpeed; maxRunSpeed *= moveSpeed;"
+        // before PostUpdateRunSpeeds runs, so writing it in that later hook would be inert.
+        Player.moveSpeed += stats.MoveSpeed;
         Player.pickSpeed -= stats.PickSpeed;
         Player.jumpSpeedBoost += stats.JumpSpeedBoost;
 
@@ -380,13 +383,15 @@ public class PuppyPlayer : ModPlayer
     public override void PostUpdateRunSpeeds()
     {
         PuppyEquipmentStats stats = _equipmentResolution.Stats;
-        Player.moveSpeed += stats.MoveSpeed;
         Player.accRunSpeed += stats.AccRunSpeed;
         Player.maxRunSpeed += stats.MaxRunSpeed;
+        Player.runAcceleration *= 1f + stats.RunAccelerationPercent;
 
-        // Clamp acceleration to max run speed for puppies so sprint dust never triggers.
-        if (IsPuppy && Player.accRunSpeed > Player.maxRunSpeed)
-            Player.accRunSpeed = Player.maxRunSpeed;
+        // Boot accessories assign accRunSpeed absolutely in UpdateEquips and wings raise it in
+        // WingAirLogicTweaks, both before this hook, so this hook may only add to it. The clamp that
+        // used to live here overwrote both the boot and the wing value. The run dust test is
+        // Math.Abs(velocity.X) > (accRunSpeed + maxRunSpeed) / 2f, so that clamp lowered the
+        // threshold and made dust appear sooner instead of suppressing it.
     }
 
     private void ApplyEquipmentDefense()

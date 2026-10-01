@@ -11,6 +11,12 @@ public readonly record struct PuppyEquipmentStats(
     float MoveSpeed = 0f,
     float AccRunSpeed = 0f,
     float MaxRunSpeed = 0f,
+    /// <summary>
+    /// Fractional bonus applied to <c>Player.runAcceleration</c> as a multiplier, so 0.30f means
+    /// <c>runAcceleration *= 1.30f</c> and 0f means no change. This is not a raw runAcceleration
+    /// amount: the vanilla base is 0.08f and vanilla consumes the field as a multiplier target.
+    /// </summary>
+    float RunAccelerationPercent = 0f,
     float JumpSpeedBoost = 0f,
     float MeleeKnockbackAdditive = 0f,
     float SummonKnockbackFlat = 0f)
@@ -21,6 +27,7 @@ public readonly record struct PuppyEquipmentStats(
         MoveSpeed * multiplier,
         AccRunSpeed * multiplier,
         MaxRunSpeed * multiplier,
+        RunAccelerationPercent * multiplier,
         JumpSpeedBoost * multiplier,
         MeleeKnockbackAdditive * multiplier,
         SummonKnockbackFlat * multiplier);
@@ -31,6 +38,7 @@ public readonly record struct PuppyEquipmentStats(
         left.MoveSpeed + right.MoveSpeed,
         left.AccRunSpeed + right.AccRunSpeed,
         left.MaxRunSpeed + right.MaxRunSpeed,
+        left.RunAccelerationPercent + right.RunAccelerationPercent,
         left.JumpSpeedBoost + right.JumpSpeedBoost,
         left.MeleeKnockbackAdditive + right.MeleeKnockbackAdditive,
         left.SummonKnockbackFlat + right.SummonKnockbackFlat);
