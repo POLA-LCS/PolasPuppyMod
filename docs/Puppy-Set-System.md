@@ -2,7 +2,7 @@
 
 The Puppy set is a registry-driven equipment system. It recognizes registered Ears and Tail items, resolves the active puppy state every tick, aggregates their individual effects, and derives at most one family pair bonus.
 
-The current registry contains the vanilla `DogEars` and `DogTail`, `ReinforcedEars` and `ReinforcedTail`, and `ShinyEars` and `ShinyTail`.
+The current registry contains the vanilla `DogEars` and `FoxEars`, the vanilla `DogTail` and `FoxTail`, `ReinforcedEars` and `ReinforcedTail`, and `ShinyEars` and `ShinyTail`.
 
 ## Set detection
 
@@ -61,8 +61,8 @@ The current full-strength functional contributions are:
 
 | Item | Individual contribution or effect |
 | --- | --- |
-| Vanilla Dog Ears | `pickSpeed -= 0.10` (faster digging) |
-| Vanilla Dog Tail | `moveSpeed += 0.30`, `accRunSpeed += 0.45`, `maxRunSpeed += 0.30`, `runAcceleration *= 1.30`, `jumpSpeedBoost += 1.0` |
+| Vanilla Dog Ears / Fox Ears | `pickSpeed -= 0.10` (faster digging) |
+| Vanilla Dog Tail / Fox Tail | `moveSpeed += 0.30`, `accRunSpeed += 0.45`, `maxRunSpeed += 0.30`, `runAcceleration *= 1.30`, `jumpSpeedBoost += 1.0` |
 | Reinforced Ears | `+2` defense; `+0.25` melee knockback; `+0.25` flat summon knockback |
 | Reinforced Tail | `+2` defense; `moveSpeed += 0.20`, `accRunSpeed += 0.30`, `maxRunSpeed += 0.20`, `runAcceleration *= 1.20`, `jumpSpeedBoost += 0.6666667` |
 | Shiny Ears | `pickSpeed -= 0.12`; also emits a warm light |
@@ -88,7 +88,9 @@ The leash bonus service applies the defense to both sides of a valid attachment 
 
 ## Vanilla item augmentation and bonus text
 
-Vanilla `DogEars` and `DogTail` remain vanilla item instances with their original item types and defaults. `DogEarsGlobalItem` and `DogTailGlobalItem` route their tooltip changes through the shared Puppy tooltip helper; the registry separately supplies their Puppy stats and family identity. The mod does not replace either vanilla item.
+Vanilla `DogEars`, `FoxEars`, `DogTail` and `FoxTail` remain vanilla item instances with their original item types, textures and defaults. `DogEarsGlobalItem`, `FoxEarsGlobalItem`, `DogTailGlobalItem` and `FoxTailGlobalItem` route their tooltip changes through the shared Puppy tooltip helper; the registry separately supplies their Puppy stats and family identity. All four reuse the same vanilla providers, so `FoxEars` and `FoxTail` have exactly the same stats as their dog counterparts. The mod does not replace any of these vanilla items.
+
+`PuppyVanillaConversionRecipes` adds symmetric one for one cross-crafting: Dog Ears to Fox Ears, Fox Ears to Dog Ears, Dog Tail to Fox Tail, and Fox Tail to Dog Tail. No crafting station is required. Because both members of each pair carry the same stats, the conversion never changes a character's Puppy build.
 
 The puppy bonus text is not a registered Terraria armor set, and the mod never writes `Player.setBonus`, which is vanilla's armor set bonus display text and must stay untouched. While `IsPuppy` is true, the active puppy bonus lines are only inserted into the relevant item tooltip for the local player (`PuppySetBonusText.GetActiveLines(..., forTooltip: true)` via `TooltipExtensions.ApplyPuppyEquipmentTooltip`). The bark line is available for any recognized Ears plus any valid Tail, even when the families do not match.
 

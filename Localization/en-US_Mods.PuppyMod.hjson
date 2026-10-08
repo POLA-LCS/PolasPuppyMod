@@ -34,6 +34,16 @@ Items: {
 		PuppyFlavor: "'Walkies = zoomies! Aarr-woof! :3'"
 	}
 
+	FoxEars: {
+		PuppyStat: Increase digging speed
+		PuppyFlavor: "'Pointy ears, keen nose! *sniff sniff* :3'"
+	}
+
+	FoxTail: {
+		PuppyStat: Increase mobility
+		PuppyFlavor: "'Sly zoomies! Ding ding ding! :3'"
+	}
+
 	ShinyEarsItem: {
 		DisplayName: Shiny Ears
 		Tooltip: ""

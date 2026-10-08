@@ -56,6 +56,25 @@ public static class PuppyEquipmentRegistry
                 CreateTooltipLine("PuppyTailStat", "PuppyStat", halveInVanity: true),
                 CreateTooltipLine("PuppyTailFlavor", "PuppyFlavor", halveInVanity: false)));
 
+        // Fox Ears and Fox Tail are vanilla items that keep their own vanilla texture and equip
+        // slots. They are a clone of the dog pair, so they reuse the vanilla providers and stats.
+        RegisterEars(
+            ItemID.FoxEars,
+            PuppyFamily.Vanilla,
+            new VanillaDogEarsProvider(),
+            CreateTooltip(
+                "FoxEars",
+                CreateTooltipLine("PuppyEarsStat", "PuppyStat", halveInVanity: true),
+                CreateTooltipLine("PuppyEarsFlavor", "PuppyFlavor", halveInVanity: false)));
+        RegisterTail(
+            ItemID.FoxTail,
+            PuppyFamily.Vanilla,
+            new VanillaDogTailProvider(),
+            CreateTooltip(
+                "FoxTail",
+                CreateTooltipLine("PuppyTailStat", "PuppyStat", halveInVanity: true),
+                CreateTooltipLine("PuppyTailFlavor", "PuppyFlavor", halveInVanity: false)));
+
         int reinforcedEarsType = ModContent.ItemType<ReinforcedEarsItem>();
         RegisterEars(
             reinforcedEarsType,
@@ -105,6 +124,7 @@ public static class PuppyEquipmentRegistry
         definitions.Clear();
     }
 
+    // Shared by every vanilla cosmetic pair (dog, fox): same stats, different vanilla texture.
     private sealed class VanillaDogEarsProvider : IPuppyEarsItem
     {
         public PuppyEquipmentStats Stats => new(Defense: 0f, PickSpeed: 0.10f);
