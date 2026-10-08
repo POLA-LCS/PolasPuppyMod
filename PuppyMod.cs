@@ -79,9 +79,9 @@ public class PuppyMod : Mod
     }
 
     /// <summary>
-/// The mount key toggles the puppy transformation. It falls back to vanilla when a mount item is
-/// equipped or a reachable Minecart Track is nearby, so rail requests still mount a minecart.
-/// </summary>
+    /// The mount key toggles the puppy transformation. It falls back to vanilla when a mount item is
+    /// equipped or a Minecart Track is in vanilla's minecart range, so rail requests still mount a cart.
+    /// </summary>
     private static void HandleQuickMount(On_Player.orig_QuickMount orig, Player player)
     {
         if (player.whoAmI != Main.myPlayer)
@@ -102,10 +102,10 @@ public class PuppyMod : Mod
         }
         else if (!DogTransformController.HasMountEquipped(player) &&
                  player.GetModPlayer<PuppyPlayer>().IsPuppy &&
-                 !DogTransformController.HasReachableMinecartTrack(player))
+                 !DogTransformController.HasMinecartTrackInRange(player))
         {
             // Only take the keybind for the transformation when a rail is not requesting the press.
-            // Near a reachable Minecart Track vanilla mounts a minecart instead, which must win.
+            // With a Minecart Track in vanilla's search range vanilla fires its minecart hook, which wins.
             DogTransformController.Start(player);
             return;
         }

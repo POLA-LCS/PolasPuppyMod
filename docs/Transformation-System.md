@@ -2,7 +2,7 @@
 
 This document describes the puppy transformation. No implementation details are listed here - only the conceptual relationships and the order in which things happen.
 
-A player wearing a puppy set can turn into a dog and back with the Quick Mount key, as long as no mount is equipped and no reachable Minecart Track is nearby, or with the dedicated Dog Transformation key (default T), which works while a mount is equipped and near rails. The dog has its own animations, emotes and a shorter, wider hitbox. The breed is chosen in the client config and shared with other players, so everyone sees the same dog.
+A player wearing a puppy set can turn into a dog and back with the Quick Mount key, as long as no mount is equipped and no Minecart Track is in vanilla's minecart range, or with the dedicated Dog Transformation key (default T), which works while a mount is equipped and near rails. The dog has its own animations, emotes and a shorter, wider hitbox. The breed is chosen in the client config and shared with other players, so everyone sees the same dog.
 
 ```mermaid
 flowchart TB
@@ -49,7 +49,7 @@ flowchart TB
 
 ### Concepts
 
-- **Transformation** is toggled with the Quick Mount key, which defaults to R, or with the dedicated Dog Transformation key, which defaults to T. With any puppy set, no mount equipped and no reachable Minecart Track nearby, Quick Mount turns the player into a dog; pressing it again turns back. With a mount equipped, or standing near a Minecart Track that vanilla could put the player into, Quick Mount keeps its normal behavior and the vanilla path runs. The dedicated key always toggles the transformation.
+- **Transformation** is toggled with the Quick Mount key, which defaults to R, or with the dedicated Dog Transformation key, which defaults to T. With any puppy set, no mount equipped and no Minecart Track inside vanilla's minecart search range, Quick Mount turns the player into a dog; pressing it again turns back. With a mount equipped, or standing where a Minecart Track is in that range, Quick Mount keeps its normal behavior and the vanilla path runs. The dedicated key always toggles the transformation.
 - **Turning back** requires about 2.7 tiles of headroom. If the space is blocked, the player stays in dog form. The transform keeps the wider hitbox clear of walls, so transforming next to a wall does not push the player into it.
 - **Items are disabled** while transformed. The dog cannot use, hold or swing items.
 - **Dog animations** cover four locomotion states: standing, running, jumping and falling. The running animation follows movement speed, and the falling animation takes over once the dog is moving downward.
@@ -61,7 +61,7 @@ flowchart TB
 ### Work Sequence
 
 1. **Player wears a puppy set** - any recognized Ears plus any recognized Tail. With no mount equipped, the transformation becomes available.
-2. **Player presses Quick Mount or the Dog Transformation key** - Quick Mount first checks whether a Minecart Track is in range with line of sight. If one is, vanilla runs and mounts a minecart. Otherwise the player turns into a dog: a puff of dust plays, and the breed is copied from the player's client config.
+2. **Player presses Quick Mount or the Dog Transformation key** - Quick Mount first checks vanilla's own minecart search range around the player. If a Minecart Track is found there, vanilla runs and fires its minecart hook. Otherwise the player turns into a dog: a puff of dust plays, and the breed is copied from the player's client config.
 3. **Dog form is active** - items are disabled, and the dog switches between the standing, running, jumping and falling animations based on its movement.
 4. **Player presses an emote key** - bend, scratch or random starts while the dog is grounded and still. The emote ends early if the dog moves, and scratch sometimes plays faster.
 5. **Player is petted** - the pet grants the happy tail wag; while it lasts, the idle animation plays at double speed.
